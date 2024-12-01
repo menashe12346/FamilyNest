@@ -1,55 +1,78 @@
-import { StyleSheet, Text, View ,Image, TextInput, TouchableOpacity, Animated} from 'react-native'
-import React, {useRef} from 'react'
-import { AntDesign, FontAwesome } from '@expo/vector-icons'
-import { LinearGradient } from 'expo-linear-gradient'
-import { useNavigation } from '@react-navigation/native'
+import React, { useEffect, useRef } from 'react';
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity } from 'react-native';
+import { AntDesign, FontAwesome } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
+import Animated, {useSharedValue,useAnimatedStyle,withTiming} from 'react-native-reanimated';
+import globalStyles from '../styles/GlobalStyles';
+
 
 const LoginScreen = () => {
 
   const navigation = useNavigation();
-  const animatedWidth= useRef(new Animated.Value(90)).current;
 
+  /*
+  Animation
+  */
+  const viewPosition = useSharedValue(1000);
+  const animatedView = useAnimatedStyle(()=>{
+    return{
+      transform: [
+        {
+          translateY: viewPosition.value,
+        },
+      ],
+    };
+  });
   
   const handleSignUp= () =>{
+
     navigation.navigate("SignUp");
+    
   }
+
+  useEffect(()=>{
+    viewPosition.value = withTiming(0,{duration: 1500});
+  },[]);
 
   return (
     <View style={styles.container}>
-        <View style={styles.loginBackgrondContainer}>
-            <Image source={require("../assets/topHouse.png")} style={styles.backgroundImage}/>
+      <Animated.View style={animatedView}>
+          <View style={styles.loginBackgrondContainer}>
+              <Image source={require("../assets/images/topHouse.png")} style={styles.backgroundImage}/>
+          </View>
+        <View style={styles.helloContainer}>
+          <Text style={styles.helloText}>Hello</Text>
         </View>
-      <View style={styles.helloContainer}>
-        <Text style={styles.helloText}>Hello</Text>
-      </View>
-      <View>
-        <Text style={styles.loginText}>Login to your account</Text>
-      </View>
-      <View style={styles.inputContainer}>
-        <FontAwesome name={"user"} size={28} color={"#9A9A9A"} style={styles.inputIcon}/>
-        <TextInput style={styles.textInput} placeholder='Email adress'/>
-      </View>
-      <View style={styles.inputContainer}>
-        <FontAwesome name={"lock"} size={28} color={"#9A9A9A"} style={styles.inputIcon}/>
-        <TextInput style={styles.textInput} placeholder='Password' secureTextEntry/>
-      </View>
-      <View style={styles.logInContainer}>
-        <Text style={styles.logInText}>Log in</Text>
+        <View>
+          <Text style={styles.loginText}>Login to your account</Text>
+        </View>
+        <View style={styles.inputContainer}>
+          <FontAwesome name={"user"} size={28} color={"#9A9A9A"} style={styles.inputIcon}/>
+          <TextInput style={styles.textInput} placeholder='Email adress'/>
+        </View>
+        <View style={styles.inputContainer}>
+          <FontAwesome name={"lock"} size={28} color={"#9A9A9A"} style={styles.inputIcon}/>
+          <TextInput style={styles.textInput} placeholder='Password' secureTextEntry/>
+        </View>
+        <View style={styles.logInContainer}>
+          <Text style={styles.logInText}>Log in</Text>
+          <TouchableOpacity onPress={handleSignUp}>
+          <LinearGradient
+            colors={["#E99091","#CD9D9E","#B85455"]} style={styles.linearGradient}
+          ><AntDesign name={"arrowright"} size={24} color={"white"} marginHorizontal={30}/> 
+          </LinearGradient>
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity onPress={handleSignUp}>
-        <LinearGradient
-        colors={["#E99091","#CD9D9E","#B85455"]} style={styles.linearGradient}
-        ><AntDesign name={"arrowright"} size={24} color={"white"} marginHorizontal={30}/> 
-        </LinearGradient>
+        <Text style={styles.footerText}>Don't have an account? 
+          <Text style={{textDecorationLine:"underline"}}>Create</Text>
+        </Text>
         </TouchableOpacity>
-      </View>
-      <TouchableOpacity onPress={handleSignUp}>
-      <Text style={styles.footerText}>Don't have an account? 
-        <Text style={{textDecorationLine:"underline"}}>Create</Text>
-      </Text>
-      </TouchableOpacity>
-      <View style={styles.blobContainer}>
-        <Image source={require("../assets/lowBlob.png")} style={styles.lowBlob}/>
-      </View>
+        <View style={styles.blobContainer}>
+          <Image source={require("../assets/images/lowBlob.png")} style={styles.lowBlob}/>
+        </View>
+      </Animated.View>
     </View>
   )
 }
@@ -123,7 +146,7 @@ const styles = StyleSheet.create({
       marginTop:30
     },
     lowBlob:{
-     height:350,
-     width:350,
+    height:350,
+    width:350,
     }
 })
