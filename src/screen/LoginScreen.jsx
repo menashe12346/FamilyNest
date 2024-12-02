@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import Animated, {useSharedValue,useAnimatedStyle,withTiming} from 'react-native-reanimated';
 import globalStyles from '../styles/GlobalStyles';
+import {TextInputField,GradientButton } from '../components/LogSignCmpnts';
 
 
 const LoginScreen = () => {
@@ -47,21 +48,25 @@ const LoginScreen = () => {
         <View>
           <Text style={styles.loginText}>Login to your account</Text>
         </View>
-        <View style={styles.inputContainer}>
-          <FontAwesome name={"user"} size={28} color={"#9A9A9A"} style={styles.inputIcon}/>
-          <TextInput style={styles.textInput} placeholder='Email adress'/>
-        </View>
-        <View style={styles.inputContainer}>
-          <FontAwesome name={"lock"} size={28} color={"#9A9A9A"} style={styles.inputIcon}/>
-          <TextInput style={styles.textInput} placeholder='Password' secureTextEntry/>
-        </View>
+        <TextInputField
+          placeholder="Username"
+          iconName="user"
+          secureTextEntry={false}
+        />
+       <TextInputField
+          placeholder="Password"
+          iconName="lock"
+          secureTextEntry={true}
+        />
         <View style={styles.logInContainer}>
           <Text style={styles.logInText}>Log in</Text>
           <TouchableOpacity onPress={handleSignUp}>
-          <LinearGradient
-            colors={["#E99091","#CD9D9E","#B85455"]} style={styles.linearGradient}
-          ><AntDesign name={"arrowright"} size={24} color={"white"} marginHorizontal={30}/> 
-          </LinearGradient>
+            <GradientButton
+              colors={["#E99091", "#CD9D9E", "#B85455"]}
+              iconName="arrowright"
+              iconColor="white"
+              iconSize={24}
+            />
           </TouchableOpacity>
         </View>
         <TouchableOpacity onPress={handleSignUp}>
@@ -101,21 +106,6 @@ const styles = StyleSheet.create({
       fontWeight:500,
       color: "#542F2F",
       marginBottom:10
-    },inputContainer:{
-      backgroundColor:"#FFFFFF",
-      flexDirection:"row",
-      borderRadius:20,
-      marginHorizontal:40,
-      elevation:10,
-      marginVertical:10,
-    },inputIcon:{
-      marginLeft:15,
-      alignSelf:"baseline",
-      marginTop:15
-    },textInput:{
-      fontSize:18,
-      flex:1,
-      marginLeft:10,
     },logInContainer:{
       flexDirection:"row",
       marginTop:30,
@@ -126,14 +116,6 @@ const styles = StyleSheet.create({
       fontSize:30,
       fontWeight:"bold",
       textAlign:"center"
-    },linearGradient:{
-      elevation:10,
-      height:45,
-      width:90,
-      borderRadius:70,
-      alignItems:"center",
-      justifyContent:"center",
-      marginHorizontal:10,
     },footerText:{
       textAlign:"center",
       color:"black",
