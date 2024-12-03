@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import Animated, {useSharedValue,useAnimatedStyle,withTiming} from 'react-native-reanimated';
 import globalStyles from '../styles/GlobalStyles';
 import {TextInputField,GradientButton } from '../components/LogSignCmpnts';
+import { calculateFontSize } from '../utils/FontUtils';
 
 
 const LoginScreen = () => {
@@ -40,10 +41,10 @@ const LoginScreen = () => {
     <View style={styles.container}>
       <Animated.View style={animatedView}>
           <View style={styles.loginBackgrondContainer}>
-              <Image source={require("../assets/images/topHouse.png")} style={styles.backgroundImage}/>
+              <Image source={require("../assets/images/top_house2.png")} style={styles.backgroundImage}/>
           </View>
         <View style={styles.helloContainer}>
-          <Text style={styles.helloText}>Hello</Text>
+          <Text style={styles.helloText}>Welcome!</Text>
         </View>
         <View>
           <Text style={styles.loginText}>Login to your account</Text>
@@ -89,46 +90,48 @@ const styles = StyleSheet.create({
         backgroundColor: "#E4F1F4",
         flex: 1
     },loginBackgrondContainer:{
-      height:300,
+      height:'27%',
     },backgroundImage:{
-      marginTop:10,
+      marginTop:'1%',
       height:"100%",
-      width:"100%"
+      width:"100%",
+      resizeMode:'contain'
     },helloContainer:{
     },helloText:{
       textAlign:"center",
-      fontSize: 60 ,
+      fontSize: calculateFontSize(45) ,
       fontWeight: 700,
       color: "#542F2F",
     },loginText:{
       textAlign:"center",
-      fontSize: 25,
+      fontSize: calculateFontSize(22),
       fontWeight:500,
       color: "#542F2F",
-      marginBottom:10
+      marginBottom:'1%'
     },logInContainer:{
       flexDirection:"row",
-      marginTop:30,
+      marginTop:'3%',
+      marginHorizontal:'50%',
       width:"90%",
-      justifyContent:"flex-end"
+      justifyContent:'flex-start'
     },logInText:{
       color:"#542F2F",
-      fontSize:30,
+      fontSize:calculateFontSize(27),
       fontWeight:"bold",
       textAlign:"center"
     },footerText:{
       textAlign:"center",
       color:"black",
-      fontSize:18,
-      marginTop:120
+      fontSize:calculateFontSize(16),
+      marginTop:'1%'
     },blobContainer:{
-      position:"relative",
-      bottom:0,
-      marginRight:100,
-      marginTop:30
+      height:'50%',
+      width:'50%',
+      textAlign:'center',
+      marginTop:'0%',
+      zIndex:-1,
     },
     lowBlob:{
-    height:350,
-    width:350,
+      resizeMode:'contain'
     }
 })

@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, TextInput , TouchableOpacity, StyleSheet } from 'react-native';
 import { FontAwesome , AntDesign } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { calculateFontSize } from '../utils/FontUtils';
+
 
 export const TextInputField = ({ placeholder, iconName, secureTextEntry, style }) => {
   return (
@@ -32,34 +34,34 @@ export const GradientButton = ({colors, iconName, iconColor, iconSize, style }) 
       backgroundColor: "#FFFFFF",
       flexDirection: "row",
       borderRadius: 20,
-      marginHorizontal: 40,
+      marginHorizontal: '12%',
       elevation: 10,
-      marginVertical: 10,
-      height:60,
+      marginVertical: '1.5%',
+      height:'5%',
     },
     inputIcon: {
-      marginLeft: 15,
+      marginLeft: '4%',
       alignSelf: "baseline",
-      marginTop: 15,
+      marginTop: '4.5%',
     },
     textInput: {
-      fontSize: 18,
+      fontSize: calculateFontSize(16),
       flex: 1,
-      marginLeft: 10,
+      marginLeft: '1%',
     },buttonContainer: {
       flexDirection: "row",
       alignItems: "center",
-      marginTop: 30,
+      marginTop: '10%',
       width: "90%",
       justifyContent: "flex-end",
     },
     linearGradient: {
       elevation: 10,
-      height: 45,
-      width: 90,
+      height: '20%',
+      width: '120%',
       borderRadius: 70,
       alignItems: "center",
       justifyContent: "center",
-      marginHorizontal: 10,
+      marginHorizontal: '5%',
     },
   });

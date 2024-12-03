@@ -39,7 +39,7 @@ const SignUpScreen = () => {
             <Image style={styles.kidsImage} 
             source={require('../assets/avatars/boy_signup.png')}/>
             <Image style={styles.kidsImage} 
-            source={require('../assets/avatars/girl_signup.png')}/>
+            source={require('../assets/avatars/girl_signup2.png')}/>
           </View>
     </ScrollView>
   );
