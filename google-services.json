@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "888794901178",
+    "project_id": "familynest-88e60",
+    "storage_bucket": "familynest-88e60.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:888794901178:android:e651aa97278eeb8fd27083",
+        "android_client_info": {
+          "package_name": "com.familynest.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQFAmmHio-Hyz-ptx9hkwMowu4f96QuiE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

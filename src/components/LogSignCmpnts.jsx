@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { calculateFontSize } from '../utils/FontUtils';
 
 
-export const TextInputField = ({ placeholder, iconName, secureTextEntry, style }) => {
+export const TextInputField = ({ placeholder, iconName, secureTextEntry, value, onChangeText, style }) => {
   return (
     <View style={[styles.inputContainer, style]}>
       <FontAwesome name={iconName} size={28} color={"#9A9A9A"} style={styles.inputIcon} />
@@ -13,6 +13,8 @@ export const TextInputField = ({ placeholder, iconName, secureTextEntry, style }
         style={styles.textInput}
         placeholder={placeholder}
         secureTextEntry={secureTextEntry}
+        value={value}
+        onChangeText={onChangeText}
       />
     </View>
   );
