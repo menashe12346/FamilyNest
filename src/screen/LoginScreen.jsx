@@ -30,47 +30,12 @@ const LoginScreen = () => {
       ],
     };
   });
-
-  const signIn = () => {
-    console.log(username);
-    if (username !== '' && password !== '') {
-      console.log('Attempting to sign in...');
-      firebase.auth().signInWithEmailAndPassword(username, password)
-        .then((userCredential) => {
-          const user = userCredential.user.uid;
-          console.log('From LoginScreen (UID)', user);
-          handleSignIn();
-        })
-        .catch((error) => {
-          console.log('Error code:', error.code);
-          console.log('Error message:', error.message);
   
-          if (error.code === 'auth/invalid-email') {
-            console.log('That email address is invalid!');
-          } else if (error.code === 'auth/user-not-found') {
-            console.log('No user found with this email.');
-          } else if (error.code === 'auth/wrong-password') {
-            console.log('Incorrect password.');
-          } else {
-            console.error('An unexpected error occurred:', error);
-          }
-        });
-    } else {
-      console.log('Username and password cannot be empty');
-    }
-  };
-  
-  const handleSignIn = () => {
-    // Navigate to the NewScreen when login is pressed
-    navigation.navigate('Home', {
-      items: Array.from({ length: 10 }, (_, i) => `Item ${i + 1}`), // Passing example items
-    });
+  const handleSignUp= () =>{
 
-  };
-
-  const handleCreateAccount = () => {
-    navigation.navigate('SignUp');
-  };
+    navigation.navigate("SignUp");
+    
+  }
 
   useEffect(()=>{
     viewPosition.value = withTiming(0,{duration: 1500});
