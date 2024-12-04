@@ -1,10 +1,49 @@
-import React from 'react';
-import { FlatList, Text, View, StyleSheet , TextInput ,Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, Text, View, StyleSheet , TextInput ,Dimensions, TouchableOpacity } from 'react-native';
 import { calculateFontSize } from '../utils/FontUtils';
 import { FontAwesome } from '@expo/vector-icons';
 import Carousel from 'react-native-reanimated-carousel';
+import { connect } from 'react-redux';
+import { Set_family_name, Set_user_username , Set_user_age, Set_user_picture } from '../Redux/counterSlice';
+import { firebase } from '../../firebase';
 
 const { width } = Dimensions.get('window');
+
+const signUp = ({email, password}) => {
+  if (email !== '' && password !== '') {
+    console.log('Attempting to sign up...');
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        const user = userCredential.user.uid;
+        console.log('User created successfully (UID):', user);
+        handleSignUp();
+      })
+      .catch((error) => {
+        console.log('Error code:', error.code);
+        console.log('Error message:', error.message);
+
+        if (error.code === 'auth/email-already-in-use') {
+          console.log('That email address is already in use!');
+        } else if (error.code === 'auth/invalid-email') {
+          console.log('That email address is invalid!');
+        } else if (error.code === 'auth/weak-password') {
+          console.log('Password is too weak!');
+        } else {
+          console.error('An unexpected error occurred:', error);
+        }
+      });
+  } else {
+    console.log('Username and password cannot be empty');
+  }
+};
+
+const handleSignUp = () => {
+  // Navigate to the NewScreen when login is pressed
+  navigation.navigate('Home', {
+    items: Array.from({ length: 10 }, (_, i) => `Item ${i + 1}`), // Passing example items
+  });
+};
+
 // Example components
 const HeaderComponent = ({}) => (
   <View style={styles.header}>
@@ -30,38 +69,50 @@ const PartnerStep = ({ }) => (
   </View>
 );
 
-const UserFamilyComponent = ({}) =>(
+const UserFamilyComponent = ({ Familyname, setFamilyName, userName, setUserName }) => (
   <View style={styles.ufComponent}>
     <View style={styles.familyNameComponent}>
-      <TextInput style={styles.inputComponent}
+      <TextInput
+        style={styles.inputComponent}
         placeholder="Family Name"
+        value={Familyname} 
+        onChangeText={(text) => setFamilyName(text)}
       />
     </View>
     <View style={styles.userNameComponent}>
-      <TextInput style={styles.inputComponent}
+      <TextInput
+        style={styles.inputComponent}
         placeholder="User name"
+        value={userName}
+        onChangeText={(text) => setUserName(text)}
       />
     </View>
   </View>
 );
 
-const EmailComponent = ({})=> (
+const EmailComponent = ({ email, setEmail }) => (
   <View style={styles.emailContainer}>
-      <FontAwesome name="user" size={28} color={"#9A9A9A"} style={styles.inputIcon} />
-      <TextInput
-        style={styles.inputComponent}
-        placeholder="Enter your email address"
-      />
-    </View>
+    <FontAwesome name="user" size={28} color={"#9A9A9A"} style={styles.inputIcon} />
+    <TextInput
+      style={styles.inputComponent}
+      placeholder="Enter your email address"
+      value={email}
+      onChangeText={(text) => setEmail(text)}
+    />
+  </View>
 );
 
-const PasswordsComponent = ({})=> (
+
+const PasswordsComponent = ({ password, setPassword, confirmPassword, setConfirmPassword }) => (
   <View style={styles.passwordsContainer}>
     <View style={styles.emailContainer}>
       <FontAwesome name="lock" size={28} color={"#9A9A9A"} style={styles.inputIcon} />
       <TextInput
         style={styles.inputComponent}
         placeholder="Enter password"
+        value={password}
+        secureTextEntry={true}
+        onChangeText={(text) => setPassword(text)}
       />
     </View>
     <View style={styles.emailContainer}>
@@ -69,6 +120,9 @@ const PasswordsComponent = ({})=> (
       <TextInput
         style={styles.inputComponent}
         placeholder="Re-Enter password"
+        value={confirmPassword}
+        secureTextEntry={true}
+        onChangeText={(text) => setConfirmPassword(text)}
       />
     </View>
   </View>
@@ -99,6 +153,12 @@ const CarouselImages =({})=>(
             />
 );
 
+const SignUpButtonComponent = ({ onSignUp }) => (
+  <TouchableOpacity style={styles.signUpButton} onPress={onSignUp}>
+    <Text style={styles.signUpText}>Sign Up</Text>
+  </TouchableOpacity>
+);
+
 
 
 // Data
@@ -113,30 +173,55 @@ const data = [
   { id: '7', type: 'creator-profile'},
   { id: '8', type: 'partner-step'},
   { id: '9', type: 'partner-profile'},
+  { id: '10', type: 'sign-up-button' }, 
 ];
 
 // Main component
 export default function App() {
+  const [Familyname, setFamilyName] = useState('');
+  const [userName, setUserName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [age, setAge] = useState('');
+  const [photo, setPhoto] = useState(null);
+
   const renderItem = ({ item }) => {
     switch (item.type) {
       case 'header':
-        return <HeaderComponent title={item.title} />;
-      case  'personal-step':
-        return <PersonalDetailsText/>
+        return <HeaderComponent />;
+      case 'personal-step':
+        return <PersonalDetailsText />;
       case 'user-family':
-        return <UserFamilyComponent />
+        return (
+          <UserFamilyComponent
+            Familyname={Familyname}
+            setFamilyName={setFamilyName}
+            userName={userName}
+            setUserName={setUserName}
+          />
+        );
       case 'email-address':
-        return <EmailComponent />
+        return <EmailComponent email={email} setEmail={setEmail} />;
       case 'passwords':
-        return <PasswordsComponent />
-      case 'creator-step':
-        return <CreatorStep />
-      case 'creator-profile':
-        return <CarouselImages />
-      case 'partner-step':
-        return <PartnerStep />
-      case 'partner-profile':
-        return <PasswordsComponent />        
+        return (
+          <PasswordsComponent
+          password={password}
+          setPassword={setPassword}
+          confirmPassword={confirmPassword}
+          setConfirmPassword={setConfirmPassword}
+          />
+        );
+        case 'creator-step':
+          return <CreatorStep />
+        case 'creator-profile':
+          return <CarouselImages />
+        case 'partner-step':
+          return <PartnerStep />
+        case 'partner-profile':
+          return <PasswordsComponent />
+        case 'sign-up-button':
+          return <SignUpButtonComponent onSignUp={() => signUp(email, password)} />;
       default:
         return null;
     }

@@ -5,7 +5,7 @@ import Animated, {useSharedValue,useAnimatedStyle,withTiming} from 'react-native
 import {TextInputField,GradientButton } from '../components/LogSignCmpnts';
 import { calculateFontSize } from '../utils/FontUtils';
 import { connect } from 'react-redux';
-import { Set_user_username, Set_user_name, Set_user_age, Set_user_picture  } from '../Redux/counterSlice';
+import {Set_family_name, Set_username, Set_picture, Set_age } from '../Redux/counterSlice';
 import { firebase } from '../../firebase';
 
 
@@ -38,7 +38,7 @@ const LoginScreen = () => {
         .then((userCredential) => {
           const user = userCredential.user.uid;
           console.log('From LoginScreen (UID)', user);
-          Set_user_username(username)
+          Set_username(username)
           handleSignIn();
         })
         .catch((error) => {
@@ -180,10 +180,10 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  Set_user_username,
-  Set_user_name,
-  Set_user_picture,
-  Set_user_age,
+  Set_family_name,
+  Set_username,
+  Set_picture,
+  Set_age,
 };
 
 
