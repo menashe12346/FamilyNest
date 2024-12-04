@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { userProfileReducer } from './counterSlice';
+import { userReducer } from './counterSlice';
 
 const store = configureStore({
   reducer: {
-    user_profile: userProfileReducer,
+    user: userReducer,
   },
 });
 

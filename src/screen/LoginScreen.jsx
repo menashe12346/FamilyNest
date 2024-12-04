@@ -5,7 +5,7 @@ import Animated, {useSharedValue,useAnimatedStyle,withTiming} from 'react-native
 import {TextInputField,GradientButton } from '../components/LogSignCmpnts';
 import { calculateFontSize } from '../utils/FontUtils';
 import { connect } from 'react-redux';
-import { Set_user_email, Set_user_name, Set_user_age, Set_user_picture  } from '../Redux/counterSlice';
+import { Set_user_username, Set_user_name, Set_user_age, Set_user_picture  } from '../Redux/counterSlice';
 import { firebase } from '../../firebase';
 
 
@@ -38,6 +38,7 @@ const LoginScreen = () => {
         .then((userCredential) => {
           const user = userCredential.user.uid;
           console.log('From LoginScreen (UID)', user);
+          Set_user_username(username)
           handleSignIn();
         })
         .catch((error) => {
@@ -124,8 +125,6 @@ const LoginScreen = () => {
   )
 }
 
-export default LoginScreen
-
 const styles = StyleSheet.create({
     container:{
         backgroundColor: "#E4F1F4",
@@ -176,3 +175,16 @@ const styles = StyleSheet.create({
       resizeMode:'contain'
     }
 })
+
+const mapStateToProps = (state) => ({
+});
+
+const mapDispatchToProps = {
+  Set_user_username,
+  Set_user_name,
+  Set_user_picture,
+  Set_user_age,
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
