@@ -1,10 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity } from 'react-native';
-import { AntDesign, FontAwesome } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import Animated, {useSharedValue,useAnimatedStyle,withTiming} from 'react-native-reanimated';
-import globalStyles from '../styles/GlobalStyles';
 import {TextInputField,GradientButton } from '../components/LogSignCmpnts';
 import { calculateFontSize } from '../utils/FontUtils';
 
@@ -27,11 +24,17 @@ const LoginScreen = () => {
     };
   });
   
-  const handleSignUp= () =>{
+  const handleSignUp = () => {
+    // Navigate to the NewScreen when login is pressed
+    navigation.navigate('Home', {
+      items: Array.from({ length: 10 }, (_, i) => `Item ${i + 1}`), // Passing example items
+    });
 
-    navigation.navigate("SignUp");
-    
-  }
+  };
+
+  const handleCreateAccount = () => {
+    navigation.navigate('SignUp');
+  };
 
   useEffect(()=>{
     viewPosition.value = withTiming(0,{duration: 1500});
@@ -70,7 +73,7 @@ const LoginScreen = () => {
             />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={handleSignUp}>
+        <TouchableOpacity onPress={handleCreateAccount}>
         <Text style={styles.footerText}>Don't have an account? 
           <Text style={{textDecorationLine:"underline"}}>Create</Text>
         </Text>
