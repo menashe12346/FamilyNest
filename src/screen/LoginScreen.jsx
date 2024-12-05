@@ -88,7 +88,7 @@ const LoginScreen = () => {
           <Text style={styles.loginText}>Login to your account</Text>
         </View>
         <TextInputField
-          placeholder="Username"
+          placeholder="Username or Email address"
           iconName="user"
           secureTextEntry={false}
           value={username}

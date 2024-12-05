@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, Text, View, StyleSheet , TextInput ,Dimensions, TouchableOpacity } from 'react-native';
 import { calculateFontSize } from '../utils/FontUtils';
 import { FontAwesome } from '@expo/vector-icons';
-import Carousel from 'react-native-reanimated-carousel';
 import { connect } from 'react-redux';
 import { Set_family_name, Set_user_username , Set_user_age, Set_user_picture } from '../Redux/counterSlice';
 import { firebase } from '../../firebase';
+import { PasswordsComponent,UserFamilyComponent,EmailComponent,GenderNameBDay } from '../components/LogSignCmpnts';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 const { width } = Dimensions.get('window');
 
@@ -63,95 +64,30 @@ const CreatorStep = ({ }) => (
   </View>
 );
 
-const PartnerStep = ({ }) => (
-  <View>
-    <Text style={styles.stepText}>Add your partner:</Text>
-  </View>
-);
+const PartnerStep = ({onCheckboxChange}) => {
+  const [isChecked, setIsChecked] = useState(false); // Define state
 
-const UserFamilyComponent = ({ Familyname, setFamilyName, userName, setUserName }) => (
-  <View style={styles.ufComponent}>
-    <View style={styles.familyNameComponent}>
-      <TextInput
-        style={styles.inputComponent}
-        placeholder="Family Name"
-        value={Familyname} 
-        onChangeText={(text) => setFamilyName(text)}
+  const handlePress = (isChecked) => {
+    setIsChecked(!isChecked); // Toggle state
+    console.log(isChecked);
+    onCheckboxChange(isChecked);
+  };
+
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+      <Text style={styles.stepText}>Send partner invitation:</Text>
+      <BouncyCheckbox
+        size={calculateFontSize(18)}
+        fillColor="#9EDF9C"
+        unFillColor="#E4F1F4"
+        text=""
+        iconStyle={{ borderColor: "#9EDF9C" }}
+        innerIconStyle={{ borderWidth: 2 }}
+        onPress={(isChecked) => handlePress(isChecked)} // Correct onPress
       />
     </View>
-    <View style={styles.userNameComponent}>
-      <TextInput
-        style={styles.inputComponent}
-        placeholder="User name"
-        value={userName}
-        onChangeText={(text) => setUserName(text)}
-      />
-    </View>
-  </View>
-);
-
-const EmailComponent = ({ email, setEmail }) => (
-  <View style={styles.emailContainer}>
-    <FontAwesome name="user" size={28} color={"#9A9A9A"} style={styles.inputIcon} />
-    <TextInput
-      style={styles.inputComponent}
-      placeholder="Enter your email address"
-      value={email}
-      onChangeText={(text) => setEmail(text)}
-    />
-  </View>
-);
-
-
-const PasswordsComponent = ({ password, setPassword, confirmPassword, setConfirmPassword }) => (
-  <View style={styles.passwordsContainer}>
-    <View style={styles.emailContainer}>
-      <FontAwesome name="lock" size={28} color={"#9A9A9A"} style={styles.inputIcon} />
-      <TextInput
-        style={styles.inputComponent}
-        placeholder="Enter password"
-        value={password}
-        secureTextEntry={true}
-        onChangeText={(text) => setPassword(text)}
-      />
-    </View>
-    <View style={styles.emailContainer}>
-      <FontAwesome name="lock" size={28} color={"#9A9A9A"} style={styles.inputIcon} />
-      <TextInput
-        style={styles.inputComponent}
-        placeholder="Re-Enter password"
-        value={confirmPassword}
-        secureTextEntry={true}
-        onChangeText={(text) => setConfirmPassword(text)}
-      />
-    </View>
-  </View>
-);
-
-const CarouselImages =({})=>(
-  <Carousel
-                loop
-                width={width}
-                height={width / 2}
-                autoPlay={false}
-                data={[...new Array(6).keys()]}
-                scrollAnimationDuration={1000}
-                onSnapToItem={(index) => console.log('current index:', index)}
-                renderItem={({ index }) => (
-                    <View
-                        style={{
-                            flex: 1,
-                            borderWidth: 1,
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Text style={{ textAlign: 'center', fontSize: 30 }}>
-                            {index}
-                        </Text>
-                    </View>
-                )}
-            />
-);
+  );
+};
 
 const SignUpButtonComponent = ({ onSignUp }) => (
   <TouchableOpacity style={styles.signUpButton} onPress={onSignUp}>
@@ -161,20 +97,8 @@ const SignUpButtonComponent = ({ onSignUp }) => (
 
 
 
-// Data
-const data = [
-  { id: '1', type: 'header'},
-  { id: '2', type: 'personal-step'},
-  { id: '3', type: 'user-family'},
-  { id: '4', type: 'email-address',},
-  { id: '5', type: 'passwords',},
-  // TODO phone number
-  { id: '6', type: 'creator-step'},
-  { id: '7', type: 'creator-profile'},
-  { id: '8', type: 'partner-step'},
-  { id: '9', type: 'partner-profile'},
-  { id: '10', type: 'sign-up-button' }, 
-];
+
+
 
 // Main component
 export default function App() {
@@ -185,6 +109,23 @@ export default function App() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [age, setAge] = useState('');
   const [photo, setPhoto] = useState(null);
+  const [sendPartnerInvitation,setShowPartnerInvitation]=useState(false);
+
+
+  // Flat List dataset
+const data = [
+  { id: '1', type: 'header'},
+  { id: '2', type: 'personal-step'},
+  { id: '3', type: 'user-family'},
+  { id: '4', type: 'email-address',},
+  { id: '5', type: 'passwords',},
+  // TODO phone number
+  { id: '6', type: 'creator-step'},
+  { id: '7', type: 'creator-profile'},
+  { id: '8', type: 'gender-name-bday'},
+  { id: '9', type: 'partner-step'},
+  ...(sendPartnerInvitation ? [{ id: '10', type: 'partner-invite'}]:[]),
+];
 
   const renderItem = ({ item }) => {
     switch (item.type) {
@@ -202,7 +143,7 @@ export default function App() {
           />
         );
       case 'email-address':
-        return <EmailComponent email={email} setEmail={setEmail} />;
+        return <EmailComponent email={email} setEmail={setEmail} placeholder={"Email-address"}/>;
       case 'passwords':
         return (
           <PasswordsComponent
@@ -215,11 +156,11 @@ export default function App() {
         case 'creator-step':
           return <CreatorStep />
         case 'creator-profile':
-          return <CarouselImages />
+          return <GenderNameBDay />
         case 'partner-step':
-          return <PartnerStep />
-        case 'partner-profile':
-          return <PasswordsComponent />
+          return <PartnerStep onCheckboxChange={setShowPartnerInvitation}/>
+        case 'partner-invite':
+          return <EmailComponent placeholder={"Your partner email address"}/>
         case 'sign-up-button':
           return <SignUpButtonComponent onSignUp={() => signUp(email, password)} />;
       default:
