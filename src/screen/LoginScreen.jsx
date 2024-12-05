@@ -140,12 +140,13 @@ const styles = StyleSheet.create({
     },helloText:{
       textAlign:"center",
       fontSize: calculateFontSize(45) ,
-      fontWeight: 700,
+      //fontWeight: 700,
       color: "#542F2F",
+      fontFamily:'Fredoka-Bold'
     },loginText:{
       textAlign:"center",
       fontSize: calculateFontSize(22),
-      fontWeight:500,
+      fontFamily:'Fredoka-Bold',
       color: "#542F2F",
       marginBottom:'1%'
     },logInContainer:{
@@ -157,12 +158,13 @@ const styles = StyleSheet.create({
     },logInText:{
       color:"#542F2F",
       fontSize:calculateFontSize(27),
-      fontWeight:"bold",
+      fontFamily:'Fredoka-Bold',
       textAlign:"center"
     },footerText:{
       textAlign:"center",
       color:"black",
       fontSize:calculateFontSize(16),
+      fontFamily:'Fredoka-Bold',
       marginTop:'1%'
     },blobContainer:{
       height:'50%',

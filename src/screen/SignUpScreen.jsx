@@ -6,7 +6,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { Set_family_name, Set_user_username , Set_user_age, Set_user_picture } from '../Redux/counterSlice';
 import { firebase } from '../../firebase';
-import { PasswordsComponent,UserFamilyComponent,EmailComponent,GenderNameBDay } from '../components/LogSignCmpnts';
+import { PasswordsComponent,UserFamilyComponent,EmailComponent,GenderNameBDay, SelectAvatar } from '../components/LogSignCmpnts';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 const { width } = Dimensions.get('window');
@@ -118,10 +118,11 @@ const data = [
   { id: '5', type: 'passwords',},
   // TODO phone number
   { id: '6', type: 'creator-step'},
-  { id: '7', type: 'creator-profile'},
-  { id: '8', type: 'gender-name-bday'},
-  { id: '9', type: 'partner-step'},
-  ...(sendPartnerInvitation ? [{ id: '10', type: 'partner-invite'}]:[]),
+  { id: '7', type: 'select-avatar'},
+  { id: '8', type: 'creator-profile'},
+  { id: '9', type: 'gender-name-bday'},
+  { id: '10', type: 'partner-step'},
+  ...(sendPartnerInvitation ? [{ id: '11', type: 'partner-invite'}]:[]),
 ];
 
   const renderItem = ({ item }) => {
@@ -158,9 +159,8 @@ const data = [
           return <PartnerStep onCheckboxChange={setShowPartnerInvitation}/>
         case 'partner-invite':
           return <EmailComponent placeholder={"Your partner email address"}/>
-          return <PartnerStep />
-        //case 'partner-profile':
-        //return
+        case 'select-avatar':
+          return <SelectAvatar onPressFunc={()=>{console.log('Pressed avatar , select profile picture')}}/>
         case 'sign-up-button':
           return <SignUpButtonComponent onSignUp={() => signUp({email, password, navigation})} />;
       default:
@@ -188,15 +188,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop:5,
     fontSize: calculateFontSize(18),
-    fontWeight: 'bold',
+    //fontWeight: 'bold',
+    fontFamily:'Fredoka-Bold',
   },brandText:{
     color:"#B85455",
+    fontFamily:'Fredoka-Bold'
   },stepText:{
     textAlign: 'left',
     paddingStart:'5%',
     fontWeight:'600',
     marginBottom:'1%',
-    fontSize: calculateFontSize(15),
+    fontSize: calculateFontSize(16),
+    fontFamily:'Fredoka-Bold',
   },ufComponent:{
     flexDirection:'row',
     justifyContent:'center',
@@ -216,7 +219,7 @@ const styles = StyleSheet.create({
       elevation:10,
       borderRadius: 18,
   },inputComponent:{
-      fontSize:calculateFontSize(14),
+      fontSize:calculateFontSize(18),
       marginStart:'2%'
   },emailContainer:{
       backgroundColor: "#FFFFFF",

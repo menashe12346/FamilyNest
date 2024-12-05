@@ -4,6 +4,7 @@ import { FontAwesome , AntDesign } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { calculateFontSize } from '../utils/FontUtils';
 import { Dropdown } from 'react-native-element-dropdown';
+import { Avatar } from '@rneui/themed';
 
 const gender_data = [
   {label: 'Male', value: '0',icon: "male"},
@@ -104,8 +105,6 @@ export const GenderNameBDay= ({})=>{
   const [isFocus, setIsFocus]= useState(false);
   const [date , setDate]=useState(new Date());
   const [open , setOpen]=useState(false);
-
-  console.log('Date Open?:',open);
   
 
   return <View style={styles.genNamBDay}>
@@ -147,6 +146,16 @@ export const GenderNameBDay= ({})=>{
 };
 
 
+export const SelectAvatar= ({onPressFunc,style})=>{
+  return <View style={[styles.selectAvatar,style]}>
+    <TouchableOpacity onPress={onPressFunc}><Avatar
+    size={'xlarge'}
+    rounded={true}
+    source={require('../assets/avatars/girl_signup2.png')}
+    />
+    </TouchableOpacity>
+  </View>
+}
   
   const styles = StyleSheet.create({
     inputContainer: {
@@ -159,9 +168,10 @@ export const GenderNameBDay= ({})=>{
       height:'5%',
       },
       textInput: {
-        fontSize: calculateFontSize(16),
+        fontSize: calculateFontSize(18),
         flex: 1,
         marginLeft: '1%',
+        fontFamily:'Fredoka-Regular',
       },buttonContainer: {
         flexDirection: "row",
         alignItems: "center",
@@ -189,13 +199,15 @@ export const GenderNameBDay= ({})=>{
     },inputIcon: {
         marginLeft: '4%',
         alignSelf: "baseline",
-        paddingTop:'7'
+        paddingTop:'5%'
     },passwordsContainer:{
       flexDirection:'column',
       justifyContent:'center',
     },inputComponent:{
       fontSize:calculateFontSize(14),
-      marginStart:'2%'
+      marginStart:'2%',
+      fontFamily:'Fredoka-Regular',
+      justifyContent:'center'
     },ufComponent:{
       flexDirection:'row',
       justifyContent:'center',
@@ -221,7 +233,8 @@ export const GenderNameBDay= ({})=>{
     },selectedTextStyle:{
       fontSize:calculateFontSize(12),
       flexDirection:'row',
-      textAlign:'center'
+      textAlign:'center',
+      fontFamily:'Fredoka-Regular'
     },dropdown:{
       backgroundColor:'#FFFFFF',
       height: "90%",
@@ -242,5 +255,8 @@ export const GenderNameBDay= ({})=>{
       flexDirection:'row',
       flex:1,
       height: 45,//!!precentage bug
-    },
+    },selectAvatar:{
+      alignContent:'center',
+      alignItems:'center'
+    }
   });
