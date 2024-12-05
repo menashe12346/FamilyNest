@@ -74,7 +74,7 @@ export const EmailComponent = ({ email, setEmail, placeholder }) => (
 );
 
 
-export const PasswordsComponent = ({ password, setPassword, confirmPassword, setConfirmPassword }) => (
+export const PasswordsComponent = ({ password, setPassword, confirmPassword, setConfirmPassword}) => (
   <View style={[styles.passwordsContainer]}>
     <View style={styles.emailContainer}>
       <FontAwesome name="lock" size={28} color={"#9A9A9A"} style={styles.inputIcon} />
@@ -199,7 +199,7 @@ export const SelectAvatar= ({onPressFunc,style})=>{
     },inputIcon: {
         marginLeft: '4%',
         alignSelf: "baseline",
-        paddingTop:'5%'
+        paddingTop:'3%'
     },passwordsContainer:{
       flexDirection:'column',
       justifyContent:'center',

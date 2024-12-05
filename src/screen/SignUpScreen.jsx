@@ -8,6 +8,7 @@ import { Set_family_name, Set_user_username , Set_user_age, Set_user_picture } f
 import { firebase } from '../../firebase';
 import { PasswordsComponent,UserFamilyComponent,EmailComponent,GenderNameBDay, SelectAvatar } from '../components/LogSignCmpnts';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import {AvatarPickerModal} from '../components/AvatarPickerModal';
 
 const { width } = Dimensions.get('window');
 
@@ -54,7 +55,7 @@ const PersonalDetailsText = ({}) => (
 
 const CreatorStep = ({ }) => (
   <View>
-    <Text style={styles.stepText}>Create your profile:</Text>
+    <Text style={styles.stepText}>Create your parent profile:</Text>
   </View>
 );
 
@@ -71,7 +72,7 @@ const PartnerStep = ({onCheckboxChange}) => {
     <View style={{ flexDirection: 'row', alignItems: 'center'}}>
       <Text style={styles.stepText}>Send partner invitation:</Text>
       <BouncyCheckbox
-        size={calculateFontSize(18)}
+        size={calculateFontSize(20)}
         fillColor="#9EDF9C"
         unFillColor="#E4F1F4"
         text=""
@@ -107,6 +108,8 @@ export default function App() {
   const [age, setAge] = useState('');
   const [photo, setPhoto] = useState(null);
   const [sendPartnerInvitation,setShowPartnerInvitation]=useState(false);
+  const [avatarPickVisible,setAvatarPickVisible]=useState(false);
+  const [avatarUri,setAvatarUri]=useState(null);
 
 
   // Flat List dataset
@@ -160,7 +163,8 @@ const data = [
         case 'partner-invite':
           return <EmailComponent placeholder={"Your partner email address"}/>
         case 'select-avatar':
-          return <SelectAvatar onPressFunc={()=>{console.log('Pressed avatar , select profile picture')}}/>
+          return <AvatarPickerModal modalVisible={avatarPickVisible} setModalVisible={setAvatarPickVisible}
+           imageUri={avatarUri} setImageUri={setAvatarUri}/>
         case 'sign-up-button':
           return <SignUpButtonComponent onSignUp={() => signUp({email, password, navigation})} />;
       default:
@@ -198,7 +202,7 @@ const styles = StyleSheet.create({
     paddingStart:'5%',
     fontWeight:'600',
     marginBottom:'1%',
-    fontSize: calculateFontSize(16),
+    fontSize: calculateFontSize(20),
     fontFamily:'Fredoka-Bold',
   },ufComponent:{
     flexDirection:'row',
@@ -221,15 +225,6 @@ const styles = StyleSheet.create({
   },inputComponent:{
       fontSize:calculateFontSize(18),
       marginStart:'2%'
-  },emailContainer:{
-      backgroundColor: "#FFFFFF",
-      flexDirection: "row",
-      marginTop:'2%',
-      width:'80%',
-      alignSelf:'center',
-      alignItems:'center',
-      elevation:10,
-      borderRadius: 18,
   },inputIcon: {
       marginLeft: '4%',
       alignSelf: "baseline",
