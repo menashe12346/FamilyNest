@@ -8,7 +8,6 @@ import { Set_family_name, Set_user_username , Set_user_age, Set_user_picture } f
 import { firebase } from '../../firebase';
 import { PasswordsComponent,UserFamilyComponent,EmailComponent,GenderNameBDay, SelectAvatar } from '../components/LogSignCmpnts';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import {AvatarPickerModal} from '../components/AvatarPickerModal';
 
 const { width } = Dimensions.get('window');
 
@@ -108,8 +107,6 @@ export default function App() {
   const [age, setAge] = useState('');
   const [photo, setPhoto] = useState(null);
   const [sendPartnerInvitation,setShowPartnerInvitation]=useState(false);
-  const [avatarPickVisible,setAvatarPickVisible]=useState(false);
-  const [avatarUri,setAvatarUri]=useState(null);
 
 
   // Flat List dataset
@@ -121,7 +118,6 @@ const data = [
   { id: '5', type: 'passwords',},
   // TODO phone number
   { id: '6', type: 'creator-step'},
-  { id: '7', type: 'select-avatar'},
   { id: '8', type: 'creator-profile'},
   { id: '9', type: 'gender-name-bday'},
   { id: '10', type: 'partner-step'},
@@ -162,9 +158,6 @@ const data = [
           return <PartnerStep onCheckboxChange={setShowPartnerInvitation}/>
         case 'partner-invite':
           return <EmailComponent placeholder={"Your partner email address"}/>
-        case 'select-avatar':
-          return <AvatarPickerModal modalVisible={avatarPickVisible} setModalVisible={setAvatarPickVisible}
-           imageUri={avatarUri} setImageUri={setAvatarUri}/>
         case 'sign-up-button':
           return <SignUpButtonComponent onSignUp={() => signUp({email, password, navigation})} />;
       default:

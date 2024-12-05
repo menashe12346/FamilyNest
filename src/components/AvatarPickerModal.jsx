@@ -42,12 +42,13 @@ export const AvatarPickerModal = ({modalVisible, setModalVisible, imageUri , set
       alignContent:'center',
       alignItems:'center'
     },modalStyle:{
+      marginTop:'15%',
       height:'50%',
       width:'90%',
       alignSelf:'center', 
       justifyContent: 'center',
        alignItems: 'center',
-       backgroundColor:'grey',
+       backgroundColor:'#A0F1FF',
        borderRadius:20,
        elevation:10
 
