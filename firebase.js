@@ -2,7 +2,6 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 
-
 const firebaseConfig = {
     apiKey: "AIzaSyCnAfe8Dc6ZZFy3QBGEx0F-CIpbOWj1e1U",
     authDomain: "familynest-88e60.firebaseapp.com",
@@ -16,10 +15,11 @@ const firebaseConfig = {
   if (!firebase.apps.length) { 
     firebase.initializeApp(firebaseConfig);
   }
+
   //const db = app.firestore();
   //const auth = firebase.auth();
 
-  export { firebase};
+  export { firebase };
 
   {/* 
   export const firebaseApp = initializeApp(firebaseConfig);
