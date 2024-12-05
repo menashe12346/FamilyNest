@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, Text, View, StyleSheet , TextInput ,Dimensions, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { calculateFontSize } from '../utils/FontUtils';
 import { FontAwesome } from '@expo/vector-icons';
 import { connect } from 'react-redux';
@@ -10,14 +11,14 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 const { width } = Dimensions.get('window');
 
-const signUp = ({email, password}) => {
+const signUp = ({email, password, navigation}) => {
   if (email !== '' && password !== '') {
     console.log('Attempting to sign up...');
     firebase.auth().createUserWithEmailAndPassword(email, password)
       .then((userCredential) => {
         const user = userCredential.user.uid;
         console.log('User created successfully (UID):', user);
-        handleSignUp();
+        navigation.navigate('Home');
       })
       .catch((error) => {
         console.log('Error code:', error.code);
@@ -36,13 +37,6 @@ const signUp = ({email, password}) => {
   } else {
     console.log('Username and password cannot be empty');
   }
-};
-
-const handleSignUp = () => {
-  // Navigate to the NewScreen when login is pressed
-  navigation.navigate('Home', {
-    items: Array.from({ length: 10 }, (_, i) => `Item ${i + 1}`), // Passing example items
-  });
 };
 
 // Example components
@@ -102,6 +96,9 @@ const SignUpButtonComponent = ({ onSignUp }) => (
 
 // Main component
 export default function App() {
+
+  const navigation = useNavigation();
+
   const [Familyname, setFamilyName] = useState('');
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
@@ -161,8 +158,11 @@ const data = [
           return <PartnerStep onCheckboxChange={setShowPartnerInvitation}/>
         case 'partner-invite':
           return <EmailComponent placeholder={"Your partner email address"}/>
+          return <PartnerStep />
+        //case 'partner-profile':
+        //return
         case 'sign-up-button':
-          return <SignUpButtonComponent onSignUp={() => signUp(email, password)} />;
+          return <SignUpButtonComponent onSignUp={() => signUp({email, password, navigation})} />;
       default:
         return null;
     }
@@ -234,5 +234,17 @@ const styles = StyleSheet.create({
   },passwordsContainer:{
     flexDirection:'column',
     justifyContent:'center',
-  }
+  },
+  signUpButton: {
+    backgroundColor: '#B85455',
+    padding: 15,
+    borderRadius: 10,
+    margin: 20,
+    alignItems: 'center',
+  },
+  signUpText: {
+    color: '#FFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
 });
