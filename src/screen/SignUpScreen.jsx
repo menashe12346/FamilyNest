@@ -116,7 +116,7 @@ const data = [
   { id: '3', type: 'user-family'},
   { id: '4', type: 'email-address',},
   { id: '5', type: 'passwords',},
-  // TODO phone number
+  // TODO phone number.
   { id: '6', type: 'creator-step'},
   { id: '8', type: 'creator-profile'},
   { id: '9', type: 'gender-name-bday'},
