@@ -1,17 +1,20 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { Dimensions } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import NewScreen from './NewScreen';
+import SelectProfileScreen from './SelectProfileScreen';
+
 const { width, height } = Dimensions.get('window');
 
+const calculateFontSize = (size) => Math.min(width, height) * (size / 100);
 
-
-
-const Home = ({ navigation }) => {
+const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Parents Screen</Text>
       <TouchableOpacity
-        activeOpacity={0}
+        activeOpacity={0.8}
         style={styles.button}
         onPress={() =>
           navigation.navigate('NewScreen', {
@@ -24,25 +27,50 @@ const Home = ({ navigation }) => {
     </View>
   );
 };
-const calculateFontSize = (size) => Math.min(width, height) * (size / 100);
 
+const Tab = createBottomTabNavigator();
 
-export default Home;
+export default function Home() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+          if (route.name === 'Home') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'NewScreen') {
+            iconName = focused ? 'add-circle' : 'add-circle-outline';
+          } else if (route.name === 'SelectProfile') {
+            iconName = focused ? 'people' : 'people-outline';
+          }
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: 'tomato',
+        tabBarInactiveTintColor: 'gray',
+        headerShown: false,
+      })}
+    >
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="NewScreen" component={NewScreen} />
+      <Tab.Screen name="SelectProfile" component={SelectProfileScreen} />
+    </Tab.Navigator>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#E4F1F4',
-    alignItems: 'center', // Centers content horizontally
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   headerText: {
-    fontSize: calculateFontSize(10),  
+    fontSize: calculateFontSize(10),
     fontWeight: 'bold',
     color: '#542F2F',
-    marginBottom: '150%', // Add some space from the top or other content
+    marginBottom: '10%',
   },
   button: {
-    left: '35%',
     width: '17%',
     height: '8%',
     borderRadius: 800,
