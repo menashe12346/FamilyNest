@@ -25,6 +25,7 @@ const AvatarSelectModal = ({imageURI, setImageURI ,showModal,setShowModal}) => {
         <Modal visible={showModal} animationType="slide" transparent={true} onRequestClose={() => setShowModal(false)}>
           <View style={styles.overlay}>
             <View style={styles.modalContent}>
+                <Image style={styles.chosenAvatarImage}source={require('../assets/avatars/boy_signup.png')}/>
               <Text style={styles.modalTitle}>Select Avatar</Text>
     
               <FlatList
@@ -57,7 +58,7 @@ const AvatarSelectModal = ({imageURI, setImageURI ,showModal,setShowModal}) => {
       },
       modalContent: {
         width: '90%',
-        height:"60%",
+        height:"55%",
         padding: 20,
         backgroundColor: 'white',
         borderRadius: 10,
@@ -79,8 +80,8 @@ const AvatarSelectModal = ({imageURI, setImageURI ,showModal,setShowModal}) => {
         padding: 5,
       },
       avatarImage: {
-        width: 60,
-        height: 60,
+        width: 80,
+        height: 80,
         borderRadius: 50,
       },
       submitButton: {
@@ -93,7 +94,10 @@ const AvatarSelectModal = ({imageURI, setImageURI ,showModal,setShowModal}) => {
       submitButtonText: {
         color: 'white',
         fontSize: 16,
-      },
+      },chosenAvatarImage:{
+        width: 140,
+        height: 140,
+      }
     });
     
     export default AvatarSelectModal;
