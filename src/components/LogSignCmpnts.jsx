@@ -1,11 +1,12 @@
 import React ,{useState}from 'react';
-import { View, Text, TextInput , TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput , TouchableOpacity, StyleSheet , Image, Modal } from 'react-native';
 import { FontAwesome , AntDesign } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { calculateFontSize } from '../utils/FontUtils';
 import { Dropdown } from 'react-native-element-dropdown';
 import { Avatar } from '@rneui/themed';
 import DateTimePicker from "@react-native-community/datetimepicker"
+import AvatarSelectModal from './AvatarSelectModal';
 
 const gender_data = [
   {label: 'Male', value: '0',icon: "male"},
@@ -187,10 +188,11 @@ export const SelectAvatar= ({onPressFunc,style})=>{
   </View>
 }
 
-export const ProfilePictureSelector=({})=>{
-  return <View>
-    <Text>PlaceboText</Text>
-  </View>
+export const ProfilePictureSelector=({ imageURI ,setImageURI})=>{
+  const [showModal,setShowModal]=useState(false)
+  return <>{showModal && <AvatarSelectModal imageURI={imageURI} setImageURI={setImageURI} showModal={showModal} setShowModal={setShowModal}/>}<TouchableOpacity style={styles.roundedContainer} onPress={()=>setShowModal(true)} >
+            <Image style={styles.roundedImage} source={require("../assets/avatars/boy_signup.png")}/>
+          </TouchableOpacity></>
 }
   
   const styles = StyleSheet.create({
@@ -290,7 +292,7 @@ export const ProfilePictureSelector=({})=>{
       alignItems:'center',
       flexDirection:'row',
       flex:1,
-      height: 45,//!!precentage bug
+      //height: "100%",//!!precentage bug
     },selectAvatar:{
       alignContent:'center',
       alignItems:'center'
@@ -308,5 +310,18 @@ export const ProfilePictureSelector=({})=>{
     },dateText:{
       calculateFontSize:(12),
       fontFamily:'Fredoka-Regular',
+    },roundedContainer:{
+      borderRadius: 40,
+      alignSelf:'center',
+      alignItems:'center',
+      height:120,
+      width:120,
+    },roundedImage:{
+      height:"100%",
+      width:"100%",
+      resizeMode:'contain'
+    },avatarContainer:{
+      height:"20",
+      width:"20",
     }
   });

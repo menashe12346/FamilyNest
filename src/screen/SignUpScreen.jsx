@@ -8,6 +8,8 @@ import { Set_family_name, Set_user_username , Set_user_age, Set_user_picture } f
 import { firebase } from '../../firebase';
 import { PasswordsComponent,UserFamilyComponent,EmailComponent,GenderNameBDay, ProfilePictureSelector } from '../components/LogSignCmpnts';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import AvatarSelectModal from '../components/AvatarSelectModal';
+import { use } from 'react';
 
 const { width } = Dimensions.get('window');
 
@@ -111,6 +113,7 @@ export default function App() {
   const [partnerEmail,setPartnerEmail]= useState('')
   const [gender,setGender]=useState('1')
   const [date,setDate]=useState(new Date())
+  const [imageURI,setImageURI]=useState('')
 
   console.log("Selected Date",date)
   //console.log("Family Name:",Familyname)
@@ -170,7 +173,7 @@ const data = [
         case 'sign-up-button':
           return <SignUpButtonComponent onSignUp={() => signUp({email, password, navigation})} />;
         case 'profile-picture':
-          return <ProfilePictureSelector/>
+          return <ProfilePictureSelector imageURI={""} setImageURI={""}/>
       default:
         return null;
     }
