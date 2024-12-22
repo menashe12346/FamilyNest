@@ -6,7 +6,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { Set_family_name, Set_user_username , Set_user_age, Set_user_picture } from '../Redux/counterSlice';
 import { firebase } from '../../firebase';
-import { PasswordsComponent,UserFamilyComponent,EmailComponent,GenderNameBDay, SelectAvatar } from '../components/LogSignCmpnts';
+import { PasswordsComponent,UserFamilyComponent,EmailComponent,GenderNameBDay, ProfilePictureSelector } from '../components/LogSignCmpnts';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 const { width } = Dimensions.get('window');
@@ -100,6 +100,7 @@ export default function App() {
   const navigation = useNavigation();
 
   const [Familyname, setFamilyName] = useState('');
+  const [firstName, setFirstName] = useState('');
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -107,7 +108,13 @@ export default function App() {
   const [age, setAge] = useState('');
   const [photo, setPhoto] = useState(null);
   const [sendPartnerInvitation,setShowPartnerInvitation]=useState(false);
+  const [partnerEmail,setPartnerEmail]= useState('')
+  const [gender,setGender]=useState('1')
+  const [date,setDate]=useState(new Date())
 
+  console.log("Selected Date",date)
+  //console.log("Family Name:",Familyname)
+  //console.log("First Name:",firstName)
 
   // Flat List dataset
 const data = [
@@ -118,10 +125,12 @@ const data = [
   { id: '5', type: 'passwords',},
   // TODO phone number.
   { id: '6', type: 'creator-step'},
+  { id: '7', type: 'profile-picture'},
   { id: '8', type: 'creator-profile'},
-  { id: '9', type: 'gender-name-bday'},
+  { id: '9', type: 'gender-name-bday-profile-picture'},
   { id: '10', type: 'partner-step'},
   ...(sendPartnerInvitation ? [{ id: '11', type: 'partner-invite'}]:[]),
+  { id: '12', type: 'sign-up-button'},
 ];
 
   const renderItem = ({ item }) => {
@@ -151,15 +160,17 @@ const data = [
           />
         );
         case 'creator-step':
-          return <CreatorStep />
+          return <CreatorStep/>
         case 'creator-profile':
-          return <GenderNameBDay />
+          return <GenderNameBDay firstName={firstName} setFirstName={setFirstName} gender={gender} setGender={setGender} date={date} setDate={setDate}/>
         case 'partner-step':
           return <PartnerStep onCheckboxChange={setShowPartnerInvitation}/>
         case 'partner-invite':
-          return <EmailComponent placeholder={"Your partner email address"}/>
+          return <EmailComponent placeholder={"Your partner email address"} email={partnerEmail} setEmail={setPartnerEmail}/>
         case 'sign-up-button':
           return <SignUpButtonComponent onSignUp={() => signUp({email, password, navigation})} />;
+        case 'profile-picture':
+          return <ProfilePictureSelector/>
       default:
         return null;
     }

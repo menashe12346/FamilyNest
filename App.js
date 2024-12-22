@@ -53,7 +53,7 @@ const App = () => {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="Home" // Set Home as the default screen
+            initialRouteName="Login" // Set Home as the default screen
             screenOptions={{
               headerStyle: { backgroundColor: '#E4F1F4' },
               headerTintColor: '#542F2F',

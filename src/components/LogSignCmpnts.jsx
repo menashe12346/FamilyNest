@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { calculateFontSize } from '../utils/FontUtils';
 import { Dropdown } from 'react-native-element-dropdown';
 import { Avatar } from '@rneui/themed';
+import DateTimePicker from "@react-native-community/datetimepicker"
 
 const gender_data = [
   {label: 'Male', value: '0',icon: "male"},
@@ -69,6 +70,7 @@ export const EmailComponent = ({ email, setEmail, placeholder }) => (
       placeholder={placeholder}
       value={email}
       onChangeText={(text) => setEmail(text)}
+      maxLength={256}
     />
   </View>
 );
@@ -84,6 +86,7 @@ export const PasswordsComponent = ({ password, setPassword, confirmPassword, set
         value={password}
         secureTextEntry={true}
         onChangeText={(text) => setPassword(text)}
+        maxLength={128}
       />
     </View>
     <View style={styles.emailContainer}>
@@ -100,11 +103,21 @@ export const PasswordsComponent = ({ password, setPassword, confirmPassword, set
 );
 
 
-export const GenderNameBDay= ({})=>{
-  const [gender, setGender]= useState('1');
+export const GenderNameBDay= ({firstName,setFirstName,gender,setGender,date,setDate})=>{
   const [isFocus, setIsFocus]= useState(false);
-  const [date , setDate]=useState(new Date());
-  const [open , setOpen]=useState(false);
+  const [showPicker, setShowPicker] = useState(false); 
+
+  const formattedDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`; // DD-MM-YYYY format
+
+  const minimumDate = new Date(1900, 0, 1); // January 1, 1900
+  const maximumDate = new Date(); // Current date (to prevent future selection)
+
+  const handleChange = (event, selectedDate) => {
+    if (selectedDate) {
+      setDate(selectedDate); // Ensure a valid Date object is passed
+      setShowPicker(false)
+    }
+  };
   
 
   return <View style={styles.genNamBDay}>
@@ -140,8 +153,25 @@ export const GenderNameBDay= ({})=>{
           <View style={styles.firstNameContainer}>
             <TextInput style={styles.inputComponent}
               placeholder="First name"
+              value={firstName}
+              onChangeText={(firstNameText)=>{setFirstName(firstNameText)}}
+              maxLength={32}
             />
           </View>
+          <TouchableOpacity style={styles.dateButton} onPress={()=>setShowPicker(true)}>
+            <FontAwesome name={'birthday-cake'} size={calculateFontSize(12)}><Text style={styles.dateText}>Birthday</Text></FontAwesome>
+            <Text style={styles.date}>{formattedDate}</Text>
+          </TouchableOpacity>
+            {showPicker && <DateTimePicker label={"Birthday date"}
+              mode="date"
+              defaultValue={Date()}
+              value={date instanceof Date ? date : new Date()}
+              display='default'
+              onChange={handleChange}
+              minimumDate={minimumDate} // Earliest selectable date
+              maximumDate={maximumDate} // Latest selectable date
+              />
+              }
         </View>
 };
 
@@ -154,6 +184,12 @@ export const SelectAvatar= ({onPressFunc,style})=>{
     source={require('../assets/avatars/girl_signup2.png')}
     />
     </TouchableOpacity>
+  </View>
+}
+
+export const ProfilePictureSelector=({})=>{
+  return <View>
+    <Text>PlaceboText</Text>
   </View>
 }
   
@@ -258,5 +294,19 @@ export const SelectAvatar= ({onPressFunc,style})=>{
     },selectAvatar:{
       alignContent:'center',
       alignItems:'center'
+    },dateButton:{
+      backgroundColor:"#FFFFFF",
+      borderColor:"#000",
+      elevation:10,
+      borderRadius:14,
+      marginStart:"3%",
+      width:"20%",
+      alignSelf:'center',
+      flexDirection:'column',
+      alignItems:'center',
+      alignContent:'center'
+    },dateText:{
+      calculateFontSize:(12),
+      fontFamily:'Fredoka-Regular',
     }
   });
