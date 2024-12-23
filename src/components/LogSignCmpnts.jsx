@@ -79,6 +79,7 @@ export const EmailComponent = ({ email, setEmail, placeholder }) => (
 
 export const PasswordsComponent = ({ password, setPassword, confirmPassword, setConfirmPassword}) => (
   <View style={[styles.passwordsContainer]}>
+    {(password && !(password===confirmPassword))? <Text style={styles.passwordRedMessage}>Passwords not matching</Text>:<Text style={styles.passwordText}>Create Password</Text>}
     <View style={styles.emailContainer}>
       <FontAwesome name="lock" size={28} color={"#9A9A9A"} style={styles.inputIcon} />
       <TextInput
@@ -97,7 +98,10 @@ export const PasswordsComponent = ({ password, setPassword, confirmPassword, set
         placeholder="Re-Enter password"
         value={confirmPassword}
         secureTextEntry={true}
-        onChangeText={(text) => setConfirmPassword(text)}
+        onChangeText={(text) => {
+          console.log("Matching password:",text===password)
+          setConfirmPassword(text)
+        }}
       />
     </View>
   </View>
@@ -190,8 +194,9 @@ export const SelectAvatar= ({onPressFunc,style})=>{
 
 export const ProfilePictureSelector=({ imageURI ,setImageURI})=>{
   const [showModal,setShowModal]=useState(false)
+  console.log("Image URI:",imageURI)
   return <>{showModal && <AvatarSelectModal imageURI={imageURI} setImageURI={setImageURI} showModal={showModal} setShowModal={setShowModal}/>}<TouchableOpacity style={styles.roundedContainer} onPress={()=>setShowModal(true)} >
-            <Image style={styles.roundedImage} source={require("../assets/avatars/boy_signup.png")}/>
+            <Image style={styles.roundedImage} source={imageURI? imageURI : require('../assets/avatars/girl_signup.png')}/>
           </TouchableOpacity></>
 }
   
@@ -288,6 +293,7 @@ export const ProfilePictureSelector=({ imageURI ,setImageURI})=>{
       width:'30%',
       marginStart:"3%",
     },genNamBDay:{
+      marginTop:'3%',
       alignSelf:'center',
       alignItems:'center',
       flexDirection:'row',
@@ -319,9 +325,20 @@ export const ProfilePictureSelector=({ imageURI ,setImageURI})=>{
     },roundedImage:{
       height:"100%",
       width:"100%",
-      resizeMode:'contain'
+      borderRadius:60,
+      resizeMode:'cover'
     },avatarContainer:{
       height:"20",
       width:"20",
+    },passwordRedMessage:{
+      color: '#D91656',
+      fontSize: calculateFontSize(12),
+      fontFamily:'Fredoka-Regular',
+      marginStart:'10%'
+    },passwordText:{
+      fontSize: calculateFontSize(12),
+      fontFamily:'Fredoka-Regular',
+      marginStart:'10%',
+      marginTop:'2%'
     }
   });

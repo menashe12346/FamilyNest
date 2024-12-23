@@ -13,7 +13,8 @@ import { use } from 'react';
 
 const { width } = Dimensions.get('window');
 
-const signUp = ({email, password, navigation}) => {
+const signUp = ({user, navigation}) => {
+
   if (email !== '' && password !== '') {
     console.log('Attempting to sign up...');
     firebase.auth().createUserWithEmailAndPassword(email, password)
@@ -101,14 +102,31 @@ export default function App() {
 
   const navigation = useNavigation();
 
+  const [user, setUser]= useState(
+    {
+      familyName:'',
+      userName:'',
+      email:'',
+      password:'',
+      partnerEmail:'',
+      profileURI:'',
+      profiles: [  // List of profiles inside the user object
+        {
+          id: 1,
+          name: '',
+          dateOfBirth:'',
+          gender:'',
+        },
+      ],
+    }
+  );
+
   const [Familyname, setFamilyName] = useState('');
   const [firstName, setFirstName] = useState('');
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [age, setAge] = useState('');
-  const [photo, setPhoto] = useState(null);
   const [sendPartnerInvitation,setShowPartnerInvitation]=useState(false);
   const [partnerEmail,setPartnerEmail]= useState('')
   const [gender,setGender]=useState('1')
@@ -171,9 +189,17 @@ const data = [
         case 'partner-invite':
           return <EmailComponent placeholder={"Your partner email address"} email={partnerEmail} setEmail={setPartnerEmail}/>
         case 'sign-up-button':
-          return <SignUpButtonComponent onSignUp={() => signUp({email, password, navigation})} />;
+          return <SignUpButtonComponent onSignUp={() => {()=>{
+            user.familyName=Familyname
+            user.userName=userName
+            user.email=email
+            user.password=password
+            user.profiles[0].name=firstName
+            user.profiles[0].dateOfBirth=date
+            user
+          },signUp({user, navigation})}} />;
         case 'profile-picture':
-          return <ProfilePictureSelector imageURI={""} setImageURI={""}/>
+          return <ProfilePictureSelector imageURI={imageURI} setImageURI={setImageURI}/>
       default:
         return null;
     }
@@ -185,7 +211,7 @@ const data = [
       data={data}
       renderItem={renderItem}
       keyExtractor={(item) => item.id}
-      ItemSeparatorComponent={() => <View style={styles.separator} />}
+      //ItemSeparatorComponent={() => <View style={styles.separator} />}
     />
   );
 }
@@ -198,13 +224,14 @@ const styles = StyleSheet.create({
   textHead: {
     textAlign: 'center',
     marginTop:5,
-    fontSize: calculateFontSize(18),
+    fontSize: calculateFontSize(22),
     //fontWeight: 'bold',
     fontFamily:'Fredoka-Bold',
   },brandText:{
     color:"#B85455",
     fontFamily:'Fredoka-Bold'
   },stepText:{
+    marginTop:'3%',
     textAlign: 'left',
     paddingStart:'5%',
     fontWeight:'600',

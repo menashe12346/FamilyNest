@@ -1,22 +1,58 @@
-import { View, Image, Modal, StyleSheet, TouchableOpacity , Text} from 'react-native'
+import { View, Image, Modal, StyleSheet, TouchableOpacity , Text ,Alert} from 'react-native'
 import React from 'react'
 import { Button } from '@rneui/base'
 import { FlatList } from 'react-native-gesture-handler'
+import * as ImagePicker from 'expo-image-picker';
+
+
 
 const AvatarSelectModal = ({imageURI, setImageURI ,showModal,setShowModal}) => {
-    const avatars = [
-        { id: '1', uri:  require('../assets/avatars/boy_signup.png') },
-        { id: '2', uri:  require('../assets/avatars/boy_signup.png') },
-        { id: '3', uri:  require('../assets/avatars/boy_signup.png') },
-        { id: '4', uri:  require('../assets/avatars/boy_signup.png') },
-        { id: '5', uri:  require('../assets/avatars/boy_signup.png') },
-        { id: '6', uri:  require('../assets/avatars/boy_signup.png') },
+    const [CameraPhotoURI, setCameraPhoto] = React.useState(null)
+
+    const data = [
+        { id: '1',type: 'camera', uri:  require('../assets/avatars/girl_signup2.png')},
+        { id: '2',type: 'image', uri:  require('../assets/avatars/girl_signup.png') },
+        { id: '3',type: 'image', uri:  require('../assets/avatars/girl_signup.png') },
+        { id: '4',type: 'image', uri:  require('../assets/avatars/girl_signup.png') },
+        { id: '5',type: 'image', uri:  require('../assets/avatars/girl_signup.png') },
+        { id: '6',type: 'image', uri:  require('../assets/avatars/girl_signup.png') },
+        { id: '7',type: 'image', uri:  require('../assets/avatars/girl_signup.png') },
         // Add more avatars as needed
       ];
 
+      const openCamera = async () => {
+        // Request camera permissions
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert('Permission Denied', 'Camera permission is required to take photos.');
+          return;
+        }
+    
+        // Launch the camera
+        const result = await ImagePicker.launchCameraAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          quality: 1,
+          saveToPhotos: true,
+        });
+    
+        if (!result.canceled) {
+          // Save the image URI
+          setCameraPhoto(result.assets[0].uri);
+          console.log('Captured Image URI:', CameraPhotoURI);
+          console.log('Result:', {uri: CameraPhotoURI});
+          setImageURI({uri: CameraPhotoURI})
+        }
+      };
+
       const renderItem = ({ item }) => {
-        return <Image source={item.uri} style={styles.avatarImage} />
-        ;
+        console.log('Image URI:', item.uri);
+        switch(item.type){
+          case 'image':
+            return <TouchableOpacity onPress={() => setImageURI(item.uri)}><Image source={item.uri} style={styles.avatarImage} /></TouchableOpacity>;
+          case 'camera':
+            return <TouchableOpacity onPress={openCamera}><Image source={CameraPhotoURI? {uri: CameraPhotoURI}: require('../assets/avatars/girl_signup2.png')} style={styles.cameraImage}/></TouchableOpacity>
+        }
       };
 
 //TODO add chosen one show add camera sensor or gallery , adjust styles
@@ -25,12 +61,12 @@ const AvatarSelectModal = ({imageURI, setImageURI ,showModal,setShowModal}) => {
         <Modal visible={showModal} animationType="slide" transparent={true} onRequestClose={() => setShowModal(false)}>
           <View style={styles.overlay}>
             <View style={styles.modalContent}>
-                <Image style={styles.chosenAvatarImage}source={require('../assets/avatars/boy_signup.png')}/>
+                <Image style={styles.chosenAvatarImage} source={imageURI}/>
               <Text style={styles.modalTitle}>Select Avatar</Text>
     
               <FlatList
                 //horizontal={true}
-                data={avatars}
+                data={data}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id}
                 numColumns={3} // Three avatars per row
@@ -39,7 +75,7 @@ const AvatarSelectModal = ({imageURI, setImageURI ,showModal,setShowModal}) => {
     
               <TouchableOpacity
                 style={styles.submitButton}
-                onPress={() => setShowModal(false)} // Close the modal after selection
+                onPress={() => {setShowModal(false);}} // Close the modal after selection
               >
                 <Text style={styles.submitButtonText}>Confirm</Text>
               </TouchableOpacity>
@@ -83,6 +119,7 @@ const AvatarSelectModal = ({imageURI, setImageURI ,showModal,setShowModal}) => {
         width: 80,
         height: 80,
         borderRadius: 50,
+        resizeMode: 'cover',
       },
       submitButton: {
         marginTop: 20,
@@ -97,6 +134,11 @@ const AvatarSelectModal = ({imageURI, setImageURI ,showModal,setShowModal}) => {
       },chosenAvatarImage:{
         width: 140,
         height: 140,
+      },cameraImage:{
+        width: 80,
+        height: 80,
+        borderRadius: 50,
+        resizeMode: 'cover',
       }
     });
     
