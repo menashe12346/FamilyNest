@@ -6,8 +6,6 @@ import { FontAwesome } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { Set_family_name, Set_user_username , Set_user_age, Set_user_picture } from '../Redux/counterSlice';
 import { firebase } from '../../firebase';
-import 'firebase/auth';
-import 'firebase/firestore';
 import { PasswordsComponent,UserFamilyComponent,EmailComponent,GenderNameBDay, ProfilePictureSelector } from '../components/LogSignCmpnts';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import AvatarSelectModal from '../components/AvatarSelectModal';
@@ -18,7 +16,9 @@ const { width } = Dimensions.get('window');
 
 const signUp = ({user, navigation}) => {
 
-  const db = firestore();
+    // Get a reference to the Firestore database
+  const db = firebase.firestore();
+  const usersRef = db.collection('users');
 
   if (user.email !== '' && user.password !== '') {
     console.log('Attempting to sign up...');
@@ -26,7 +26,22 @@ const signUp = ({user, navigation}) => {
       .then((userCredential) => {
         const newUser = userCredential.user.uid;
         console.log('User created successfully (UID):', newUser);
-        db.collection('users').doc(newUser).set(user);
+        usersRef.doc(user.email).set({
+          uid: newUser,
+          familyName: user.familyName,
+          userName: user.userName,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+          partnerEmail: user.partnerEmail,
+          profiles: user.profiles,
+          tasks: user.tasks,
+        })
+        .then(() => {
+          console.log('User document created successfully in Firestore');
+        })
+        .catch((error) => {
+          console.error('Error creating user document in Firestore:', error);
+        });
         navigation.navigate('Home');
       })
       .catch((error) => {
@@ -194,9 +209,9 @@ const data = [
           user.userName=userName
           user.email=email
           user.password=password
-          user.profiles = [CreateNewProfile({id:1,role:'parent',name:firstName,birth_day:date,avatarURI:imageURI})]
+          user.profiles = [CreateNewProfile({id:1,gender,role:'parent',name:firstName,birth_day:date,avatarURI:imageURI})]
           user
-          return <SignUpButtonComponent onSignUp={signUp({user, navigation})} />;
+          return <SignUpButtonComponent onSignUp={()=>signUp({user, navigation})} />;
         case 'profile-picture':
           return <ProfilePictureSelector imageURI={imageURI} setImageURI={setImageURI}/>
       default:
