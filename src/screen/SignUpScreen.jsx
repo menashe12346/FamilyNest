@@ -42,7 +42,7 @@ const signUp = ({user, navigation}) => {
         .catch((error) => {
           console.error('Error creating user document in Firestore:', error);
         });
-        navigation.navigate('Home');
+        navigation.navigate('Home',user);
       })
       .catch((error) => {
         console.log('Error code:', error.code);
