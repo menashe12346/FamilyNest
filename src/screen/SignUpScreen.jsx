@@ -6,21 +6,27 @@ import { FontAwesome } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { Set_family_name, Set_user_username , Set_user_age, Set_user_picture } from '../Redux/counterSlice';
 import { firebase } from '../../firebase';
+import 'firebase/auth';
+import 'firebase/firestore';
 import { PasswordsComponent,UserFamilyComponent,EmailComponent,GenderNameBDay, ProfilePictureSelector } from '../components/LogSignCmpnts';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import AvatarSelectModal from '../components/AvatarSelectModal';
 import { use } from 'react';
+import { CreateNewProfile } from '../utils/ProfileUtils';
 
 const { width } = Dimensions.get('window');
 
 const signUp = ({user, navigation}) => {
 
-  if (email !== '' && password !== '') {
+  const db = firestore();
+
+  if (user.email !== '' && user.password !== '') {
     console.log('Attempting to sign up...');
-    firebase.auth().createUserWithEmailAndPassword(email, password)
+    firebase.auth().createUserWithEmailAndPassword(user.email, user.password)
       .then((userCredential) => {
-        const user = userCredential.user.uid;
-        console.log('User created successfully (UID):', user);
+        const newUser = userCredential.user.uid;
+        console.log('User created successfully (UID):', newUser);
+        db.collection('users').doc(newUser).set(user);
         navigation.navigate('Home');
       })
       .catch((error) => {
@@ -104,20 +110,15 @@ export default function App() {
 
   const [user, setUser]= useState(
     {
+      uid:'',
       familyName:'',
       userName:'',
       email:'',
       password:'',
+      phoneNumber:'',
       partnerEmail:'',
-      profileURI:'',
-      profiles: [  // List of profiles inside the user object
-        {
-          id: 1,
-          name: '',
-          dateOfBirth:'',
-          gender:'',
-        },
-      ],
+      profiles: [],
+      tasks: [],
     }
   );
 
@@ -189,15 +190,13 @@ const data = [
         case 'partner-invite':
           return <EmailComponent placeholder={"Your partner email address"} email={partnerEmail} setEmail={setPartnerEmail}/>
         case 'sign-up-button':
-          return <SignUpButtonComponent onSignUp={() => {()=>{
-            user.familyName=Familyname
-            user.userName=userName
-            user.email=email
-            user.password=password
-            user.profiles[0].name=firstName
-            user.profiles[0].dateOfBirth=date
-            user
-          },signUp({user, navigation})}} />;
+          user.familyName=Familyname
+          user.userName=userName
+          user.email=email
+          user.password=password
+          user.profiles = [CreateNewProfile({id:1,role:'parent',name:firstName,birth_day:date,avatarURI:imageURI})]
+          user
+          return <SignUpButtonComponent onSignUp={signUp({user, navigation})} />;
         case 'profile-picture':
           return <ProfilePictureSelector imageURI={imageURI} setImageURI={setImageURI}/>
       default:
