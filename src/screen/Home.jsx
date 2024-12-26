@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -9,7 +9,9 @@ const { width, height } = Dimensions.get('window');
 
 const calculateFontSize = (size) => Math.min(width, height) * (size / 100);
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({navigation, route}) => {
+  console.log('Route:', route);
+  console.log('User:', route.params.user.userData.familyName);
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Parents Screen</Text>
@@ -30,7 +32,11 @@ const HomeScreen = ({ navigation }) => {
 
 const Tab = createBottomTabNavigator();
 
-export default function Home() {
+export default function Home({route}) {
+  console.log('route>?:', route.params);
+  const user = route.params;
+  console.log('User?>:', user);
+  
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -50,7 +56,7 @@ export default function Home() {
         headerShown: false,
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen initialParams={{user}} name="Home" component={HomeScreen} />
       <Tab.Screen name="NewScreen" component={NewScreen} />
       <Tab.Screen name="SelectProfile" component={SelectProfileScreen} />
     </Tab.Navigator>

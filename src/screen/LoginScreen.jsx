@@ -9,12 +9,38 @@ import {Set_family_name, Set_username, Set_picture, Set_age } from '../Redux/cou
 import { firebase } from '../../firebase';
 
 
+
+const fetchUserData = async (uid,user,setUser) => {
+  try {
+    console.log('Fetching user data for UID:', uid);
+
+    const db = firebase.firestore();
+    const usersRef = db.collection('users');
+    const userDoc = await usersRef.doc(uid).get().then((doc) => {
+      if (doc.exists) {
+        console.log('Document data:', doc.data());
+        setUser(doc.data());
+        return
+      } else {
+        console.log('No such document!');
+        return null;
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    return null;
+  }
+};
+
+
 const LoginScreen = () => {
 
   const navigation = useNavigation();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  const [signedUser, setSignedUser] = useState(null);
 
 
   /*
@@ -35,11 +61,17 @@ const LoginScreen = () => {
     if (username !== '' && password !== '') {
       console.log('Attempting to sign in...');
       firebase.auth().signInWithEmailAndPassword(username, password)
-        .then((userCredential) => {
+        .then(async (userCredential) => {
           const user = userCredential.user.uid;
           console.log('From LoginScreen (UID)', user);
-          Set_username(username)
-          handleSignIn();
+          await fetchUserData(user,signedUser,setSignedUser);
+          console.log('User Data:', signedUser);
+          if(signedUser){
+            Set_username(username)
+            handleSignIn(signedUser);
+          }else{
+            console.log('User data not found');
+          }
         })
         .catch((error) => {
           console.log('Error code:', error.code);
@@ -60,11 +92,11 @@ const LoginScreen = () => {
     }
   };
   
-  const handleSignIn = () => {
+  const handleSignIn = async (user) => {
     // Navigate to the NewScreen when login is pressed
-    navigation.navigate('Home', {
-      items: Array.from({ length: 10 }, (_, i) => `Item ${i + 1}`), // Passing example items
-    });
+    console.log('User:', user);
+    
+    navigation.navigate('Home', {userData: user});
   };
 
   const handleCreateAccount = () => {

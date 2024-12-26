@@ -26,7 +26,7 @@ const signUp = ({user, navigation}) => {
       .then((userCredential) => {
         const newUser = userCredential.user.uid;
         console.log('User created successfully (UID):', newUser);
-        usersRef.doc(user.email).set({
+        usersRef.doc(newUser).set({
           uid: newUser,
           familyName: user.familyName,
           userName: user.userName,
