@@ -163,7 +163,7 @@ export default function App() {
   const [date,setDate]=useState(new Date())
   const [passkey,setPasskey]=useState('')
   const [imageURI,setImageURI]=useState('')
-  const [imageID,setImageID]=useState('')
+  const [imageID,setImageID]=useState(1)
 
   console.log("Selected Date",date)
   //console.log("Family Name:",Familyname)
@@ -227,7 +227,7 @@ const data = [
           user.userName=userName
           user.email=email
           user.password=password
-          user.profiles = [CreateNewProfile({id:1,gender,role:'parent',name:firstName,birth_day:date,avatarURI:imageURI,passkey:passkey})]
+          user.profiles = [CreateNewProfile({id:1,gender,role:'parent',name:firstName,birth_day:date,avatarURI:imageID,passkey:passkey})]
           user
           return <SignUpButtonComponent onSignUp={()=>signUp({user, navigation})} />;
         case 'profile-picture':

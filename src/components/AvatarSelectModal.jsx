@@ -85,6 +85,7 @@ const AvatarSelectModal = ({imageURI, setImageURI ,imageID, setImageID,showModal
           case 'image':
             return <TouchableOpacity onPress={() => {setImageURI(item.uri)
               setImageID(item.id)
+              console.log("Selected Image ID:",item.id)
             }}><Image source={item.uri} style={styles.avatarImage} /></TouchableOpacity>;
           case 'camera':
             return <TouchableOpacity onPress={openCamera}><Image source={CameraPhotoURI? {uri: CameraPhotoURI}: require('../assets/images/camera.png')} style={styles.cameraImage}/></TouchableOpacity>
