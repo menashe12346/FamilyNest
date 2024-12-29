@@ -227,7 +227,7 @@ const data = [
           user.userName=userName
           user.email=email
           user.password=password
-          user.profiles = [CreateNewProfile({id:1,gender,role:'parent',name:firstName,birth_day:date,avatarURI:imageID,passkey:passkey})]
+          user.profiles = [CreateNewProfile({id:1,gender,role:'parent',name:firstName,birth_day:date,avatarURI:imageID,passkey:passkey,imageID:imageID})]
           user
           return <SignUpButtonComponent onSignUp={()=>signUp({user, navigation})} />;
         case 'profile-picture':

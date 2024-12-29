@@ -1,17 +1,31 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions ,Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import NewScreen from './NewScreen';
 import SelectProfileScreen from './SelectProfileScreen';
 import { calculateFontSize } from '../utils/FontUtils';
+import avatarImages from '../utils/AvatarsUtils';
 
 const { width, height } = Dimensions.get('window');
 
 const Home = ({navigation, route}) => {
   console.log('Route Home:', route);
+  userData = route.params.userData;
+  console.log('User Data:', userData);
+
+  const imageID = parseInt(userData.profiles[0].imageID);
+
+  // Select the avatar image dynamically from the avatarImages object
+  const selectedAvatar = avatarImages[imageID] || avatarImages[1]; 
+  console.log('Selected Avatar:', avatarImages[imageID]);
+  
+
   return (
     <View style={styles.container}>
+      <View style={styles.avatarCircle}>
+        <Image source={selectedAvatar} style={styles.avatarImage} />
+      </View>
       <Text style={styles.headerText}>Parents Screen</Text>
       <TouchableOpacity
         activeOpacity={0.8}
@@ -53,6 +67,22 @@ const styles = StyleSheet.create({
     fontSize: calculateFontSize(30),
     color: 'white',
     fontWeight: 'bold',
+  },
+  avatarCircle: {
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    marginBottom: '5%',
+    width: 100, // Adjust the width as needed
+    height: 100, // Adjust the height as needed
+    borderRadius: 50, // Make it a circle
+    overflow: 'hidden', // Ensure the image is contained within the circle
+  },
+  avatarImage: {
+    width: '100%', // Adjust the width to fill the circle
+    height: '100%', // Adjust the height to fill the circle
+    resizeMode: 'cover',
   },
 });
 
