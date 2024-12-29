@@ -9,8 +9,7 @@ import { calculateFontSize } from '../utils/FontUtils';
 const { width, height } = Dimensions.get('window');
 
 const Home = ({navigation, route}) => {
-  //console.log('Route:', route);
-  //console.log('User:', route.params.userData);
+  console.log('Route Home:', route);
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Parents Screen</Text>

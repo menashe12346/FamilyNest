@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Text, View, StyleSheet , TextInput ,Dimensions, TouchableOpacity } from 'react-native';
+import { Alert ,FlatList, Text, View, StyleSheet , TextInput ,Dimensions, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { calculateFontSize } from '../utils/FontUtils';
 import { FontAwesome } from '@expo/vector-icons';
@@ -14,11 +14,25 @@ import { CreateNewProfile } from '../utils/ProfileUtils';
 
 const { width } = Dimensions.get('window');
 
+
+const validateFields = (user) => {
+  const { familyName, userName, email, password, profiles } = user;
+  if (!familyName || !userName || !email || !password || profiles.length === 0) {
+    return false;
+  }
+  return true;
+};
+
 const signUp = ({user, navigation}) => {
 
     // Get a reference to the Firestore database
   const db = firebase.firestore();
   const usersRef = db.collection('users');
+
+  if (!validateFields(user)){
+    Alert.alert('Please fill in all fields');
+    return
+  }
 
   if (user.email !== '' && user.password !== '') {
     console.log('Attempting to sign up...');
@@ -147,6 +161,7 @@ export default function App() {
   const [partnerEmail,setPartnerEmail]= useState('')
   const [gender,setGender]=useState('1')
   const [date,setDate]=useState(new Date())
+  const [passkey,setPasskey]=useState('')
   const [imageURI,setImageURI]=useState('')
 
   console.log("Selected Date",date)
@@ -199,7 +214,9 @@ const data = [
         case 'creator-step':
           return <CreatorStep/>
         case 'creator-profile':
-          return <GenderNameBDay firstName={firstName} setFirstName={setFirstName} gender={gender} setGender={setGender} date={date} setDate={setDate}/>
+          return <GenderNameBDay firstName={firstName} setFirstName={setFirstName} gender={gender}
+              setGender={setGender} date={date} setDate={setDate}
+              passkey={passkey} setPasskey={setPasskey}/>
         case 'partner-step':
           return <PartnerStep onCheckboxChange={setShowPartnerInvitation}/>
         case 'partner-invite':
@@ -209,7 +226,7 @@ const data = [
           user.userName=userName
           user.email=email
           user.password=password
-          user.profiles = [CreateNewProfile({id:1,gender,role:'parent',name:firstName,birth_day:date,avatarURI:imageURI})]
+          user.profiles = [CreateNewProfile({id:1,gender,role:'parent',name:firstName,birth_day:date,avatarURI:imageURI,passkey:passkey})]
           user
           return <SignUpButtonComponent onSignUp={()=>signUp({user, navigation})} />;
         case 'profile-picture':

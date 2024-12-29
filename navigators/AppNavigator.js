@@ -20,7 +20,8 @@ const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
-function TabNavigator() {
+function TabNavigator({route}) {
+
   return (
     <Tab.Navigator
     screenOptions={({ route }) => ({
@@ -39,18 +40,19 @@ function TabNavigator() {
       tabBarInactiveTintColor: "gray",
       headerShown: false,
     })}>
-      <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="NewScreen" component={NewScreen} />
-      <Tab.Screen name="SelectProfileScreen" component={SelectProfileScreen} />
+      <Tab.Screen name="Home" component={Home} initialParams={route.params} />
+      <Tab.Screen name="NewScreen" component={NewScreen} initialParams={route.params}  />
+      <Tab.Screen name="SelectProfileScreen" component={SelectProfileScreen} initialParams={route.params} />
     </Tab.Navigator>
   );
 }
 
 
-function DrawerNavigator() {
+function DrawerNavigator({route}) {
+  console.log('Route DRAWER:', route.params);
   return (
     <Drawer.Navigator>
-      <Drawer.Screen name="TabNavigator" component={TabNavigator} />
+      <Drawer.Screen name="TabNavigator" component={TabNavigator} initialParams={route.params} />
     </Drawer.Navigator>
   );
 }

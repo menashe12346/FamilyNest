@@ -38,10 +38,6 @@ const LoginScreen = () => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
-  const [signedUser, setSignedUser] = useState(null);
-
-
   /*
   Animation
   */
@@ -64,10 +60,10 @@ const LoginScreen = () => {
           const user = userCredential.user.uid;
           console.log('From LoginScreen (UID)', user);
           const userData = await fetchUserData(user);
+          console.log('User data fetched:', userData);
           if(userData){
             Set_username(username)
-            setSignedUser(userData);
-            await handleSignIn(signedUser);
+            await handleSignIn(userData);
           }else{
             console.log('User data not found');
           }
@@ -93,7 +89,7 @@ const LoginScreen = () => {
   
   const handleSignIn = async (user) => {
     // Navigate to the NewScreen when login is pressed
-    console.log('User:', user);
+    console.log('Signed User data:', user);
     
     navigation.navigate('Drawer', {userData: user});
   };

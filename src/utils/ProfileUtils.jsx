@@ -1,4 +1,4 @@
-export const CreateNewProfile = ({id,role,gender,name,birth_day,avatarURI})=>{
+export const CreateNewProfile = ({id,role,gender,name,birth_day,avatarURI,passkey})=>{
 
     let formattedBirthDay = null;
   if (birth_day && birth_day.toDate) {
@@ -14,6 +14,7 @@ export const CreateNewProfile = ({id,role,gender,name,birth_day,avatarURI})=>{
         name:name,
         birth_day: formattedBirthDay,
         avatarURI:avatarURI,
-        gender:gender
+        gender:gender,
+        passkey:passkey
     }
 }
