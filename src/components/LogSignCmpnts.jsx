@@ -286,7 +286,7 @@ export const SelectAvatar = ({ onPressFunc, style }) => {
   );
 };
 
-export const ProfilePictureSelector = ({ imageURI, setImageURI }) => {
+export const ProfilePictureSelector = ({ imageURI, setImageURI , imageID , setImageID }) => {
   const [showModal, setShowModal] = useState(false);
   console.log("Image URI:", imageURI);
   return (
@@ -295,6 +295,8 @@ export const ProfilePictureSelector = ({ imageURI, setImageURI }) => {
         <AvatarSelectModal
           imageURI={imageURI}
           setImageURI={setImageURI}
+          imageID={imageID}
+          setImageID={setImageID}
           showModal={showModal}
           setShowModal={setShowModal}
         />

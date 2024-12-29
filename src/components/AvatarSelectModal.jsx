@@ -6,11 +6,12 @@ import * as ImagePicker from 'expo-image-picker';
 
 
 
-const AvatarSelectModal = ({imageURI, setImageURI ,showModal,setShowModal}) => {
+const AvatarSelectModal = ({imageURI, setImageURI ,imageID, setImageID,showModal,setShowModal}) => {
     const [CameraPhotoURI, setCameraPhoto] = React.useState(null)
 
     const data = [
-      { id: '1', type: 'camera', uri: require('../assets/images/camera.png') }, // Camera item
+      { id: '0', type: 'camera', uri: require('../assets/images/camera.png') }, // Camera item
+      { id: '1', type: 'image', uri: require('../assets/avatars/avatar_1.png') },
       { id: '2', type: 'image', uri: require('../assets/avatars/avatar_2.png') },
       { id: '3', type: 'image', uri: require('../assets/avatars/avatar_3.png') },
       { id: '4', type: 'image', uri: require('../assets/avatars/avatar_4.png') },
@@ -51,7 +52,7 @@ const AvatarSelectModal = ({imageURI, setImageURI ,showModal,setShowModal}) => {
       { id: '39', type: 'image', uri: require('../assets/avatars/avatar_39.png') },
       { id: '40', type: 'image', uri: require('../assets/avatars/avatar_40.png') },
       { id: '41', type: 'image', uri: require('../assets/avatars/avatar_41.png') },
-      { id: '42', type: 'image', uri: require('../assets/avatars/avatar_1.png') },
+
     ];
     
       const openCamera = async () => {
@@ -80,10 +81,11 @@ const AvatarSelectModal = ({imageURI, setImageURI ,showModal,setShowModal}) => {
       };
 
       const renderItem = ({ item }) => {
-        console.log('Image URI:', item.uri);
         switch(item.type){
           case 'image':
-            return <TouchableOpacity onPress={() => setImageURI(item.uri)}><Image source={item.uri} style={styles.avatarImage} /></TouchableOpacity>;
+            return <TouchableOpacity onPress={() => {setImageURI(item.uri)
+              setImageID(item.id)
+            }}><Image source={item.uri} style={styles.avatarImage} /></TouchableOpacity>;
           case 'camera':
             return <TouchableOpacity onPress={openCamera}><Image source={CameraPhotoURI? {uri: CameraPhotoURI}: require('../assets/images/camera.png')} style={styles.cameraImage}/></TouchableOpacity>
         }

@@ -163,6 +163,7 @@ export default function App() {
   const [date,setDate]=useState(new Date())
   const [passkey,setPasskey]=useState('')
   const [imageURI,setImageURI]=useState('')
+  const [imageID,setImageID]=useState('')
 
   console.log("Selected Date",date)
   //console.log("Family Name:",Familyname)
@@ -230,7 +231,7 @@ const data = [
           user
           return <SignUpButtonComponent onSignUp={()=>signUp({user, navigation})} />;
         case 'profile-picture':
-          return <ProfilePictureSelector imageURI={imageURI} setImageURI={setImageURI}/>
+          return <ProfilePictureSelector imageURI={imageURI} setImageURI={setImageURI} imageID={imageID} setImageID={setImageID}/>
       default:
         return null;
     }
