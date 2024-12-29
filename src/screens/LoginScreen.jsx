@@ -10,22 +10,21 @@ import { firebase } from '../../firebase';
 
 
 
-const fetchUserData = async (uid,user,setUser) => {
+const fetchUserData = async (uid) => {
   try {
     console.log('Fetching user data for UID:', uid);
 
     const db = firebase.firestore();
     const usersRef = db.collection('users');
-    const userDoc = await usersRef.doc(uid).get().then((doc) => {
-      if (doc.exists) {
-        console.log('Document data:', doc.data());
-        setUser(doc.data());
-        return
-      } else {
-        console.log('No such document!');
-        return null;
-      }
-    });
+    const userDoc = await usersRef.doc(uid).get();
+
+    if (userDoc.exists) {
+      console.log('Document data:', userDoc.data());
+      return userDoc.data(); // Return the user data
+    } else {
+      console.log('No such document!');
+      return null;
+    }
   } catch (error) {
     console.error('Error fetching user data:', error);
     return null;
@@ -64,11 +63,11 @@ const LoginScreen = () => {
         .then(async (userCredential) => {
           const user = userCredential.user.uid;
           console.log('From LoginScreen (UID)', user);
-          await fetchUserData(user,signedUser,setSignedUser);
-          console.log('User Data:', signedUser);
-          if(signedUser){
+          const userData = await fetchUserData(user);
+          if(userData){
             Set_username(username)
-            handleSignIn(signedUser);
+            setSignedUser(userData);
+            await handleSignIn(signedUser);
           }else{
             console.log('User data not found');
           }
