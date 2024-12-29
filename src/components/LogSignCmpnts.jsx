@@ -279,7 +279,7 @@ export const SelectAvatar = ({ onPressFunc, style }) => {
         <Avatar
           size={"xlarge"}
           rounded={true}
-          source={require("../assets/avatars/girl_signup2.png")}
+          source={require("../assets/avatars/avatar_1.png")}
         />
       </TouchableOpacity>
     </View>
@@ -306,7 +306,7 @@ export const ProfilePictureSelector = ({ imageURI, setImageURI }) => {
         <Image
           style={styles.roundedImage}
           source={
-            imageURI ? imageURI : require("../assets/avatars/girl_signup.png")
+            imageURI ? imageURI : require("../assets/avatars/avatar_1.png")
           }
         />
       </TouchableOpacity>

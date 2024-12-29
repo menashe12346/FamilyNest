@@ -2,11 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Animated, View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Image, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 
 const avatars = [
-  require('../assets/avatars/boy_signup.png'),
-  require('../assets/avatars/cat_icon.png'),
-  require('../assets/avatars/dog_icon.png'),
-  require('../assets/avatars/girl_signup.png'),
-  require('../assets/avatars/girl_signup2.png'),
+  require('../assets/avatars/avatar_1.png'),
 ];
 
 const SelectProfileScreen = () => {
