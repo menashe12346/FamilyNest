@@ -1,5 +1,5 @@
 import React ,{useState}from 'react';
-import { View, Text, TextInput , TouchableOpacity, StyleSheet , Image, Modal } from 'react-native';
+import { View, Text, TextInput , TouchableOpacity, StyleSheet , Image, KeyboardAvoidingView } from 'react-native';
 import { FontAwesome , AntDesign } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { calculateFontSize } from '../utils/FontUtils';
@@ -15,9 +15,9 @@ const gender_data = [
 
 
 
-export const TextInputField = ({ placeholder, iconName, secureTextEntry, value, onChangeText, style }) => {
+export const TextInputField = ({ placeholder, iconName, secureTextEntry, value, onChangeText, style , inputMode }) => {
   return (
-    <View style={[styles.inputContainer, style]}>
+    <KeyboardAvoidingView behavior={'padding'} style={[styles.inputContainer, style]}>
       <FontAwesome name={iconName} size={28} color={"#9A9A9A"} style={styles.inputIcon} />
       <TextInput
         style={styles.textInput}
@@ -25,8 +25,9 @@ export const TextInputField = ({ placeholder, iconName, secureTextEntry, value, 
         secureTextEntry={secureTextEntry}
         value={value}
         onChangeText={onChangeText}
+        inputMode={inputMode}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

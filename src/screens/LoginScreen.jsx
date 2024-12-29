@@ -125,6 +125,7 @@ const LoginScreen = () => {
           secureTextEntry={false}
           value={username}
           onChangeText={(text) => setUsername(text)}
+          inputMode="email"
         />
        <TextInputField
           placeholder="Password"
@@ -132,6 +133,7 @@ const LoginScreen = () => {
           secureTextEntry={true}
           value={password}
           onChangeText={(text) => setPassword(text)}
+          inputMode="text"
         />
         <View style={styles.logInContainer}>
           <Text style={styles.logInText}>Log in</Text>
