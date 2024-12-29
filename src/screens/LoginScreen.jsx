@@ -96,7 +96,7 @@ const LoginScreen = () => {
     // Navigate to the NewScreen when login is pressed
     console.log('User:', user);
     
-    navigation.navigate('Home', {userData: user});
+    navigation.navigate('Drawer', {userData: user});
   };
 
   const handleCreateAccount = () => {
