@@ -1,31 +1,38 @@
 import React, { useState, useRef } from 'react';
-import { Animated, View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Image, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import {
+  Animated,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  Alert,
+} from 'react-native';
 import { useSelector } from 'react-redux';
 import { ProfilePictureSelector } from '../components/LogSignCmpnts';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
-const avatars = [
-  require('../assets/avatars/avatar_1.png'),
-];
+const avatars = [require('../assets/avatars/avatar_1.png')];
 
 const SelectProfileScreen = () => {
   const [profiles, setProfiles] = useState([]);
   const [newProfileName, setNewProfileName] = useState('');
-  const [newProfileAge, setNewProfileAge] = useState('');
+  const [birthDate, setBirthDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [newProfileGender, setNewProfileGender] = useState('');
   const [newProfileCode, setNewProfileCode] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState(null);
+  const [role, setRole] = useState(''); // תפקיד: Child 
   const [addingProfile, setAddingProfile] = useState(false);
   const [isCodeVisible, setIsCodeVisible] = useState(false);
-  const [selectedProfile, setSelectedProfile] = useState(null);
-  const [codeInput, setCodeInput] = useState('');
-  const [showCodeModal, setShowCodeModal] = useState(false);
-  const [imageID,setImageID] = useState(1) // for using the avatars 
-  const [imageURI,setImageURI] = useState('') //for using the camera
+  const [imageID, setImageID] = useState(1);
+  const [imageURI, setImageURI] = useState('');
 
-  const user = useSelector((state) => state.user.user); //Redux get user data 
-  console.log('User selector:', user); 
-
-  // Animation state
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const openProfileModal = () => {
@@ -49,64 +56,35 @@ const SelectProfileScreen = () => {
     if (
       newProfileName.trim() !== '' &&
       selectedAvatar &&
-      newProfileAge &&
+      birthDate &&
       newProfileGender &&
-      newProfileCode.length === 4
+      newProfileCode.length === 4 &&
+      role !== ''
     ) {
       const newProfile = {
         id: Date.now().toString(),
         name: newProfileName,
-        age: newProfileAge,
+        birthDate: birthDate.toISOString().split('T')[0],
         gender: newProfileGender,
         code: newProfileCode,
+        role,
         image: selectedAvatar,
       };
       setProfiles([...profiles, newProfile]);
       setNewProfileName('');
-      setNewProfileAge('');
+      setBirthDate(new Date());
       setNewProfileGender('');
       setNewProfileCode('');
       setSelectedAvatar(null);
+      setRole('');
       closeProfileModal();
     } else {
-      alert('Please fill all fields, including a 4-digit code.');
+      Alert.alert('Error', 'Please fill all fields, including selecting a role.');
     }
   };
 
-  const handleProfileSelect = (profile) => {
-    setSelectedProfile(profile);
-    setShowCodeModal(true);
-  };
-
-  const verifyCode = () => {
-    if (selectedProfile && codeInput === selectedProfile.code) {
-      Alert.alert('Success', `Welcome, ${selectedProfile.name}!`);
-      setShowCodeModal(false);
-      setCodeInput('');
-    } else {
-      Alert.alert('Error', 'Incorrect code. Please try again.');
-    }
-  };
-
-  const handleDeleteProfile = (profileId) => {
-    setProfiles(profiles.filter((profile) => profile.id !== profileId));
-  };
-
-  const renderAvatar = ({ item }) => (
-    <TouchableOpacity
-      style={[
-        styles.avatarContainer,
-        selectedAvatar === item && styles.selectedAvatar,
-      ]}
-      onPress={() => setSelectedAvatar(item)}
-    >
-      <Image source={item} style={styles.avatarImage} />
-    </TouchableOpacity>
-  );
-  
-
-  const handleGenderSelect = (gender) => {
-    setNewProfileGender(gender);
+  const handleRoleSelect = (selectedRole) => {
+    setRole(selectedRole);
   };
 
   return (
@@ -121,26 +99,13 @@ const SelectProfileScreen = () => {
           <View style={styles.profileContainer}>
             <View style={styles.avatarWrapper}>
               <Image source={item.image} style={styles.profileImage} />
-              <TouchableOpacity
-                onPress={() => handleDeleteProfile(item.id)}
-                style={styles.deleteButton}
-              >
-                <Text style={styles.deleteButtonText}>×</Text>
-              </TouchableOpacity>
             </View>
             <Text style={styles.profileName}>{item.name}</Text>
-            <TouchableOpacity
-              onPress={() => handleProfileSelect(item)}
-              style={styles.selectButton}
-            >
-              <Text style={styles.selectButtonText}>Select</Text>
-            </TouchableOpacity>
           </View>
         )}
         keyExtractor={(item) => item.id}
         horizontal
         contentContainerStyle={styles.flatListContainer}
-        ListEmptyComponent={<Text style={styles.emptyText}>No profiles available</Text>}
       />
       <TouchableOpacity onPress={openProfileModal} style={styles.addProfileButton}>
         <Text style={styles.addProfileButtonText}>Add Profile</Text>
@@ -148,7 +113,12 @@ const SelectProfileScreen = () => {
       {addingProfile && (
         <Animated.View style={[styles.addProfileContainer, { opacity: fadeAnim }]}>
           <Text style={styles.subtitle}>Select Avatar:</Text>
-          <ProfilePictureSelector imageID={imageID} setImageID={setImageID} imageURI={imageURI} setImageURI={setImageURI}/>
+          <ProfilePictureSelector
+            imageID={imageID}
+            setImageID={setImageID}
+            imageURI={imageURI}
+            setImageURI={setImageURI}
+          />
           <TextInput
             value={newProfileName}
             onChangeText={setNewProfileName}
@@ -156,52 +126,70 @@ const SelectProfileScreen = () => {
             placeholderTextColor="#AAA"
             style={styles.input}
           />
+          <TouchableOpacity
+  onPress={() => setShowDatePicker(true)}
+  style={[styles.input, styles.dateInput]}
+>
+  <Text style={styles.dateInputText}>
+    {`Birth Date: ${birthDate.toISOString().split('T')[0]}`}
+  </Text>
+</TouchableOpacity>
+{showDatePicker && (
+  <DateTimePicker
+    value={birthDate}
+    mode="date"
+    display="default"
+    onChange={(event, selectedDate) => {
+      setShowDatePicker(false);
+      if (selectedDate) setBirthDate(selectedDate);
+    }}
+  />
+)}
+
+<View style={styles.roleSelectionContainer}>
+  <View style={styles.roleCheckbox}>
+    <BouncyCheckbox
+      size={25}
+      fillColor="#9EDF9C"
+      unfillColor="#E4F1F4"
+      isChecked={role === 'Child'}
+      onPress={() => handleRoleSelect('Child')}
+      iconStyle={{ borderColor: '#9EDF9C' }}
+      innerIconStyle={{ borderWidth: 2 }}
+    />
+    <Text style={styles.checkboxLabel}>Child</Text>
+</View>
+</View>
+<View style={styles.genderContainer}>
+  <TouchableOpacity
+    style={[
+      styles.genderButton,
+      newProfileGender === 'Male' && styles.selectedGenderButton,
+    ]}
+    onPress={() => setNewProfileGender('Male')}
+  >
+    <Text style={styles.genderButtonText}>Male</Text>
+  </TouchableOpacity>
+  <TouchableOpacity
+    style={[
+      styles.genderButton,
+      newProfileGender === 'Female' && styles.selectedGenderButton,
+    ]}
+    onPress={() => setNewProfileGender('Female')}
+  >
+    <Text style={styles.genderButtonText}>Female</Text>
+  </TouchableOpacity>
+</View>
           <TextInput
-            value={newProfileAge}
-            onChangeText={setNewProfileAge}
-            placeholder="Enter age"
+            value={newProfileCode}
+            onChangeText={setNewProfileCode}
+            placeholder="Enter a 4-digit code"
             placeholderTextColor="#AAA"
             keyboardType="numeric"
+            maxLength={4}
+            secureTextEntry={!isCodeVisible}
             style={styles.input}
           />
-          <View style={styles.genderContainer}>
-            <TouchableOpacity
-              style={[
-                styles.genderButton,
-                newProfileGender === 'Male' && styles.selectedGenderButton,
-              ]}
-              onPress={() => handleGenderSelect('Male')}
-            >
-              <Text style={styles.genderButtonText}>Male</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.genderButton,
-                newProfileGender === 'Female' && styles.selectedGenderButton,
-              ]}
-              onPress={() => handleGenderSelect('Female')}
-            >
-              <Text style={styles.genderButtonText}>Female</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.codeInputContainer}>
-            <TextInput
-              value={newProfileCode}
-              onChangeText={setNewProfileCode}
-              placeholder="Enter a 4-digit code"
-              placeholderTextColor="#AAA"
-              keyboardType="numeric"
-              maxLength={4}
-              secureTextEntry={!isCodeVisible}
-              style={[styles.input, { flex: 1 }]}
-            />
-            <TouchableOpacity
-              onPress={() => setIsCodeVisible(!isCodeVisible)}
-              style={styles.visibilityToggle}
-            >
-              <Text style={styles.toggleText}>{isCodeVisible ? 'Hide' : 'Show'}</Text>
-            </TouchableOpacity>
-          </View>
           <TouchableOpacity onPress={handleAddProfile} style={styles.saveProfileButton}>
             <Text style={styles.saveProfileButtonText}>Save Profile</Text>
           </TouchableOpacity>
@@ -210,29 +198,9 @@ const SelectProfileScreen = () => {
           </TouchableOpacity>
         </Animated.View>
       )}
-      {showCodeModal && (
-        <View style={styles.codeModal}>
-          <Text style={styles.modalTitle}>Enter Access Code</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter 4-digit code"
-            keyboardType="numeric"
-            maxLength={4}
-            value={codeInput}
-            onChangeText={setCodeInput}
-          />
-          <TouchableOpacity onPress={verifyCode} style={styles.verifyButton}>
-            <Text style={styles.verifyButtonText}>Verify</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setShowCodeModal(false)} style={styles.cancelButton}>
-            <Text style={styles.cancelButtonText}>Cancel</Text>
-          </TouchableOpacity>
-        </View>
-      )}
     </KeyboardAvoidingView>
   );
 };
-
 export default SelectProfileScreen;
 
 const styles = StyleSheet.create({
@@ -324,6 +292,21 @@ const styles = StyleSheet.create({
     left: '10%',
     right: '10%',
   },
+  checkboxContainer: {
+    marginVertical: 10,
+    alignSelf: 'flex-start',
+    width: '100%',
+  },
+  checkboxOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 10,
+  },
+  checkboxLabel: {
+    fontSize: 16,
+    color: '#000',
+    marginLeft: 8, 
+  },
   saveProfileButton: {
     backgroundColor: '#28A745',
     padding: 10,
@@ -377,7 +360,9 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   input: {
-    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     height: 40,
     borderColor: '#CCCCCC',
     borderWidth: 1,
@@ -385,6 +370,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginTop: 10,
     backgroundColor: '#FFF',
+  },
+  dateButtonText: {
+    color: '#AAA',
+    fontSize: 16,
   },
   avatarImage: {
     width: 80, // Ensures consistent width
