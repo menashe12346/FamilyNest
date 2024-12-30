@@ -412,13 +412,13 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 8,
     paddingHorizontal: 8,
-    elevation:10
+    elevation:10,
   },
   firstNameContainer: {
     backgroundColor: "#FFFFFF",
     elevation: 10,
     borderRadius: 18,
-    height: "90%",
+    //height: "90%",
     width: "30%",
     marginStart: "3%",
   },

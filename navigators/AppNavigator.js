@@ -15,6 +15,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AntDesign } from "@expo/vector-icons";
 import { useState,useEffect } from "react";
 
+
 // Create a Stack Navigator
 const Stack = createNativeStackNavigator();
 
@@ -43,7 +44,7 @@ function TabNavigator({route}) {
     })}>
       <Tab.Screen name="Home" component={Home} initialParams={route.params} />
       <Tab.Screen name="NewScreen" component={NewScreen} initialParams={route.params}  />
-      <Tab.Screen name="SelectProfileScreen" component={SelectProfileScreen} initialParams={route.params} />
+      <Tab.Screen name="SelectProfileScreen" component={SelectProfileScreen}/>
     </Tab.Navigator>
   );
 }

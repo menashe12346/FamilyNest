@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Alert ,FlatList, Text, View, StyleSheet , TextInput ,Dimensions, TouchableOpacity } from 'react-native';
+import { Alert ,FlatList, Text, View, StyleSheet , TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { calculateFontSize } from '../utils/FontUtils';
-import { FontAwesome } from '@expo/vector-icons';
-import { connect } from 'react-redux';
-import { Set_family_name, Set_user_username , Set_user_age, Set_user_picture } from '../Redux/counterSlice';
 import { firebase } from '../../firebase';
 import { PasswordsComponent,UserFamilyComponent,EmailComponent,GenderNameBDay, ProfilePictureSelector } from '../components/LogSignCmpnts';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import AvatarSelectModal from '../components/AvatarSelectModal';
-import { use } from 'react';
 import { CreateNewProfile } from '../utils/ProfileUtils';
-
-const { width } = Dimensions.get('window');
 
 
 const validateFields = (user) => {
