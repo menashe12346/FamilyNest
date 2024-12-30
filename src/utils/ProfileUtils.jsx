@@ -19,3 +19,11 @@ export const CreateNewProfile = ({id,role,gender,name,birth_day,avatarURI,passke
         passkey:passkey
     }
 }
+
+export const getNewProfileID = ({profiles})=>{
+  let maxID = -1
+  for (const profile of profiles){
+      maxID=Math.max(profile.id , maxID)
+  }
+  return maxID+1
+}
