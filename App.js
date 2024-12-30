@@ -5,6 +5,7 @@ import AppNavigator from "./navigators/AppNavigator";
 import store from './src/Redux/store';
 import * as SplashScreen from "expo-splash-screen"; // Optional for handling splash screen
 import { useFonts } from "expo-font";
+import { useDispatch, useSelector } from 'react-redux'; // Import hooks
 
 export default function App() {
   // Load fonts

@@ -5,36 +5,17 @@ import Animated, {useSharedValue,useAnimatedStyle,withTiming} from 'react-native
 import {TextInputField,GradientButton } from '../components/LogSignCmpnts';
 import { calculateFontSize } from '../utils/FontUtils';
 import { connect } from 'react-redux';
-import {Set_family_name, Set_username, Set_picture, Set_age } from '../Redux/counterSlice';
+import {Set_family_name, Set_picture, Set_age } from '../Redux/counterSlice';
 import { firebase } from '../../firebase';
-
-
-
-const fetchUserData = async (uid) => {
-  try {
-    console.log('Fetching user data for UID:', uid);
-
-    const db = firebase.firestore();
-    const usersRef = db.collection('users');
-    const userDoc = await usersRef.doc(uid).get();
-
-    if (userDoc.exists) {
-      console.log('Document data:', userDoc.data());
-      return userDoc.data(); // Return the user data
-    } else {
-      console.log('No such document!');
-      return null;
-    }
-  } catch (error) {
-    console.error('Error fetching user data:', error);
-    return null;
-  }
-};
-
+import { useDispatch } from 'react-redux';
+import { fetchUserData } from '../utils/FetchData';
+import { useSelector } from 'react-redux';
 
 const LoginScreen = () => {
 
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -59,11 +40,10 @@ const LoginScreen = () => {
         .then(async (userCredential) => {
           const user = userCredential.user.uid;
           console.log('From LoginScreen (UID)', user);
-          const userData = await fetchUserData(user);
-          console.log('User data fetched:', userData);
-          if(userData){
-            Set_username(username)
-            await handleSignIn(userData);
+          const fetched = await fetchUserData(user,dispatch);
+          console.log('Fetched:', fetched);
+          if(fetched){
+            await handleSignIn();
           }else{
             console.log('User data not found');
           }
@@ -87,7 +67,7 @@ const LoginScreen = () => {
     }
   };
   
-  const handleSignIn = async (user) => {
+  const handleSignIn = async () => {
     // Navigate to the NewScreen when login is pressed
     console.log('Signed User data:', user);
     
@@ -212,7 +192,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   Set_family_name,
-  Set_username,
   Set_picture,
   Set_age,
 };

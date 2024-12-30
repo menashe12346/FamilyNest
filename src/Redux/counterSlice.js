@@ -1,35 +1,54 @@
+// userSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
 const userSlice = createSlice({
   name: 'user',
   initialState: {
-    family_name: '',         
-    username: '',    
-    picture: 'https://cdn-icons-png.flaticon.com/256/149/149071.png',
-    age: 0,
+    user: {
+      uid: '',
+      familyName: '',
+      userName: '',
+      email: '',
+      password: '',
+      phoneNumber: '',
+      partnerEmail: '',
+      profiles: [],
+      tasks: [],
+      picture: 'https://cdn-icons-png.flaticon.com/256/149/149071.png', // Default picture
+      age: 0,
+    },
   },
   reducers: {
-    Set_family_name: (state, action) => {
-      state.family_name = action.payload;
+    setUser: (state, action) => {
+      state.user = action.payload; // Set full user object
     },
-    Set_username: (state, action) => {
-      state.username = action.payload;
+    clearUser: (state) => {
+      state.user = {
+        uid: '',
+        familyName: '',
+        userName: '',
+        email: '',
+        password: '',
+        phoneNumber: '',
+        partnerEmail: '',
+        profiles: [],
+        tasks: [],
+        picture: 'https://cdn-icons-png.flaticon.com/256/149/149071.png',
+        age: 0,
+      }; // Clear user data
     },
-    Set_picture: (state, action) => {
-      state.user_picture = action.payload;
+    setProfiles: (state, action) => {
+      state.user.profiles = action.payload; // Set profiles
     },
-    Set_age: (state, action) => {
-      state.age = action.payload;
+    setPicture: (state, action) => {
+      state.user.picture = action.payload; // Set profile picture
+    },
+    setAge: (state, action) => {
+      state.user.age = action.payload; // Set user's age
     },
   },
 });
 
+export const { setUser, clearUser, setProfiles, setPicture, setAge } = userSlice.actions;
 
-export const {
-  Set_family_name,
-  Set_username,
-  Set_picture,
-  Set_age,
-} = userSlice.actions;
-
-export const userReducer = userSlice.reducer;
+export default userSlice.reducer;

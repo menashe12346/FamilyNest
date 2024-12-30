@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Animated, View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Image, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import { useSelector } from 'react-redux';
 
 const avatars = [
   require('../assets/avatars/avatar_1.png'),
@@ -17,6 +18,9 @@ const SelectProfileScreen = () => {
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [codeInput, setCodeInput] = useState('');
   const [showCodeModal, setShowCodeModal] = useState(false);
+  const user = useSelector((state) => state.user.user);
+
+  console.log('User selector:', user);
 
   // Animation state
   const fadeAnim = useRef(new Animated.Value(0)).current;

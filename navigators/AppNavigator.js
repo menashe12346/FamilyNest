@@ -13,6 +13,7 @@ import NewScreen from "../src/screens/NewScreen";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AntDesign } from "@expo/vector-icons";
+import { useState,useEffect } from "react";
 
 // Create a Stack Navigator
 const Stack = createNativeStackNavigator();
@@ -21,9 +22,9 @@ const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
 function TabNavigator({route}) {
-
   return (
     <Tab.Navigator
+    initialRouteName={"SelectProfileScreen"}
     screenOptions={({ route }) => ({
       tabBarIcon: ({ focused, color, size }) => {
         let iconName;
@@ -49,7 +50,6 @@ function TabNavigator({route}) {
 
 
 function DrawerNavigator({route}) {
-  console.log('Route DRAWER:', route.params);
   return (
     <Drawer.Navigator>
       <Drawer.Screen name="TabNavigator" component={TabNavigator} initialParams={route.params} />
