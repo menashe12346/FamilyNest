@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   Animated,
   View,
@@ -145,7 +146,6 @@ const SelectProfileScreen = () => {
     }}
   />
 )}
-
 <View style={styles.roleSelectionContainer}>
   <View style={styles.roleCheckbox}>
     <BouncyCheckbox
@@ -158,7 +158,7 @@ const SelectProfileScreen = () => {
       innerIconStyle={{ borderWidth: 2 }}
     />
     <Text style={styles.checkboxLabel}>Child</Text>
-</View>
+  </View>
 </View>
 <View style={styles.genderContainer}>
   <TouchableOpacity
@@ -168,6 +168,7 @@ const SelectProfileScreen = () => {
     ]}
     onPress={() => setNewProfileGender('Male')}
   >
+    <Icon name="male" size={16} color="#007BFF" style={styles.genderIcon} />
     <Text style={styles.genderButtonText}>Male</Text>
   </TouchableOpacity>
   <TouchableOpacity
@@ -177,9 +178,11 @@ const SelectProfileScreen = () => {
     ]}
     onPress={() => setNewProfileGender('Female')}
   >
+    <Icon name="female" size={16} color="#FF69B4" style={styles.genderIcon} />
     <Text style={styles.genderButtonText}>Female</Text>
   </TouchableOpacity>
 </View>
+
           <TextInput
             value={newProfileCode}
             onChangeText={setNewProfileCode}
@@ -206,7 +209,7 @@ export default SelectProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E4F1F4',
+    backgroundColor: 'linear-gradient(to bottom, #F0F8FF, #F9FAFB)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
@@ -280,18 +283,19 @@ const styles = StyleSheet.create({
   addProfileContainer: {
     backgroundColor: '#fff',
     padding: 20,
-    borderRadius: 8,
-    alignItems: 'center',
+    borderRadius: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+    elevation: 6,
     position: 'absolute',
-    top: '20%',
+    top: '15%', // העלינו את המיקום למרכז המסך
     left: '10%',
     right: '10%',
+    alignItems: 'center', // מרכז את התוכן
   },
+  
   checkboxContainer: {
     marginVertical: 10,
     alignSelf: 'flex-start',
@@ -304,17 +308,20 @@ const styles = StyleSheet.create({
   },
   checkboxLabel: {
     fontSize: 16,
-    color: '#000',
-    marginLeft: 8, 
+    color: '#542F2F', // צבע נעים לעין
+    marginLeft: -360, // רווח בין ה-Checkbox לטקסט
   },
   saveProfileButton: {
     backgroundColor: '#28A745',
-    padding: 10,
-    borderRadius: 8,
-    marginTop: 10,
+    paddingVertical: 12,
+    borderRadius: 20,
     width: '80%',
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
   },
+  
   saveProfileButtonText: {
     color: 'white',
     fontWeight: 'bold',
@@ -369,11 +376,37 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 10,
     marginTop: 10,
+    marginBottom: 20, // רווח נוסף לפני הכפתור
+    backgroundColor: '#FFF',
+  },
+  dateInput: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 10,
+    paddingHorizontal: 10,
+    height: 40,
+    borderColor: '#CCCCCC',
+    borderWidth: 1,
+    borderRadius: 8,
     backgroundColor: '#FFF',
   },
   dateButtonText: {
     color: '#AAA',
     fontSize: 16,
+  },
+  roleSelectionContainer: {
+    flexDirection: 'column',
+    justifyContent: 'center', // מרכז את כל התוכן
+    alignItems: 'flex-start', // מוודא שהטקסט והצ'קבוקס מיושרים
+    marginTop: 10,
+  },
+  roleCheckbox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start', // מוודא שהטקסט מיושר עם ה-checkbox
+    marginHorizontal: 5,
+    marginBottom: 10, // רווח בין השורה לטקסט הבא
   },
   avatarImage: {
     width: 80, // Ensures consistent width
@@ -427,6 +460,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },
+  genderIcon: {
+    marginRight: 5, // רווח בין האייקון לטקסט
+  },
+  
   deleteButtonText: {
     color: 'white',
     fontWeight: 'bold',
@@ -471,4 +508,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
 
