@@ -32,3 +32,14 @@ export const getNewProfileID = ({profiles})=>{
 export const getProfileById = (user,id) => {
   return user.profiles.find(profile => profile.id === id);
 };
+
+export const getProfileAge = (birth_day) => {
+  const today = new Date();
+  const birthDate = new Date(birth_day);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const month = today.getMonth() - birthDate.getMonth();
+  if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+}

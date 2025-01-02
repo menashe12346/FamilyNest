@@ -17,8 +17,8 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import AvatarSelectModal from "./AvatarSelectModal";
 
 const gender_data = [
-  { label: "Male", value: "0", icon: "male" },
-  { label: "Female", value: "1", icon: "female" },
+  { label: "Male", value: "male", icon: "male" },
+  { label: "Female", value: "female", icon: "female" },
 ];
 
 export const TextInputField = ({

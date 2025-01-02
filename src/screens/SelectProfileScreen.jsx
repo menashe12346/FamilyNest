@@ -16,7 +16,7 @@ import {
 import { ProfilePictureSelector } from '../components/LogSignCmpnts';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { CreateNewProfile, getNewProfileID , getProfileById } from '../utils/ProfileUtils';
+import { CreateNewProfile, getNewProfileID , getProfileById ,getProfileAge} from '../utils/ProfileUtils';
 import avatarImages from '../utils/AvatarsUtils';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -50,6 +50,8 @@ const SelectProfileScreen = () => {
   const [isCodeVisible, setIsCodeVisible] = useState(false);
   const [imageID, setImageID] = useState(1);
   const [imageURI, setImageURI] = useState('');
+  const minimumDate = new Date(1900, 0, 1); // January 1, 1900
+  const maximumDate = new Date(); // Current date (to prevent future selection)
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -138,11 +140,12 @@ const SelectProfileScreen = () => {
         data={profiles}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={handleSelectProfile(item.id)} style={[styles.profileContainer , {borderWidth:3,borderColor: item.gender === 'Male' ? '#007BFF' : '#FF69B4'}]}>
+          <TouchableOpacity onPress={handleSelectProfile(item.id)} style={[styles.profileContainer , {borderWidth:3,borderColor: item.gender === 'male' ? '#007BFF' : '#FF69B4'}]}>
             <View style={styles.avatarWrapper}>
               <Image source={avatarImages[item.imageID]} style={styles.profileImage} />
             </View>
             <Text style={styles.profileName}>{item.name}</Text>
+            <Text style={styles.profileName}>{getProfileAge(item.birth_day)}</Text>
           </TouchableOpacity>
         )}
         keyExtractor={(item) => item.id}
@@ -180,6 +183,8 @@ const SelectProfileScreen = () => {
     value={birthDate}
     mode="date"
     display="default"
+    minimumDate={minimumDate} // Earliest selectable date
+    maximumDate={maximumDate} // Latest selectable date
     onChange={(event, selectedDate) => {
       setShowDatePicker(false);
       if (selectedDate) setBirthDate(selectedDate);
