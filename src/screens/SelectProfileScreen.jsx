@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef  , useEffect} from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   Animated,
@@ -21,12 +21,14 @@ import avatarImages from '../utils/AvatarsUtils';
 
 import { useDispatch, useSelector } from 'react-redux';
 import {setReduxProfiles} from '../Redux/userSlice';
+import { setSelectedProfileId } from '../Redux/selectedProfileSlice';
 
 const avatars = [require('../assets/avatars/avatar_1.png')];
 
 const SelectProfileScreen = () => {
 
   const user = useSelector((state) => state.user.user);
+  const selectedUser = useSelector((state) => state.selectedProfile.selectedProfileId);
   const dispatch = useDispatch();
   console.log('User logged (SelectProfileScreen):', user);
 
@@ -73,12 +75,23 @@ const SelectProfileScreen = () => {
       role !== ''
     ) {
       const id = getNewProfileID({profiles: user.profiles})
-      const newProfile = CreateNewProfile({id,role,newProfileGender,newProfileName,birthDate,selectedAvatar,newProfileCode,imageID});
+      const newProfile = CreateNewProfile({
+        id,
+        role,
+        gender: newProfileGender,
+        name: newProfileName,
+        birth_day: birthDate,
+        avatarURI: selectedAvatar,
+        passkey: newProfileCode,
+        imageID
+      });
+      
+      console.log('\nNew profile:', newProfile);
       const updatedProfiles = [...profiles, newProfile];
       dispatch(setReduxProfiles(updatedProfiles));
 
       setProfiles(updatedProfiles);
-      console.log('Profiles (after update):', updatedProfiles);
+      console.log('\nProfiles (after update):', updatedProfiles);
 
       setNewProfileName('');
       setBirthDate(new Date());
@@ -97,6 +110,15 @@ const SelectProfileScreen = () => {
     setRole(selectedRole);
   };
 
+  const handleSelectProfile = (id) => () => {
+    console.log('Selected profile:', id);
+    dispatch(setSelectedProfileId(id));
+    console.log('Selected profile ID:', selectedUser);
+  }
+
+
+
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -104,15 +126,16 @@ const SelectProfileScreen = () => {
     >
       <Text style={styles.title}>Select a Profile</Text>
       <FlatList
-        numColumns={2}
+        numColumns={3}
         data={profiles}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => (
-          <View style={styles.profileContainer}>
+          <TouchableOpacity onPress={handleSelectProfile(item.id)} style={styles.profileContainer}>
             <View style={styles.avatarWrapper}>
               <Image source={avatarImages[item.imageID]} style={styles.profileImage} />
             </View>
             <Text style={styles.profileName}>{item.name}</Text>
-          </View>
+          </TouchableOpacity>
         )}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.flatListContainer}
@@ -515,7 +538,9 @@ const styles = StyleSheet.create({
     color: '#AAAAAA',
     fontSize: 16,
     textAlign: 'center',
-  },
+  },separator:{
+    marginVertical: '5%', // Add vertical gap
+  }
 });
 
 

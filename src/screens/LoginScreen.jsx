@@ -5,7 +5,6 @@ import Animated, {useSharedValue,useAnimatedStyle,withTiming} from 'react-native
 import {TextInputField,GradientButton } from '../components/LogSignCmpnts';
 import { calculateFontSize } from '../utils/FontUtils';
 import { connect } from 'react-redux';
-import {Set_family_name, Set_picture, Set_age } from '../Redux/counterSlice';
 import { firebase } from '../../firebase';
 import { useDispatch } from 'react-redux';
 import { fetchUserData } from '../utils/FetchData';
@@ -187,14 +186,6 @@ const styles = StyleSheet.create({
     }
 })
 
-const mapStateToProps = (state) => ({
-});
-
-const mapDispatchToProps = {
-  Set_family_name,
-  Set_picture,
-  Set_age,
-};
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
+export default LoginScreen;

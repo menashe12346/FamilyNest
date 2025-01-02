@@ -1,5 +1,5 @@
 import { firebase } from '../../firebase';
-import { setUser , setProfiles } from '../Redux/userSlice';
+import { setUser , setReduxProfiles } from '../Redux/userSlice';
 
 export const fetchUserData = async (uid, dispatch) => {
     try {
@@ -10,7 +10,7 @@ export const fetchUserData = async (uid, dispatch) => {
       if (userDoc.exists) {
         const userData = userDoc.data();
         dispatch(setUser(userData));  // Correct action here
-        dispatch(setProfiles(userData.profiles));  // Correct action here
+        dispatch(setReduxProfiles(userData.profiles));  // Correct action here
         console.log('User data fetched:', userData);
         console.log('profiles', userData.profiles);
         return true;

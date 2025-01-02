@@ -37,7 +37,7 @@ const userSlice = createSlice({
     // Action to set the profiles array separately
     setReduxProfiles: (state, action) => {
       state.user.profiles = action.payload;
-    },
+    }, 
   },
 });
 
