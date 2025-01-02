@@ -1,36 +1,21 @@
 @startuml
-state "User Interaction" as UserInteraction {
-  [*] --> LoggedOut
-  LoggedOut --> LoggingIn : Enter credentials
-  LoggingIn --> Authenticated : Authentication successful
-  LoggingIn --> LoggedOut : Authentication failed
-  Authenticated --> CreatingProfile : Select 'Create Profile'
+state "Task Creation Process" as TaskCreation {
+  [*] --> Start
+  Start --> EnterDetails : User selects 'Create Task'
+  EnterDetails : Fill task title, description, start time, end time, type, reward, and min age
+
+  EnterDetails --> AssignTask : User assigns task to a profile
+  AssignTask : Select a child profile from the list
+
+  AssignTask --> Review : Review task details
+  Review : Confirm or edit task information
+
+  Review --> Save : User confirms task creation
+  Save --> Database : Task saved to database with expiry date
+  Database --> Completed : Confirmation sent to user
+
+  Completed --> [*]
 }
 
-state "Parent Interaction" as ParentInteraction {
-  [*] --> ViewingTasks
-  ViewingTasks --> CreatingTask : Select 'Create Task'
-  CreatingTask --> ViewingTasks : Task saved
-}
 
-state "Child Interaction" as ChildInteraction {
-  [*] --> ViewingTasks
-  ViewingTasks --> CompletingTask : Select 'Complete Task'
-  CompletingTask --> ViewingTasks : Task marked complete
-}
-
-state "Profile Creation" as ProfileCreation {
-  [*] --> SelectingRole
-  SelectingRole --> ParentProfile : Choose 'Parent'
-  SelectingRole --> ChildProfile : Choose 'Child'
-  ParentProfile --> Completed : Profile created
-  ChildProfile --> Completed : Profile created
-}
-
-state System {
-  [*] --> UserInteraction
-  UserInteraction --> ParentInteraction : Parent logs in
-  UserInteraction --> ChildInteraction : Child logs in
-  UserInteraction --> ProfileCreation : Create new profile
-}
 @enduml
