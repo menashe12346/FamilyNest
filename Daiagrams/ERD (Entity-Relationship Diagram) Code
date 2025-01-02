@@ -1,1 +1,52 @@
+@startuml
+entity User {
+  * uid : String [PK]
+  * familyName : String
+  * userName : String
+  * email : String
+  * password : String
+  * phoneNumber : String
+  * partnerEmail : String
+}
 
+entity Profile {
+  * id : String [PK]
+  * role : String
+  * name : String
+  * gender : String
+  * birthDay : Date
+  * avatarURI : String
+  * passkey : String
+  * userId : String [FK]
+}
+
+entity Task {
+  * id : String [PK]
+  * title : String
+  * description : String
+  * startTime : Date
+  * endTime : Date
+  * type : String
+  * reward : String
+  * minAge : int
+  * creatorId : String [FK]
+  * assignedToProfileId : String [FK]
+}
+
+entity Authentication {
+  * authId : String [PK]
+  * userId : String [FK]
+  * status : String
+  * timestamp : DateTime
+}
+
+entity TaskType {
+  * typeId : String [PK]
+  * typeName : String
+}
+
+TaskType ||--o{ Task : "categorizes"
+User ||--o{ Profile : "has"
+Profile ||--o{ Task : "manages"
+User ||--o{ Authentication : "authenticated by"
+@enduml
