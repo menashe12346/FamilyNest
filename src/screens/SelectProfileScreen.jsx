@@ -138,7 +138,7 @@ const SelectProfileScreen = () => {
         data={profiles}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={handleSelectProfile(item.id)} style={styles.profileContainer}>
+          <TouchableOpacity onPress={handleSelectProfile(item.id)} style={[styles.profileContainer , {borderWidth:3,borderColor: item.gender === 'Male' ? '#007BFF' : '#FF69B4'}]}>
             <View style={styles.avatarWrapper}>
               <Image source={avatarImages[item.imageID]} style={styles.profileImage} />
             </View>
