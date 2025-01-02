@@ -6,27 +6,35 @@ import NewScreen from './NewScreen';
 import SelectProfileScreen from './SelectProfileScreen';
 import { calculateFontSize } from '../utils/FontUtils';
 import avatarImages from '../utils/AvatarsUtils';
+import { useDispatch, useSelector } from 'react-redux';
+import {setReduxProfiles} from '../Redux/userSlice';
+import { setSelectedProfileId } from '../Redux/selectedProfileSlice';
+import { uploadUserData } from '../utils/UploadData';
+import { getProfileById } from '../utils/ProfileUtils';
 
 const { width, height } = Dimensions.get('window');
 
-const Home = ({navigation, route}) => {
-  console.log('Route Home:', route);
-  userData = route.params.userData;
-  console.log('User Data:', userData);
+const Home = ({navigation}) => {
 
-  const imageID = parseInt(userData.profiles[0].imageID);
+  const user = useSelector((state) => state.user.user);
+  const selectedUser = useSelector((state) => state.selectedProfile.selectedProfileId);//
+  const dispatch = useDispatch();
+  console.log('user',user);
+  console.log('selectedUser',selectedUser);
+  const profile = getProfileById(user,selectedUser)
+  console.log('profile',profile);
 
-  // Select the avatar image dynamically from the avatarImages object
-  const selectedAvatar = avatarImages[imageID] || avatarImages[1]; 
-  console.log('Selected Avatar:', avatarImages[imageID]);
   
 
   return (
     <View style={styles.container}>
-      <View style={styles.avatarCircle}>
-        <Image source={selectedAvatar} style={styles.avatarImage} />
+      <View style={[styles.avatarCircle, 
+        {borderColor: profile.gender==='male' ? 'blue' : '#B85455',
+          borderStyle: profile.role==='parent' ? 'solid' : 'dashed'
+        }]}>
+        <Image source={avatarImages[profile.imageID]} style={styles.avatarImage} />
       </View>
-      <Text style={styles.headerText}>Parents Screen</Text>
+      <Text style={styles.headerText}>Home Screen</Text>
       <TouchableOpacity
         activeOpacity={0.8}
         style={styles.button}
@@ -78,6 +86,7 @@ const styles = StyleSheet.create({
     height: 100, // Adjust the height as needed
     borderRadius: 50, // Make it a circle
     overflow: 'hidden', // Ensure the image is contained within the circle
+    borderWidth:3,
   },
   avatarImage: {
     width: '100%', // Adjust the width to fill the circle
