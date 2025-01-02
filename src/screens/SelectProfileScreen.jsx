@@ -22,6 +22,8 @@ import avatarImages from '../utils/AvatarsUtils';
 import { useDispatch, useSelector } from 'react-redux';
 import {setReduxProfiles} from '../Redux/userSlice';
 import { setSelectedProfileId } from '../Redux/selectedProfileSlice';
+import { uploadUserData } from '../utils/UploadData';
+import { setUser} from '../Redux/userSlice';
 
 const avatars = [require('../assets/avatars/avatar_1.png')];
 
@@ -95,6 +97,8 @@ const SelectProfileScreen = () => {
 
       setProfiles(updatedProfiles);
       console.log('\nProfiles (after update):', updatedProfiles);
+
+      uploadUserData(user.uid, { profiles: updatedProfiles });
 
       setNewProfileName('');
       setBirthDate(new Date());
