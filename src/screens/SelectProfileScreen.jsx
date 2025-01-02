@@ -34,7 +34,8 @@ const SelectProfileScreen = () => {
   const dispatch = useDispatch();
   console.log('User logged (SelectProfileScreen):', user);
 
-  const [parental, setParental] = useState(getProfileById(user,selectedUser).role === 'parent');
+  const [parental, setParental] = useState((selectedUser)?
+    getProfileById(user,selectedUser).role === 'parent' : true);
   console.log('Parental:', parental);
 
   const [profiles,setProfiles] = useState(user.profiles)
