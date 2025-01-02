@@ -13,22 +13,31 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import { useSelector } from 'react-redux';
 import { ProfilePictureSelector } from '../components/LogSignCmpnts';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { CreateNewProfile, getNewProfileID } from '../utils/ProfileUtils';
+import avatarImages from '../utils/AvatarsUtils';
+
+import { useDispatch, useSelector } from 'react-redux';
+import {setReduxProfiles} from '../Redux/userSlice';
 
 const avatars = [require('../assets/avatars/avatar_1.png')];
 
 const SelectProfileScreen = () => {
-  const [profiles, setProfiles] = useState([]);
+
+  const user = useSelector((state) => state.user.user);
+  const dispatch = useDispatch();
+  console.log('User logged (SelectProfileScreen):', user);
+
+  const [profiles,setProfiles] = useState(user.profiles)
   const [newProfileName, setNewProfileName] = useState('');
   const [birthDate, setBirthDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [newProfileGender, setNewProfileGender] = useState('');
   const [newProfileCode, setNewProfileCode] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState(null);
-  const [role, setRole] = useState(''); // תפקיד: Child 
+  const [role, setRole] = useState('parent'); // תפקיד: Child 
   const [addingProfile, setAddingProfile] = useState(false);
   const [isCodeVisible, setIsCodeVisible] = useState(false);
   const [imageID, setImageID] = useState(1);
@@ -54,30 +63,29 @@ const SelectProfileScreen = () => {
   };
 
   const handleAddProfile = () => {
+    console.log('Adding profile...');
     if (
       newProfileName.trim() !== '' &&
-      selectedAvatar &&
+      imageID &&
       birthDate &&
       newProfileGender &&
       newProfileCode.length === 4 &&
       role !== ''
     ) {
-      const newProfile = {
-        id: Date.now().toString(),
-        name: newProfileName,
-        birthDate: birthDate.toISOString().split('T')[0],
-        gender: newProfileGender,
-        code: newProfileCode,
-        role,
-        image: selectedAvatar,
-      };
-      setProfiles([...profiles, newProfile]);
+      const id = getNewProfileID({profiles: user.profiles})
+      const newProfile = CreateNewProfile({id,role,newProfileGender,newProfileName,birthDate,selectedAvatar,newProfileCode,imageID});
+      const updatedProfiles = [...profiles, newProfile];
+      dispatch(setReduxProfiles(updatedProfiles));
+
+      setProfiles(updatedProfiles);
+      console.log('Profiles (after update):', updatedProfiles);
+
       setNewProfileName('');
       setBirthDate(new Date());
       setNewProfileGender('');
       setNewProfileCode('');
       setSelectedAvatar(null);
-      setRole('');
+      setRole('parent');
       closeProfileModal();
     } else {
       Alert.alert('Error', 'Please fill all fields, including selecting a role.');
@@ -85,6 +93,7 @@ const SelectProfileScreen = () => {
   };
 
   const handleRoleSelect = (selectedRole) => {
+    console.log('Selected role:', selectedRole);
     setRole(selectedRole);
   };
 
@@ -95,17 +104,17 @@ const SelectProfileScreen = () => {
     >
       <Text style={styles.title}>Select a Profile</Text>
       <FlatList
+        numColumns={2}
         data={profiles}
         renderItem={({ item }) => (
           <View style={styles.profileContainer}>
             <View style={styles.avatarWrapper}>
-              <Image source={item.image} style={styles.profileImage} />
+              <Image source={avatarImages[item.imageID]} style={styles.profileImage} />
             </View>
             <Text style={styles.profileName}>{item.name}</Text>
           </View>
         )}
         keyExtractor={(item) => item.id}
-        horizontal
         contentContainerStyle={styles.flatListContainer}
       />
       <TouchableOpacity onPress={openProfileModal} style={styles.addProfileButton}>
@@ -152,8 +161,8 @@ const SelectProfileScreen = () => {
       size={25}
       fillColor="#9EDF9C"
       unfillColor="#E4F1F4"
-      isChecked={role === 'Child'}
-      onPress={() => handleRoleSelect('Child')}
+      
+      onPress={(isChecked) => handleRoleSelect(isChecked ? 'child' : 'parent')}
       iconStyle={{ borderColor: '#9EDF9C' }}
       innerIconStyle={{ borderWidth: 2 }}
     />

@@ -37,8 +37,10 @@ const userSlice = createSlice({
         age: 0,
       }; // Clear user data
     },
-    setProfiles: (state, action) => {
-      state.user.profiles = action.payload; // Set profiles
+    setReduxProfiles: (state, action) => {
+      console.log('Action payload:', action.payload); // Check what is being passed
+      state.user.profiles = action.payload;
+      console.log('Updated profiles in reducer:', state.user.profiles);
     },
     setPicture: (state, action) => {
       state.user.picture = action.payload; // Set profile picture
@@ -49,6 +51,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, clearUser, setProfiles, setPicture, setAge } = userSlice.actions;
+export const { setUser, clearUser, setReduxProfiles, setPicture, setAge } = userSlice.actions;
 
 export default userSlice.reducer;

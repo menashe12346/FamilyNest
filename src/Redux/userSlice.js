@@ -35,12 +35,12 @@ const userSlice = createSlice({
       };
     },
     // Action to set the profiles array separately
-    setProfiles: (state, action) => {
+    setReduxProfiles: (state, action) => {
       state.user.profiles = action.payload;
     },
   },
 });
 
 // Exporting actions
-export const { setUser, clearUser, setProfiles } = userSlice.actions;
+export const { setUser, clearUser, setReduxProfiles } = userSlice.actions;
 export default userSlice.reducer;
