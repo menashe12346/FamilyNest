@@ -28,3 +28,7 @@ export const getNewProfileID = ({profiles})=>{
   }
   return maxID+1
 }
+
+export const getProfileById = (user,id) => {
+  return user.profiles.find(profile => profile.id === id);
+};

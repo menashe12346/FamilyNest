@@ -16,7 +16,7 @@ import {
 import { ProfilePictureSelector } from '../components/LogSignCmpnts';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { CreateNewProfile, getNewProfileID } from '../utils/ProfileUtils';
+import { CreateNewProfile, getNewProfileID , getProfileById } from '../utils/ProfileUtils';
 import avatarImages from '../utils/AvatarsUtils';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,9 +28,12 @@ const avatars = [require('../assets/avatars/avatar_1.png')];
 const SelectProfileScreen = () => {
 
   const user = useSelector((state) => state.user.user);
-  const selectedUser = useSelector((state) => state.selectedProfile.selectedProfileId);
+  const selectedUser = useSelector((state) => state.selectedProfile.selectedProfileId);//
   const dispatch = useDispatch();
   console.log('User logged (SelectProfileScreen):', user);
+
+  const [parental, setParental] = useState(getProfileById(user,selectedUser).role === 'parent');
+  console.log('Parental:', parental);
 
   const [profiles,setProfiles] = useState(user.profiles)
   const [newProfileName, setNewProfileName] = useState('');
@@ -124,7 +127,7 @@ const SelectProfileScreen = () => {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <Text style={styles.title}>Select a Profile</Text>
+      <Text style={styles.title}>Welcome back {user.familyName}!</Text>
       <FlatList
         numColumns={3}
         data={profiles}
@@ -140,9 +143,9 @@ const SelectProfileScreen = () => {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.flatListContainer}
       />
-      <TouchableOpacity onPress={openProfileModal} style={styles.addProfileButton}>
+      {parental && <TouchableOpacity onPress={openProfileModal} style={styles.addProfileButton}>
         <Text style={styles.addProfileButtonText}>Add Profile</Text>
-      </TouchableOpacity>
+      </TouchableOpacity>}
       {addingProfile && (
         <Animated.View style={[styles.addProfileContainer, { opacity: fadeAnim }]}>
           <Text style={styles.subtitle}>Select Avatar:</Text>
@@ -250,7 +253,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#542F2F',
-    marginBottom: 20,
+    marginBottom: 20, 
+    fontFamily: 'Fredoka-Bold'
   },
   flatListContainer: {
     paddingHorizontal: 16,
