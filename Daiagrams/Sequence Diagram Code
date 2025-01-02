@@ -1,0 +1,26 @@
+@startuml
+actor User
+participant App
+participant "Authentication Service" as Auth
+participant Database
+
+User -> App : Open app
+App -> User : Display login screen
+User -> App : Enter credentials (email, password)
+App -> Auth : Authenticate user
+Auth -> Database : Verify credentials
+alt Service unavailable
+  Database --> Auth : 503 Service Unavailable
+  Auth --> App : Authentication failed
+  App -> User : Show retry option
+else Credentials valid
+  Database --> Auth : Credentials valid
+  Auth --> App : Authentication successful
+  App -> User : Navigate to home screen
+end
+
+alt Invalid credentials
+  Auth --> App : Authentication failed
+  App -> User : Show error message
+end
+@enduml
