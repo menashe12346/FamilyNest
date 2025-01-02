@@ -140,7 +140,10 @@ const SelectProfileScreen = () => {
         data={profiles}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={handleSelectProfile(item.id)} style={[styles.profileContainer , {borderWidth:3,borderColor: item.gender === 'male' ? '#007BFF' : '#FF69B4'}]}>
+          <TouchableOpacity onPress={handleSelectProfile(item.id)} style={[styles.profileContainer ,
+           {borderWidth:4,
+           borderStyle: item.role==='child'? 'dashed':'solid', 
+           borderColor: item.gender === 'male' ? '#007BFF' : '#FF69B4'}]}>
             <View style={styles.avatarWrapper}>
               <Image source={avatarImages[item.imageID]} style={styles.profileImage} />
             </View>
@@ -211,7 +214,7 @@ const SelectProfileScreen = () => {
       styles.genderButton,
       newProfileGender === 'Male' && styles.selectedGenderButton,
     ]}
-    onPress={() => setNewProfileGender('Male')}
+    onPress={() => setNewProfileGender('male')}
   >
     <Icon name="male" size={16} color="#007BFF" style={styles.genderIcon} />
     <Text style={styles.genderButtonText}>Male</Text>
@@ -221,7 +224,7 @@ const SelectProfileScreen = () => {
       styles.genderButton,
       newProfileGender === 'Female' && styles.selectedGenderButton,
     ]}
-    onPress={() => setNewProfileGender('Female')}
+    onPress={() => setNewProfileGender('female')}
   >
     <Icon name="female" size={16} color="#FF69B4" style={styles.genderIcon} />
     <Text style={styles.genderButtonText}>Female</Text>
