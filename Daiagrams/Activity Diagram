@@ -1,0 +1,37 @@
+@startuml
+start
+:User opens app;
+if (User logged in?) then (yes)
+  :Navigate to home screen;
+  if (User selects profile?) then (yes)
+    :Load profile data;
+    if (Profile is parent?) then (yes)
+      :Display tasks for all children;
+      :Parent can create tasks;
+      if (User adds a task?) then (yes)
+        :User fills task details;
+        :Assign task to a specific child;
+        :Save task to database;
+      else (no)
+        :Display profile tasks;
+      endif
+      :Parent can also complete tasks;
+    else (no)
+      :Display tasks for the child;
+      :Child can only complete tasks;
+    endif
+  else (no)
+    :Prompt user to select a profile;
+  endif
+else (no)
+  :Navigate to login screen;
+  if (User signs up?) then (yes)
+    :Collect user information;
+    :Create user in database;
+  else (no)
+    :Prompt login credentials;
+    :Authenticate user;
+  endif
+endif
+stop
+@enduml
