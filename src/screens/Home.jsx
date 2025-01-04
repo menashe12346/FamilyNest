@@ -20,6 +20,7 @@ import { uploadUserData } from "../utils/UploadData";
 import { setUser } from "../Redux/userSlice";
 import { CreateNewProfile, getNewProfileID , getProfileById ,getProfileAge} from '../utils/ProfileUtils';
 import ProfileBar from "../components/ProfileBar";
+import CreateTask from "../components/CreateTask";
 
 const Home = ({ navigation, route }) => {
   const user = useSelector((state) => state.user.user);
@@ -29,28 +30,16 @@ const Home = ({ navigation, route }) => {
   const dispatch = useDispatch();
   console.log("User logged (SelectProfileScreen):", user);
 
-  const [parental, setParental] = useState(
-    selectedUser ? getProfileById(user, selectedUser).role === "parent" : true
-  );
-  const [profile,setProfile] = useState(getProfileById(user,selectedUser))
-  console.log("Profile",profile)
-  console.log("Parental:", parental);
+  const [showModal, setShowModal] = useState(true);
+
+  const profile = selectedUser ? getProfileById(user, selectedUser) : null; // Always up-to-date
+  const parental = profile ? profile.role === "parent" : true; // Always up-to-date
 
   return (
     <View style={styles.container}>
       <ProfileBar profile={profile} />
-      <Text style={styles.headerText}>Parents Screen</Text>
-      <TouchableOpacity
-        activeOpacity={0.8}
-        style={styles.button}
-        onPress={() =>
-          navigation.navigate("NewScreen", {
-            items: Array.from({ length: 10 }, (_, i) => `Item ${i + 1}`),
-          })
-        }
-      >
-        <Text style={styles.buttonText}>+</Text>
-      </TouchableOpacity>
+      {showModal && <CreateTask showModal={showModal} setShowModal={setShowModal}/>}
+      <Text style={styles.headerText} onPress={()=>setShowModal(true)}>Parents Screen</Text>
     </View>
   );
 };
