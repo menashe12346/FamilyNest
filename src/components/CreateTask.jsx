@@ -1,4 +1,4 @@
-import { Modal, View, Text, TextInput, StyleSheet, Image } from "react-native";
+import { Modal, View, Text, TextInput, StyleSheet, Image , TouchableOpacity } from "react-native";
 import React from "react";
 import avatarImages from "../utils/AvatarsUtils";
 import { LinearGradient } from "expo-linear-gradient";
@@ -8,6 +8,7 @@ import { setSelectedProfileId } from "../Redux/selectedProfileSlice";
 import { uploadUserData } from "../utils/UploadData";
 import { setUser } from "../Redux/userSlice";
 import { calculateFontSize } from "../utils/FontUtils";
+import { color } from "@rneui/base";
 
 const CreateTask = ({ showModal, setShowModal, user, profile }) => {
     const [text, setText] = React.useState(''); // Initialize the text state
@@ -45,6 +46,18 @@ const CreateTask = ({ showModal, setShowModal, user, profile }) => {
             />
          </View>
          <Text style={{marginTop:"1%",fontFamily:'Fredoka-Bold',textAlign:'right'}}>{Math.ceil(text.length/39)}/5 lines</Text>
+         <View style={{width:"50%",height:'12%',flexDirection: "row",alignSelf:'center',marginTop:"2%",}}>
+            <TouchableOpacity style={{marginLeft:-5,marginRight: 10}}>
+                <View style={[styles.button,{backgroundColor: "#8BC34A"}]}>
+                    <Text style={[styles.instText,{textAlign:'center'}]}>Assign</Text>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+                <View style={[styles.button,{backgroundColor: "#FFCDD2"}]}>
+                    <Text style={[styles.instText,{textAlign:'center'}]}>Cancel</Text>
+                </View>
+            </TouchableOpacity>
+         </View>
       </LinearGradient>
     </Modal>
   );
@@ -93,6 +106,13 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 10,
     elevation: 10,
+  },button:{
+    color: "white",
+    borderRadius: 7,
+    height: 30,
+    width: 100,
+    borderColor: "black",
+    borderWidth: 2,
   }
 });
 
