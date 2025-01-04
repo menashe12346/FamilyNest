@@ -47,12 +47,13 @@ const CreateTask = ({ showModal, setShowModal, user, profile }) => {
          </View>
          <Text style={{marginTop:"1%",fontFamily:'Fredoka-Bold',textAlign:'right'}}>{Math.ceil(text.length/39)}/5 lines</Text>
          <View style={{width:"50%",height:'12%',flexDirection: "row",alignSelf:'center',marginTop:"2%",}}>
-            <TouchableOpacity style={{marginLeft:-5,marginRight: 10}}>
+            <TouchableOpacity style={{marginLeft:-5,marginRight: 10}}
+            onPress={() => {setShowModal(false);}}>
                 <View style={[styles.button,{backgroundColor: "#8BC34A"}]}>
                     <Text style={[styles.instText,{textAlign:'center'}]}>Assign</Text>
                 </View>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>setShowModal(false)}>
                 <View style={[styles.button,{backgroundColor: "#FFCDD2"}]}>
                     <Text style={[styles.instText,{textAlign:'center'}]}>Cancel</Text>
                 </View>
