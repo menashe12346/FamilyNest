@@ -52,17 +52,18 @@ const CreateTask = ({ showModal, setShowModal, user, profile}) => {
             />
          </View>
          <Text style={{marginTop:"1%",fontFamily:'Fredoka-Bold',textAlign:'right'}}>{Math.ceil(text.length/39)}/5 lines</Text>
-         <View style={{flexDirection:'row',height:'12%', width:'70%'}}>
+         <View style={{marginTop:'1%',flexDirection:'row',height:'12%', width:'70%'}}>
+         <Text style={[styles.instText,{fontFamily:'Fredoka-Bold',textAlign:'right'}]}>Deadline: </Text>
             <TouchableOpacity>
-              <View style={styles.dateTime}>
-                <Text>
+              <View style={[styles.dateTime,{marginLeft:'7%'}]}>
+                <Text style={styles.detailText}>
                 {date ? date.toLocaleDateString() : "Select Date"} {/* Format the date */}
                 </Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity>
-              <View style={[styles.dateTime,{marginLeft:10}]}>
-                <Text>
+              <View style={[styles.dateTime,{marginLeft:'20%'}]}>
+                <Text style={styles.detailText}>
                 {time ? time.toLocaleTimeString() : "Select Time"} {/* Format the time */}
                 </Text>
               </View>
@@ -142,7 +143,11 @@ const styles = StyleSheet.create({
     elevation:10,
     borderRadius:10,
     height:'50%',
+    width:'115%',
     justifyContent:'space-around',
+  },detailText:{
+    fontFamily:'Fredoka-Bold',
+    textAlign:'center'
   }
 });
 
