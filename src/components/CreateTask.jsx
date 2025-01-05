@@ -11,12 +11,15 @@ import { calculateFontSize } from "../utils/FontUtils";
 import { color } from "@rneui/base";
 import DateTimePicker from "./DateTimePicker";
 import { useState } from "react";
+import ListDropdown from "./ListDropdown";
 
 const CreateTask = ({ showModal, setShowModal, user, profile}) => {
     const [text, setText] = React.useState(''); // Initialize the text state
   profile = profile.profile;
+  user = user.user
 
    const [showPicker, setShowPicker] = useState(true);
+   const [showDropdown,setShowDropdown]= useState(false);
    const [date ,setDate] =useState(new Date())
    const [time ,setTime] =useState(new Date())
 
@@ -69,7 +72,11 @@ const CreateTask = ({ showModal, setShowModal, user, profile}) => {
               </View>
             </TouchableOpacity>
          </View>
-         <View style={{width:"50%",height:'12%',flexDirection: "row",alignSelf:'center',marginTop:"2%",}}>
+         <View style={styles.dropdownList}>
+          <ListDropdown style={{height:'53%'}}profiles={{profiles: user.profiles}}
+          setShow={setShowDropdown} showDropdown={showDropdown}/>
+         </View>
+         <View style={{width:"50%",height:'12%',flexDirection: "row",alignSelf:'center',marginTop:-160,}}>
             <TouchableOpacity style={{marginLeft:-5,marginRight: 10}}
             onPress={() => {setShowModal(false);}}>
                 <View style={[styles.button,{backgroundColor: "#8BC34A"}]}>
@@ -148,6 +155,8 @@ const styles = StyleSheet.create({
   },detailText:{
     fontFamily:'Fredoka-Bold',
     textAlign:'center'
+  },dropdownList:{
+    alignItems:'center'
   }
 });
 

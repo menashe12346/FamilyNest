@@ -5,13 +5,14 @@ import avatarImages from '../utils/AvatarsUtils'
 import { isMomDadSonDaughter } from '../utils/ProfileUtils'
 import { LinearGradient } from "expo-linear-gradient";
 
-const ProfileBar = ({profile}) => {
+const ProfileBar = ({profile,style,onPress}) => {
   console.log('Profile (HOME):',profile)
   const colors = profile.gender === 'male' ? ['#1E90FF', '#87CEFA'] : ['#FF69B4', '#FFB6C1']
   return (
     
-    <Pressable style={[styles.pressable,{borderColor: profile.gender==='male'? '#1E90FF':'#FF69B4'}]} 
-    onLongPress={() => console.warn("ProfileBar pressed")}>
+    <Pressable style={[styles.pressable,style,{borderColor: profile.gender==='male'? '#1E90FF':'#FF69B4'}]} 
+    onLongPress={() => console.warn("ProfileBar pressed")}
+    onPress={onPress}>
     <LinearGradient colors={colors} style={styles.linearStyle}>
       <View style={styles.roundImage}>
         <Image source={avatarImages[profile.imageID]} style={styles.avatarImage} />
