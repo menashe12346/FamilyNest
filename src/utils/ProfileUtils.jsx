@@ -43,3 +43,17 @@ export const getProfileAge = (birth_day) => {
   }
   return age;
 }
+
+
+export const isMomDadSonDaughter =({profile})=>{
+  if(!profile) return 'Profile not found'
+  console.log('Profile:',profile.role ,profile.gender)
+  switch(profile.role){
+    case 'parent':
+      return profile.gender === 'male'? 'Father':'Mother'
+    case 'child':
+      return profile.gender === 'male'? 'Son':'Daughter'
+    default:
+      return 'Profile not found'
+  }
+}

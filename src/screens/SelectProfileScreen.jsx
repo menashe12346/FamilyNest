@@ -27,7 +27,7 @@ import { setUser} from '../Redux/userSlice';
 
 const avatars = [require('../assets/avatars/avatar_1.png')];
 
-const SelectProfileScreen = () => {
+const SelectProfileScreen = ({navigation}) => {
 
   const user = useSelector((state) => state.user.user);
   const selectedUser = useSelector((state) => state.selectedProfile.selectedProfileId);//
@@ -124,6 +124,7 @@ const SelectProfileScreen = () => {
     console.log('Selected profile:', id);
     dispatch(setSelectedProfileId(id));
     console.log('Selected profile ID:', selectedUser);
+    navigation.navigate('Home');
   }
 
 

@@ -1,0 +1,21 @@
+@startuml
+state "Task Creation Process" as TaskCreation {
+  [*] --> Start
+  Start --> EnterDetails : User selects 'Create Task'
+  EnterDetails : Fill task title, description, start time, end time, type, reward, and min age
+
+  EnterDetails --> AssignTask : User assigns task to a profile
+  AssignTask : Select a child profile from the list
+
+  AssignTask --> Review : Review task details
+  Review : Confirm or edit task information
+
+  Review --> Save : User confirms task creation
+  Save --> Database : Task saved to database with expiry date
+  Database --> Completed : Confirmation sent to user
+
+  Completed --> [*]
+}
+
+
+@enduml
