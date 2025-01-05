@@ -9,10 +9,16 @@ import { uploadUserData } from "../utils/UploadData";
 import { setUser } from "../Redux/userSlice";
 import { calculateFontSize } from "../utils/FontUtils";
 import { color } from "@rneui/base";
+import DateTimePicker from "./DateTimePicker";
+import { useState } from "react";
 
-const CreateTask = ({ showModal, setShowModal, user, profile }) => {
+const CreateTask = ({ showModal, setShowModal, user, profile}) => {
     const [text, setText] = React.useState(''); // Initialize the text state
   profile = profile.profile;
+
+   const [showPicker, setShowPicker] = useState(true);
+   const [date ,setDate] =useState(new Date())
+   const [time ,setTime] =useState(new Date())
 
   return (
     <Modal visible={showModal} transparent={true} animationType="slide">
@@ -46,6 +52,22 @@ const CreateTask = ({ showModal, setShowModal, user, profile }) => {
             />
          </View>
          <Text style={{marginTop:"1%",fontFamily:'Fredoka-Bold',textAlign:'right'}}>{Math.ceil(text.length/39)}/5 lines</Text>
+         <View style={{flexDirection:'row',height:'12%', width:'70%'}}>
+            <TouchableOpacity>
+              <View style={styles.dateTime}>
+                <Text>
+                {date ? date.toLocaleDateString() : "Select Date"} {/* Format the date */}
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <View style={[styles.dateTime,{marginLeft:10}]}>
+                <Text>
+                {time ? time.toLocaleTimeString() : "Select Time"} {/* Format the time */}
+                </Text>
+              </View>
+            </TouchableOpacity>
+         </View>
          <View style={{width:"50%",height:'12%',flexDirection: "row",alignSelf:'center',marginTop:"2%",}}>
             <TouchableOpacity style={{marginLeft:-5,marginRight: 10}}
             onPress={() => {setShowModal(false);}}>
@@ -59,6 +81,7 @@ const CreateTask = ({ showModal, setShowModal, user, profile }) => {
                 </View>
             </TouchableOpacity>
          </View>
+         <DateTimePicker time={time} date={date} setTime={setTime} setDate={setDate} show={showPicker} setShow={setShowPicker}/>
       </LinearGradient>
     </Modal>
   );
@@ -114,6 +137,12 @@ const styles = StyleSheet.create({
     width: 100,
     borderColor: "black",
     borderWidth: 2,
+  },dateTime:{
+    backgroundColor:'white',
+    elevation:10,
+    borderRadius:10,
+    height:'50%',
+    justifyContent:'space-around',
   }
 });
 

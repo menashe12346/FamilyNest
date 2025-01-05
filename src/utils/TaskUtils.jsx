@@ -10,6 +10,7 @@ export const CreateNewTask = ({creatorID,assignedTo,taskID,title,description,sta
         type:type,
         reward:reward,
         minAge:minAge,
+        status:'NEW_TASK'
     }
 }
 
