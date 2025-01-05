@@ -37,7 +37,9 @@ const Home = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <ProfileBar profile={profile} />
+      <View style={{width:'90%',height:'10%'}}>
+        <ProfileBar profile={profile} />
+      </View>
       {showModal && <CreateTask showModal={showModal} setShowModal={setShowModal} user={{user}} profile={{profile}}/>}
       <Text style={styles.headerText} onPress={()=>setShowModal(true)}>Parents Screen</Text>
     </View>

@@ -29,8 +29,8 @@ const ProfileBar = ({profile,style,onPress}) => {
 
 const styles = StyleSheet.create({
   pressable: {
-    width: '90%',
-    height: '10%',
+    width: '100%',
+    height: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',

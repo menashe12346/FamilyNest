@@ -13,7 +13,9 @@ const ListDropdown = ({ profiles, setShow, show, style }) => {
 
 const renderItem = ({ item }) => {
     console.log(item);
-    return <ProfileBar style={style} profile={item} />;
+    return <View style={styles.profileContainer}>
+    <ProfileBar profile={item} />
+  </View>
 };
 
   return (
@@ -30,6 +32,7 @@ const renderItem = ({ item }) => {
                 data={profiles}  // List of profiles
                 keyExtractor={(item) => item.id.toString()}  // Ensure the id is converted to string
                 renderItem={renderItem}  // Render each item using ProfileBar
+                contentContainerStyle={styles.flatListContainer} // Add container style
               />
             </View>
           </View>
@@ -48,12 +51,16 @@ const styles = StyleSheet.create({
   dropdownContainer: {
     backgroundColor: 'white',
     borderRadius: 10,
-    padding: 20,
+    padding: 1,
     width: '80%',
     maxHeight: 300, // Limiting the height of the dropdown
   },
   profileBarItem: {
-    marginBottom: 10, // Adding space between the profile bars
+  }, flatListContainer: {
+    paddingVertical: 0, // Space between items and the container edges
+  },profileContainer: {
+    marginBottom:0, // Space between each item, adjust as needed
+    height:'50%'
   },
 });
 
