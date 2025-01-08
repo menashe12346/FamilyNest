@@ -19,10 +19,10 @@ const CreateTask = ({ showModal, setShowModal, user, profile}) => {
   user = user.user
 
    const [showPicker, setShowPicker] = useState(true);
-   const [showDropdown,setShowDropdown]= useState(false);
    const [date ,setDate] =useState(new Date())
    const [time ,setTime] =useState(new Date())
 
+  
   return (
     <Modal visible={showModal} transparent={true} animationType="slide">
       <LinearGradient
@@ -73,8 +73,7 @@ const CreateTask = ({ showModal, setShowModal, user, profile}) => {
             </TouchableOpacity>
          </View>
          <View style={styles.dropdownList}>
-          <ListDropdown style={{height:'53%'}}profiles={{profiles: user.profiles}}
-          setShow={setShowDropdown} showDropdown={showDropdown}/>
+          <ListDropdown style={{height:'53%'}}profiles={{profiles: user.profiles}}/>
          </View>
          <View style={{width:"50%",height:'12%',flexDirection: "row",alignSelf:'center',marginTop:-160,}}>
             <TouchableOpacity style={{marginLeft:-5,marginRight: 10}}
