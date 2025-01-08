@@ -1,4 +1,12 @@
-import { Modal, View, Text, TextInput, StyleSheet, Image , TouchableOpacity } from "react-native";
+import {
+  Modal,
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import React from "react";
 import avatarImages from "../utils/AvatarsUtils";
 import { LinearGradient } from "expo-linear-gradient";
@@ -15,32 +23,30 @@ import ListDropdown from "./ListDropdown";
 import { Dropdown } from "react-native-element-dropdown";
 import { taskTypes } from "../utils/TaskUtils";
 
-const CreateTask = ({ showModal, setShowModal, user, profile}) => {
-    const [text, setText] = React.useState(''); // Initialize the text state
+const CreateTask = ({ showModal, setShowModal, user, profile }) => {
+  const [text, setText] = React.useState(""); // Initialize the text state
   profile = profile.profile;
-  user = user.user
+  user = user.user;
 
   const types = Object.entries(taskTypes).map(([key, value]) => ({
     label: value,
-    value: key
+    value: key,
   }));
 
+  const [showPicker, setShowPicker] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [time, setTime] = useState(new Date());
 
-   const [showPicker, setShowPicker] = useState(false);
-   const [date ,setDate] =useState(new Date())
-   const [time ,setTime] =useState(new Date())
+  const [valueType, setValueType] = useState(7);
+  const [isFocusType, setIsFocusType] = useState(false);
 
-   const [valueType, setValueType] = useState(7);
-   const [isFocusType, setIsFocusType] = useState(false);
-
-  
   return (
     <Modal visible={showModal} transparent={true} animationType="slide">
       <LinearGradient
         colors={["#e0eafc", "#afdef3"]}
         style={styles.modalContent}
       >
-        <View style={{flexDirection: "row", justifyContent: "space-between"}}>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View style={styles.columnView}>
             <Text style={styles.instText}>Create a task:</Text>
             <TextInput style={styles.taskTitle} placeholder="Title" />
@@ -57,64 +63,133 @@ const CreateTask = ({ showModal, setShowModal, user, profile}) => {
           </View>
         </View>
         <View style={styles.descriptionView}>
-            <TextInput style={styles.description} placeholder="Task description" 
-            multiline={true}   // Allows the input to be multiline
-            numberOfLines={5}  // Set the number of lines that should be visible
-            maxLength={195}    // Limit the number of characters that can be entered
+          <TextInput
+            style={styles.description}
+            placeholder="Task description"
+            multiline={true} // Allows the input to be multiline
+            numberOfLines={5} // Set the number of lines that should be visible
+            maxLength={195} // Limit the number of characters that can be entered
             onChangeText={(inputText) => setText(inputText)} // Handle text input
-            value={text}  // Bind the text state value
-            />
-         </View>
-         <Text style={{marginTop:"1%",fontFamily:'Fredoka-Bold',textAlign:'right'}}>{Math.ceil(text.length/39)}/5 lines</Text>
-         <View style={{marginTop:'1%',flexDirection:'row',height:'10%', width:'70%'}}>
-         <Text style={[styles.instText,{fontFamily:'Fredoka-Bold',textAlign:'right'}]}>Deadline: </Text>
-            <TouchableOpacity onPress={()=>setShowPicker(true)}>
-              <View style={[styles.dateTime,{marginLeft:'7%'}]}>
-                <Text style={styles.detailText}>
-                {date ? date.toLocaleDateString() : "Select Date"} {/* Format the date */}
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={()=>setShowPicker(true)}>
-              <View style={[styles.dateTime,{marginLeft:'20%'}]}>
-                <Text style={styles.detailText}>
-                {time ? time.toLocaleTimeString() : "Select Time"} {/* Format the time */}
-                </Text>
-              </View>
-            </TouchableOpacity>
-         </View>
-         <View style={styles.taskType}>
-          <Dropdown
-             data={types}
-             labelField={"label"}
-             valueField={"value"}
-             value={valueType} // Bind selected value to Dropdown
-             onFocus={() => setIsFocusType(true)}
-             onBlur={() => setIsFocusType(false)}
-             placeholder="Select item" // Placeholder text when no value is selected
-             onChange={(item) => {
-               setValueType(item.value); // Update selected value
-               setIsFocusType(false);
-             }}
+            value={text} // Bind the text state value
           />
-         </View>
-         <View style={styles.dropdownList}>
-          <ListDropdown style={{height:'53%'}}profiles={{profiles: user.profiles}}/>
-         </View>
-         <View style={{width:"50%",height:'12%',flexDirection: "row",alignSelf:'center',marginTop:-160,}}>
-            <TouchableOpacity style={{marginLeft:-5,marginRight: 10}}
-            onPress={() => {setShowModal(false);}}>
-                <View style={[styles.button,{backgroundColor: "#8BC34A"}]}>
-                    <Text style={[styles.instText,{textAlign:'center'}]}>Assign</Text>
-                </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={()=>setShowModal(false)}>
-                <View style={[styles.button,{backgroundColor: "#FFCDD2"}]}>
-                    <Text style={[styles.instText,{textAlign:'center'}]}>Cancel</Text>
-                </View>
-            </TouchableOpacity>
-         </View>
-         <DateTimePicker time={time} date={date} setTime={setTime} setDate={setDate} show={showPicker} setShow={setShowPicker}/>
+        </View>
+        <Text
+          style={{
+            marginTop: "1%",
+            fontFamily: "Fredoka-Bold",
+            textAlign: "right",
+          }}
+        >
+          {Math.ceil(text.length / 39)}/5 lines
+        </Text>
+        <View
+          style={{
+            marginTop: "1%",
+            flexDirection: "row",
+            height: "10%",
+            width: "70%",
+          }}
+        >
+          <Text
+            style={[
+              styles.instText,
+              { fontFamily: "Fredoka-Bold", textAlign: "right" },
+            ]}
+          >
+            Deadline:{" "}
+          </Text>
+          <TouchableOpacity onPress={() => setShowPicker(true)}>
+            <View style={[styles.dateTime, { marginLeft: "7%" }]}>
+              <Text style={styles.detailText}>
+                {date ? date.toLocaleDateString() : "Select Date"}{" "}
+                {/* Format the date */}
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setShowPicker(true)}>
+            <View style={[styles.dateTime, { marginLeft: "20%" }]}>
+              <Text style={styles.detailText}>
+                {time ? time.toLocaleTimeString() : "Select Time"}{" "}
+                {/* Format the time */}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+          <View  style={{
+            marginTop: "1%",
+            flexDirection: "row",
+            height: "10%",
+            width: "70%",
+            alignItems:'center',
+            marginTop:'-5%'
+          }}>
+          <Text
+            style={[
+              styles.instText,
+              { fontFamily: "Fredoka-Bold", textAlign: "right" },
+            ]}
+          >
+            Type:{" "}
+          </Text>
+          <View style={styles.taskType}>
+          <Dropdown
+            data={types}
+            labelField={"label"}
+            valueField={"value"}
+            value={valueType} // Bind selected value to Dropdown
+            onFocus={() => setIsFocusType(true)}
+            onBlur={() => setIsFocusType(false)}
+            placeholder="Select item" // Placeholder text when no value is selected
+            onChange={(item) => {
+              setValueType(item.value); // Update selected value
+              setIsFocusType(false);
+            }}
+          />
+          </View>
+        </View>
+        <View style={styles.dropdownList}>
+          <ListDropdown
+            style={{ height: "53%" }}
+            profiles={{ profiles: user.profiles }}
+          />
+        </View>
+        <View
+          style={{
+            width: "50%",
+            height: "12%",
+            flexDirection: "row",
+            alignSelf: "center",
+            marginTop: -160,
+          }}
+        >
+          <TouchableOpacity
+            style={{ marginLeft: -5, marginRight: 10 }}
+            onPress={() => {
+              setShowModal(false);
+            }}
+          >
+            <View style={[styles.button, { backgroundColor: "#8BC34A" }]}>
+              <Text style={[styles.instText, { textAlign: "center" }]}>
+                Assign
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setShowModal(false)}>
+            <View style={[styles.button, { backgroundColor: "#FFCDD2" }]}>
+              <Text style={[styles.instText, { textAlign: "center" }]}>
+                Cancel
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        <DateTimePicker
+          time={time}
+          date={date}
+          setTime={setTime}
+          setDate={setDate}
+          show={showPicker}
+          setShow={setShowPicker}
+        />
       </LinearGradient>
     </Modal>
   );
@@ -152,45 +227,52 @@ const styles = StyleSheet.create({
     fontSize: calculateFontSize(16),
     fontFamily: "Fredoka-Bold",
     backgroundColor: "transparent",
-  },columnView:{
+  },
+  columnView: {
     width: "75%",
     height: "60%",
-  },description:{
-  },descriptionView:{
+  },
+  description: {},
+  descriptionView: {
     backgroundColor: "white",
     marginTop: "2%",
     height: "22%",
     width: "100%",
     borderRadius: 10,
     elevation: 10,
-  },button:{
+  },
+  button: {
     color: "white",
     borderRadius: 7,
     height: 30,
     width: 100,
     borderColor: "black",
     borderWidth: 2,
-  },dateTime:{
-    backgroundColor:'white',
-    elevation:10,
-    borderRadius:10,
-    height:'50%',
-    width:'115%',
-    justifyContent:'space-around',
-  },detailText:{
-    fontFamily:'Fredoka-Bold',
-    textAlign:'center'
-  },dropdownList:{
-    alignItems:'center'
-  },taskType:{
-    height:'6%',
-    width:'45%',
-    backgroundColor:'white',
-    borderRadius:8,
-    elevation:8,
-    marginTop:'-5%',
-    marginBottom:'3%',
-  }
+  },
+  dateTime: {
+    backgroundColor: "white",
+    elevation: 10,
+    borderRadius: 10,
+    height: "50%",
+    width: "115%",
+    justifyContent: "space-around",
+  },
+  detailText: {
+    fontFamily: "Fredoka-Bold",
+    textAlign: "center",
+  },
+  dropdownList: {
+    alignItems: "center",
+  },
+  taskType: {
+    width: "60%",
+    height:"70%",
+    backgroundColor: "white",
+    borderRadius: 8,
+    elevation: 8,
+    justifyContent:'center',
+    marginStart:'1%'
+  },
 });
 
 export default CreateTask;

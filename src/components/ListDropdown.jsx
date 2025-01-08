@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 const ListDropdown = ({ profiles, style }) => {
   const [showDropdown,setShowDropdown]= useState(false);
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 135, left: 0 });
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 145, left: 0 });
   console.log('position ',dropdownPosition)
   profiles = profiles.profiles;
   console.log('profiles to show:',profiles)
