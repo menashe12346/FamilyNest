@@ -20,8 +20,8 @@ export const taskTypes = {
     3: "Laundry",
     4: "Pet-care",
     5: "Studying",
-    6: "Other",
-    7: "Room-Cleaning"
+    7: "Room-Cleaning",
+    11: "Other",
   };
   
 

@@ -85,15 +85,17 @@ const CreateTask = ({ showModal, setShowModal, user, profile}) => {
          </View>
          <View style={styles.taskType}>
           <Dropdown
-            data={types}
-            labelField={"label"}
-            valueField={"value"}
-            onFocus={()=>setIsFocusType(true)}
-            onBlur={()=>setIsFocusType(false)}
-            onChange={(item)=>{
-              setValueType(item.value)
-              setIsFocusType(false)
-            }}
+             data={types}
+             labelField={"label"}
+             valueField={"value"}
+             value={valueType} // Bind selected value to Dropdown
+             onFocus={() => setIsFocusType(true)}
+             onBlur={() => setIsFocusType(false)}
+             placeholder="Select item" // Placeholder text when no value is selected
+             onChange={(item) => {
+               setValueType(item.value); // Update selected value
+               setIsFocusType(false);
+             }}
           />
          </View>
          <View style={styles.dropdownList}>
@@ -181,6 +183,7 @@ const styles = StyleSheet.create({
   },dropdownList:{
     alignItems:'center'
   },taskType:{
+    height:'6%',
     width:'45%',
     backgroundColor:'white',
     borderRadius:8,
