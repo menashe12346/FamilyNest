@@ -12,15 +12,26 @@ import { color } from "@rneui/base";
 import DateTimePicker from "./DateTimePicker";
 import { useState } from "react";
 import ListDropdown from "./ListDropdown";
+import { Dropdown } from "react-native-element-dropdown";
+import { taskTypes } from "../utils/TaskUtils";
 
 const CreateTask = ({ showModal, setShowModal, user, profile}) => {
     const [text, setText] = React.useState(''); // Initialize the text state
   profile = profile.profile;
   user = user.user
 
-   const [showPicker, setShowPicker] = useState(true);
+  const types = Object.entries(taskTypes).map(([key, value]) => ({
+    label: value,
+    value: key
+  }));
+
+
+   const [showPicker, setShowPicker] = useState(false);
    const [date ,setDate] =useState(new Date())
    const [time ,setTime] =useState(new Date())
+
+   const [valueType, setValueType] = useState(7);
+   const [isFocusType, setIsFocusType] = useState(false);
 
   
   return (
@@ -55,22 +66,35 @@ const CreateTask = ({ showModal, setShowModal, user, profile}) => {
             />
          </View>
          <Text style={{marginTop:"1%",fontFamily:'Fredoka-Bold',textAlign:'right'}}>{Math.ceil(text.length/39)}/5 lines</Text>
-         <View style={{marginTop:'1%',flexDirection:'row',height:'12%', width:'70%'}}>
+         <View style={{marginTop:'1%',flexDirection:'row',height:'10%', width:'70%'}}>
          <Text style={[styles.instText,{fontFamily:'Fredoka-Bold',textAlign:'right'}]}>Deadline: </Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>setShowPicker(true)}>
               <View style={[styles.dateTime,{marginLeft:'7%'}]}>
                 <Text style={styles.detailText}>
                 {date ? date.toLocaleDateString() : "Select Date"} {/* Format the date */}
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>setShowPicker(true)}>
               <View style={[styles.dateTime,{marginLeft:'20%'}]}>
                 <Text style={styles.detailText}>
                 {time ? time.toLocaleTimeString() : "Select Time"} {/* Format the time */}
                 </Text>
               </View>
             </TouchableOpacity>
+         </View>
+         <View style={styles.taskType}>
+          <Dropdown
+            data={types}
+            labelField={"label"}
+            valueField={"value"}
+            onFocus={()=>setIsFocusType(true)}
+            onBlur={()=>setIsFocusType(false)}
+            onChange={(item)=>{
+              setValueType(item.value)
+              setIsFocusType(false)
+            }}
+          />
          </View>
          <View style={styles.dropdownList}>
           <ListDropdown style={{height:'53%'}}profiles={{profiles: user.profiles}}/>
@@ -156,6 +180,13 @@ const styles = StyleSheet.create({
     textAlign:'center'
   },dropdownList:{
     alignItems:'center'
+  },taskType:{
+    width:'45%',
+    backgroundColor:'white',
+    borderRadius:8,
+    elevation:8,
+    marginTop:'-5%',
+    marginBottom:'3%',
   }
 });
 

@@ -14,6 +14,17 @@ export const CreateNewTask = ({creatorID,assignedTo,taskID,title,description,sta
     }
 }
 
+export const taskTypes = {
+    1: "Outdoor",
+    2: "House-Cleaning",
+    3: "Laundry",
+    4: "Pet-care",
+    5: "Studying",
+    6: "Other",
+    7: "Room-Cleaning"
+  };
+  
+
 export const getNewTaskID = ({tasks})=>{
     let maxID = -1
     for (const task of tasks){

@@ -2,8 +2,9 @@ import { View, Text ,StyleSheet, Pressable ,Image} from 'react-native'
 import React from 'react'
 import { calculateFontSize } from '../utils/FontUtils'
 import avatarImages from '../utils/AvatarsUtils'
-import { isMomDadSonDaughter } from '../utils/ProfileUtils'
+import { isMomDadSonDaughter, getProfileAge } from '../utils/ProfileUtils'
 import { LinearGradient } from "expo-linear-gradient";
+import { FontAwesome } from '@expo/vector-icons'
 
 const ProfileBar = ({profile,style,onPress}) => {
   console.log('Profile (HOME):',profile)
@@ -20,6 +21,11 @@ const ProfileBar = ({profile,style,onPress}) => {
       <View style={styles.profileDetails}>
         <Text style={styles.nameStyle}>{profile.name}</Text>
         <Text style={styles.roleText}>{isMomDadSonDaughter({profile})}</Text>
+      </View>
+      <View style={[styles.profileDetails,{marginStart:'5%'}]}>
+        <FontAwesome name={"birthday-cake"} size={calculateFontSize(20)} color={'black'}>
+        </FontAwesome>
+      <Text style={styles.nameStyle}>{getProfileAge(profile.birth_day)}</Text>
       </View>
     </LinearGradient>
     </Pressable>
