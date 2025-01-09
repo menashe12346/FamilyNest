@@ -74,7 +74,7 @@ const CreateTask = ({ showModal, setShowModal, user, profile ,task,setNewTask })
 
   const handleAssign =()=>{
       console.log('task:',taskTitle,description,time,date,valueType,rewardValue,assignedProfile)
-      console.log('befpre',user.tasks)
+      console.log('before',user.tasks)
       const newId = getNewTaskID({tasks: user.tasks})
       console.log(newId)
       const newTask = CreateNewTask({

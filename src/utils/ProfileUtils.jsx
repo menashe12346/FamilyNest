@@ -1,13 +1,13 @@
 export const CreateNewProfile = ({id,role,gender,name,birth_day,avatarURI,passkey,imageID})=>{
 
-  let formattedDate = null;
-if (date && date.toDate) {
-  // If it's a Firestore Timestamp, convert it to a Date string
-  formattedDate = date.toDate().toISOString().split('T')[0];
-} else if (date instanceof Date) {
-  // If it's already a JavaScript Date object, convert it to a string
-  formattedDate = date.toISOString().split('T')[0];
-}
+  let formattedBirthDay = null;
+  if (birth_day && birth_day.toDate) {
+    // If it's a Firestore Timestamp, convert it to a Date string
+    formattedBirthDay = birth_day.toDate().toISOString().split('T')[0];
+  } else if (birth_day instanceof Date) {
+    // If it's already a JavaScript Date object, convert it to a string
+    formattedBirthDay = birth_day.toISOString().split('T')[0];
+  }
     return {
         id:id,
         role:role,
@@ -16,7 +16,8 @@ if (date && date.toDate) {
         imageID:imageID,
         avatarURI:avatarURI,
         gender:gender,
-        passkey:passkey
+        passkey:passkey,
+        reward:0
     }
 }
 

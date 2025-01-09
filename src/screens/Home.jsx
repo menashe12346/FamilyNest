@@ -29,9 +29,12 @@ const Home = ({ navigation, route }) => {
   ); //
   const dispatch = useDispatch();
   console.log("User logged (SelectProfileScreen):", user);
+  console.log('id',selectedUser)
 
   const [showModal, setShowModal] = useState(true);
   const [loading, setLoading] = useState(false); // To track if the upload is in progress
+  const profile = getProfileById(user, selectedUser) // Always up-to-date
+  const parental = profile ? profile.role === "parent" : true; // Always up-to-date
 
   const [task,setNewTask] = useState();
   console.log('task',task)
@@ -62,8 +65,7 @@ const Home = ({ navigation, route }) => {
     uploadTask();
   }, [task, dispatch, user, uploadUserData, loading]); // Re-run effect when task or user
 
-  const profile = selectedUser ? getProfileById(user, selectedUser) : null; // Always up-to-date
-  const parental = profile ? profile.role === "parent" : true; // Always up-to-date
+
 
   return (
     <View style={styles.container}>

@@ -19,13 +19,19 @@ const ProfileBar = ({profile,style,onPress}) => {
         <Image source={avatarImages[profile.imageID]} style={styles.avatarImage} />
       </View>
       <View style={styles.profileDetails}>
-        <Text style={styles.nameStyle}>{profile.name}</Text>
+        <Text style={styles.nameStyle}>{profile.name}, {getProfileAge(profile.birth_day)}</Text>
         <Text style={styles.roleText}>{isMomDadSonDaughter({profile})}</Text>
       </View>
-      <View style={[styles.profileDetails,{marginStart:'5%'}]}>
+      {/* <View style={[styles.profileDetails,{marginStart:'2%'}]}>
         <FontAwesome name={"birthday-cake"} size={calculateFontSize(20)} color={'black'}>
         </FontAwesome>
-      <Text style={styles.nameStyle}>{getProfileAge(profile.birth_day)}</Text>
+      </View> */}
+      <Text style={styles.nameStyle}></Text>
+      <View style={{marginStart:'20%',flexDirection:'row' ,justifyContent:'center'}}>
+      <View style={styles.rewardView}>
+        <Image style={styles.rewardImage}source={require('../assets/images/reward.png')}/>
+      </View>
+      <Text style={styles.roleText}>{profile.reward}</Text>
       </View>
     </LinearGradient>
     </Pressable>
@@ -78,6 +84,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     borderRadius: 4,
+  },rewardView:{
+    height:40,
+    width:40,
+  },rewardImage:{
+    height:40,
+    width:40,
+    resizeMode:'contain'
   }
 })
 
