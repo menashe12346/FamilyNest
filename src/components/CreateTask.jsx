@@ -47,6 +47,7 @@ const CreateTask = ({ showModal, setShowModal, user, profile ,task,setNewTask })
   const [isFocusType, setIsFocusType] = useState(false);
 
   const handleValidation = () => {
+    console.log(date)
     if (!taskTitle.trim()) {
       alert("Please enter a task title.");
       return false;
@@ -59,7 +60,7 @@ const CreateTask = ({ showModal, setShowModal, user, profile ,task,setNewTask })
       alert("Please select a date.");
       return false;
     }
-    if (!time) {
+    if (!date) {
       alert("Please select a time.");
       return false;
     }
@@ -67,21 +68,23 @@ const CreateTask = ({ showModal, setShowModal, user, profile ,task,setNewTask })
       alert("Assign to other profile")
       return(false)
     }
+  
     return true;
   };
 
   const handleAssign =()=>{
       console.log('task:',taskTitle,description,time,date,valueType,rewardValue,assignedProfile)
+      console.log('befpre',user.tasks)
+      const newId = getNewTaskID({tasks: user.tasks})
+      console.log(newId)
       const newTask = CreateNewTask({
         creatorID: profile.id,
         assignedTo: assignedProfile,
-        taskID: 1,
+        taskID: newId,
         title: taskTitle,
         description: description,
-        startTime: time,
-        endTime: time,
-        startDate: new Date(),
-        endDate: date,
+        startTime: new Date(),
+        endTime: date,
         type: valueType,
         reward: rewardValue,
         minAge: 0,
@@ -244,9 +247,9 @@ const CreateTask = ({ showModal, setShowModal, user, profile ,task,setNewTask })
           </TouchableOpacity>
         </View>
         <DateTimePicker
-          time={time}
+          time={date}
           date={date}
-          setTime={setTime}
+          setTime={setDate}
           setDate={setDate}
           show={showPicker}
           setShow={setShowPicker}

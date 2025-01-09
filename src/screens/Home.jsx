@@ -31,17 +31,31 @@ const Home = ({ navigation, route }) => {
   console.log("User logged (SelectProfileScreen):", user);
 
   const [showModal, setShowModal] = useState(true);
+  const [loading, setLoading] = useState(false); // To track if the upload is in progress
 
   const [task,setNewTask] = useState();
   console.log('task',task)
 
   useEffect(() => {
-    if (task) {
-      dispatch(addReduxTask(task)); // Dispatch task to Redux when it's set
-      uploadUserData(user.uid,user)
-      setNewTask(null); // Reset task after dispatch, if needed
-    }
-  }, [task, dispatch]); // Run effect whenever task changes
+    const uploadTask = async () => {
+      if (task && !loading) {
+        try {
+          console.log('task to upload', task);
+          setLoading(true); // Set loading to true while uploading
+          dispatch(addReduxTask(task)); // Dispatch task to Redux
+          await uploadUserData(user.uid, user); // Wait for user data upload to complete
+          console.log('Task uploaded successfully!');
+        } catch (error) {
+          console.error('Error uploading task:', error);
+        } finally {
+          setLoading(false); // Reset loading once the task is uploaded
+          setNewTask(null); // Reset the task after the upload
+        }
+      }
+    };
+
+    uploadTask();
+  }, [task, dispatch, user, uploadUserData, loading]); // Re-run effect when task or user
 
   const profile = selectedUser ? getProfileById(user, selectedUser) : null; // Always up-to-date
   const parental = profile ? profile.role === "parent" : true; // Always up-to-date
