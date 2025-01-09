@@ -42,8 +42,13 @@ const Home = ({ navigation, route }) => {
         try {
           console.log('task to upload', task);
           setLoading(true); // Set loading to true while uploading
-          dispatch(addReduxTask(task)); // Dispatch task to Redux
-          await uploadUserData(user.uid, user); // Wait for user data upload to complete
+          await dispatch(addReduxTask(task)); // Dispatch task to Redux
+
+          // Wait for the next render to pick up the updated Redux state
+          const updatedUser = { ...user, tasks: [...user.tasks, task] };
+
+
+          await uploadUserData(user.uid, updatedUser); // Wait for user data upload to complete
           console.log('Task uploaded successfully!');
         } catch (error) {
           console.error('Error uploading task:', error);

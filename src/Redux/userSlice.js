@@ -40,6 +40,7 @@ const userSlice = createSlice({
     }, 
 
     addReduxTask: (state, action) => {
+      console.log('redux task update')
       state.user.tasks.push(action.payload); // Pushes a new task into the tasks array
     },
   },
