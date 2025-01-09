@@ -38,9 +38,13 @@ const userSlice = createSlice({
     setReduxProfiles: (state, action) => {
       state.user.profiles = action.payload;
     }, 
+
+    addReduxTask: (state, action) => {
+      state.user.tasks.push(action.payload); // Pushes a new task into the tasks array
+    },
   },
 });
 
 // Exporting actions
-export const { setUser, clearUser, setReduxProfiles } = userSlice.actions;
+export const { setUser, clearUser, setReduxProfiles ,addReduxTask} = userSlice.actions;
 export default userSlice.reducer;

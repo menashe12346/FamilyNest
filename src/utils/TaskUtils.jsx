@@ -1,4 +1,5 @@
-export const CreateNewTask = ({creatorID,assignedTo,taskID,title,description,startTime,endTime,type,reward,minAge}) =>{
+export const CreateNewTask = ({creatorID,assignedTo,taskID,title,description,startTime,endTime,startDate,endDate,type,reward,minAge}) =>{
+    console.log("Details:",creatorID,assignedTo,taskID,title,description,startDate,startTime,endDate,endTime,type,reward,minAge)
     return{
         id:taskID,
         creatorID:creatorID,
@@ -7,6 +8,8 @@ export const CreateNewTask = ({creatorID,assignedTo,taskID,title,description,sta
         description:description,
         startTime:startTime,
         endTime:endTime,
+        startDate:startDate,
+        endDate:endDate,
         type:type,
         reward:reward,
         minAge:minAge,

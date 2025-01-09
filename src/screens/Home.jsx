@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -14,7 +14,7 @@ import SelectProfileScreen from "./SelectProfileScreen";
 import { calculateFontSize } from "../utils/FontUtils";
 import avatarImages from "../utils/AvatarsUtils";
 import { useDispatch, useSelector } from "react-redux";
-import { setReduxProfiles } from "../Redux/userSlice";
+import { setReduxProfiles ,addReduxTask } from "../Redux/userSlice";
 import { setSelectedProfileId } from "../Redux/selectedProfileSlice";
 import { uploadUserData } from "../utils/UploadData";
 import { setUser } from "../Redux/userSlice";
@@ -32,6 +32,17 @@ const Home = ({ navigation, route }) => {
 
   const [showModal, setShowModal] = useState(true);
 
+  const [task,setNewTask] = useState();
+  console.log('task',task)
+
+  useEffect(() => {
+    if (task) {
+      dispatch(addReduxTask(task)); // Dispatch task to Redux when it's set
+      uploadUserData(user.uid,user)
+      setNewTask(null); // Reset task after dispatch, if needed
+    }
+  }, [task, dispatch]); // Run effect whenever task changes
+
   const profile = selectedUser ? getProfileById(user, selectedUser) : null; // Always up-to-date
   const parental = profile ? profile.role === "parent" : true; // Always up-to-date
 
@@ -40,7 +51,7 @@ const Home = ({ navigation, route }) => {
       <View style={{width:'90%',height:'10%'}}>
         <ProfileBar profile={profile} />
       </View>
-      {showModal && <CreateTask showModal={showModal} setShowModal={setShowModal} user={{user}} profile={{profile}}/>}
+      {showModal && <CreateTask showModal={showModal} setShowModal={setShowModal} user={{user}} profile={{profile}} task={task} setNewTask={setNewTask}/>}
       <Text style={styles.headerText} onPress={()=>setShowModal(true)}>Parents Screen</Text>
     </View>
   );

@@ -3,7 +3,7 @@ import { View, Modal, FlatList, StyleSheet } from 'react-native';
 import ProfileBar from './ProfileBar'; // Adjust the import according to your file structure
 import { useState } from 'react';
 
-const ListDropdown = ({ profiles, style }) => {
+const ListDropdown = ({ profiles, style ,value , onChange }) => {
   const [showDropdown,setShowDropdown]= useState(false);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 145, left: 0 });
   console.log('position ',dropdownPosition)
@@ -33,6 +33,7 @@ const renderItem = ({ item }) => {
     return <View style={{height:75}}>
     <ProfileBar profile={item} onPress={()=>{
       setSelected(item)
+      onChange(item.id)
       setShowDropdown(false)
     }}/>
   </View>
