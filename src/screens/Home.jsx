@@ -46,6 +46,7 @@ const Home = ({ navigation, route }) => {
   const [tasks,setTasks] = useState(user.tasks)
   const [task, setNewTask] = useState();
   console.log("task", task);
+  console.log('tasks Available',tasks)
 
   useEffect(() => {
     const uploadTask = async () => {
@@ -60,12 +61,13 @@ const Home = ({ navigation, route }) => {
 
           await uploadUserData(user.uid, updatedUser); // Wait for user data upload to complete
           console.log("Task uploaded successfully!");
-          setTasks(user.tasks)
+          console.log('tasks')
         } catch (error) {
           console.error("Error uploading task:", error);
         } finally {
           setLoading(false); // Reset loading once the task is uploaded
           setNewTask(null); // Reset the task after the upload
+          setTasks(user.tasks)
         }
       }
     };
