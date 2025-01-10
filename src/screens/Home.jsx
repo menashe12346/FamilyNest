@@ -1,4 +1,4 @@
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -14,13 +14,21 @@ import SelectProfileScreen from "./SelectProfileScreen";
 import { calculateFontSize } from "../utils/FontUtils";
 import avatarImages from "../utils/AvatarsUtils";
 import { useDispatch, useSelector } from "react-redux";
-import { setReduxProfiles ,addReduxTask } from "../Redux/userSlice";
+import { setReduxProfiles, addReduxTask } from "../Redux/userSlice";
 import { setSelectedProfileId } from "../Redux/selectedProfileSlice";
 import { uploadUserData } from "../utils/UploadData";
 import { setUser } from "../Redux/userSlice";
-import { CreateNewProfile, getNewProfileID , getProfileById ,getProfileAge} from '../utils/ProfileUtils';
+import {
+  CreateNewProfile,
+  getNewProfileID,
+  getProfileById,
+  getProfileAge,
+} from "../utils/ProfileUtils";
 import ProfileBar from "../components/ProfileBar";
 import CreateTask from "../components/CreateTask";
+import Task from "../components/Task";
+import { LinearGradient } from "expo-linear-gradient";
+import { FlatList } from "react-native-gesture-handler";
 
 const Home = ({ navigation, route }) => {
   const user = useSelector((state) => state.user.user);
@@ -29,32 +37,32 @@ const Home = ({ navigation, route }) => {
   ); //
   const dispatch = useDispatch();
   console.log("User logged (SelectProfileScreen):", user);
-  console.log('id',selectedUser)
+  console.log("id", selectedUser);
 
   const [showModal, setShowModal] = useState(true);
   const [loading, setLoading] = useState(false); // To track if the upload is in progress
-  const profile = getProfileById(user, selectedUser) // Always up-to-date
+  const profile = getProfileById(user, selectedUser); // Always up-to-date
   const parental = profile ? profile.role === "parent" : true; // Always up-to-date
-
-  const [task,setNewTask] = useState();
-  console.log('task',task)
+  const [tasks,setTasks] = useState(user.tasks)
+  const [task, setNewTask] = useState();
+  console.log("task", task);
 
   useEffect(() => {
     const uploadTask = async () => {
       if (task && !loading) {
         try {
-          console.log('task to upload', task);
+          console.log("task to upload", task);
           setLoading(true); // Set loading to true while uploading
           await dispatch(addReduxTask(task)); // Dispatch task to Redux
 
           // Wait for the next render to pick up the updated Redux state
           const updatedUser = { ...user, tasks: [...user.tasks, task] };
 
-
           await uploadUserData(user.uid, updatedUser); // Wait for user data upload to complete
-          console.log('Task uploaded successfully!');
+          console.log("Task uploaded successfully!");
+          setTasks(user.tasks)
         } catch (error) {
-          console.error('Error uploading task:', error);
+          console.error("Error uploading task:", error);
         } finally {
           setLoading(false); // Reset loading once the task is uploaded
           setNewTask(null); // Reset the task after the upload
@@ -66,14 +74,52 @@ const Home = ({ navigation, route }) => {
   }, [task, dispatch, user, uploadUserData, loading]); // Re-run effect when task or user
 
 
+  const renderItem = ({item}) =>{
+    console.log('task rendering',item)
+    return <Task task={{item}}/>
+
+  }
+
+  console.log('use111r',tasks)
 
   return (
     <View style={styles.container}>
-      <View style={{width:'90%',height:'10%'}}>
+      <View style={{ width: "90%", height: "10%" }}>
         <ProfileBar profile={profile} />
       </View>
-      {showModal && <CreateTask showModal={showModal} setShowModal={setShowModal} user={{user}} profile={{profile}} task={task} setNewTask={setNewTask}/>}
-      <Text style={styles.headerText} onPress={()=>setShowModal(true)}>Parents Screen</Text>
+      {showModal && (
+        <CreateTask
+          showModal={showModal}
+          setShowModal={setShowModal}
+          user={{ user }}
+          profile={{ profile }}
+          task={task}
+          setNewTask={setNewTask}
+        />
+      )}
+      <TouchableOpacity onPress={() => setShowModal(true)}>
+        <LinearGradient
+          style={styles.createTaskButton}
+          colors={["#76E2F4", "#615DEC", "#301781"]}
+        >
+          <Text
+            style={{
+              fontFamily: "Fredoka-Bold",
+              fontSize: calculateFontSize(20),
+            }}
+          >
+            Create new task
+          </Text>
+        </LinearGradient>
+      </TouchableOpacity>
+      <View style={styles.tasksContainer}>
+        <FlatList
+          data={tasks} // List of profiles
+          keyExtractor={(item) => item.id.toString()} // Ensure the id is converted to string
+          renderItem={renderItem} // Render each item using ProfileBar
+          ItemSeparatorComponent={() => <View/>}
+        />
+      </View>
     </View>
   );
 };
@@ -119,6 +165,18 @@ const styles = StyleSheet.create({
     width: "100%", // Adjust the width to fill the circle
     height: "100%", // Adjust the height to fill the circle
     resizeMode: "cover",
+  },
+  tasksContainer: {
+    height: "80%",
+    width: "90%",
+    backgroundColor: "red",
+    elevation: 5,
+    borderRadius: 10,
+    alignContent:'center'
+  },
+  createTaskButton: {
+    borderRadius: 10,
+    width: "90%",
   },
 });
 

@@ -136,7 +136,7 @@ const SelectProfileScreen = ({navigation}) => {
     >
       <Text style={styles.title}>Welcome back {user.familyName}!</Text>
       <FlatList
-        numColumns={3}
+        numColumns={2}
         data={profiles}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => (
