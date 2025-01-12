@@ -5,23 +5,26 @@ import { calculateFontSize } from '../utils/FontUtils'
 import CountdownTimer from './CountdownTimer';
 import { getSecondsRemaining } from '../utils/TimeUtils';
 import { getProfileById } from '../utils/ProfileUtils';
+import { taskTypes } from '../utils/TaskUtils';
 import ProfileBar from './ProfileBar';
 
 const Task = ({task}) => {
   task=task.item
   const assignedTo = getProfileById(null,task.assignedTo)
+  description=task.description.slice(0,100)
   console.log('my task1',task)
   return (
     <LinearGradient style={styles.modalContent} colors={['red','yellow']}>
       <View style={{alignItems:'center',alignContent:'center',flexDirection:'row'}}>
         <Text style={styles.nameText}>{assignedTo.name}</Text>
+        <CountdownTimer initialSeconds={getSecondsRemaining(task.endTime)}/>
       </View>
       <View style={styles.container}>
         <View style={{alignContent:'center',flexDirection:'row'}}>
           <Text style={styles.instText}>{task.title}</Text>
-          <CountdownTimer initialSeconds={getSecondsRemaining(task.endTime)}/>
         </View>
-        <Text style={styles.description}>{task.description}</Text>
+        <Text style={styles.typeText}>Type: {taskTypes[task.type]}</Text>
+        <Text style={styles.description}>{description}</Text>
       </View>
     </LinearGradient>
   )
@@ -29,7 +32,8 @@ const Task = ({task}) => {
 
 const styles = StyleSheet.create({
   modalContent: {
-    width: "250",
+    width: 180,
+    height:150,
     //paddingStart: "2%",
     //paddingEnd: "2%",
     borderRadius: 10,
@@ -54,7 +58,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   instText: {
-    fontSize: calculateFontSize(20),
+    fontSize: calculateFontSize(18),
     fontFamily: "Fredoka-Bold",
     backgroundColor: "transparent",
   },
@@ -118,6 +122,9 @@ const styles = StyleSheet.create({
   },nameText:{
     fontFamily:'Fredoka-Bold',
     fontSize:calculateFontSize(12)
+  },typeText:{
+    fontSize:calculateFontSize(12),
+    fontFamily:'Fredoka-Bold',
   }
 });
 

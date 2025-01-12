@@ -116,10 +116,11 @@ const Home = ({ navigation, route }) => {
       </TouchableOpacity>
       <View style={styles.tasksContainer}>
         <FlatList
+          numColumns={2}
           data={tasks} // List of profiles
           keyExtractor={(item) => item.id.toString()} // Ensure the id is converted to string
           renderItem={renderItem} // Render each item using ProfileBar
-          ItemSeparatorComponent={() => <View/>}
+          ItemSeparatorComponent={() => <View style={{height:5}}/>}
         />
       </View>
     </View>
@@ -174,7 +175,8 @@ const styles = StyleSheet.create({
     backgroundColor: "red",
     elevation: 5,
     borderRadius: 10,
-    alignContent:'center'
+    alignContent:'center',
+    justifyContent:'center',
   },
   createTaskButton: {
     borderRadius: 10,

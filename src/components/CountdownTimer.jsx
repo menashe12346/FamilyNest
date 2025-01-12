@@ -38,7 +38,7 @@ const CountdownTimer = ({ initialSeconds }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.timer}>
-        {secondsLeft > 0 ? formatTime(secondsLeft) : 'Time is up!'}
+        {secondsLeft > 0 ? formatTime(secondsLeft) : 'Expired'}
       </Text>
     </View>
   );
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   timer: {
-    fontSize: calculateFontSize(20),
+    fontSize: calculateFontSize(16),
     fontFamily:'Fredoka-Bold'
   },
 });
