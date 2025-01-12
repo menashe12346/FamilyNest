@@ -4,20 +4,24 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { calculateFontSize } from '../utils/FontUtils'
 import CountdownTimer from './CountdownTimer';
 import { getSecondsRemaining } from '../utils/TimeUtils';
+import { getProfileById } from '../utils/ProfileUtils';
+import ProfileBar from './ProfileBar';
 
 const Task = ({task}) => {
-
   task=task.item
+  const assignedTo = getProfileById(null,task.assignedTo)
   console.log('my task1',task)
   return (
     <LinearGradient style={styles.modalContent} colors={['red','yellow']}>
+      <View style={{alignItems:'center',alignContent:'center',flexDirection:'row'}}>
+        <Text style={styles.nameText}>{assignedTo.name}</Text>
+      </View>
       <View style={styles.container}>
         <View style={{alignContent:'center',flexDirection:'row'}}>
           <Text style={styles.instText}>{task.title}</Text>
           <CountdownTimer initialSeconds={getSecondsRemaining(task.endTime)}/>
         </View>
         <Text style={styles.description}>{task.description}</Text>
-        
       </View>
     </LinearGradient>
   )
@@ -26,9 +30,8 @@ const Task = ({task}) => {
 const styles = StyleSheet.create({
   modalContent: {
     width: "250",
-    height: "100",
-    paddingStart: "2%",
-    paddingEnd: "2%",
+    //paddingStart: "2%",
+    //paddingEnd: "2%",
     borderRadius: 10,
     alignSelf: "center",
     borderColor: "black",
@@ -112,6 +115,9 @@ const styles = StyleSheet.create({
     width:40
   },container:{
     flexDirection:'column'
+  },nameText:{
+    fontFamily:'Fredoka-Bold',
+    fontSize:calculateFontSize(12)
   }
 });
 

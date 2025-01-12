@@ -1,3 +1,5 @@
+import { useSelector } from "react-redux";
+
 export const CreateNewProfile = ({id,role,gender,name,birth_day,avatarURI,passkey,imageID})=>{
 
   let formattedBirthDay = null;
@@ -43,6 +45,10 @@ export const getNewProfileID = ({profiles})=>{
 }
 
 export const getProfileById = (user,id) => {
+  if(!user){
+    user = useSelector((state) => state.user.user);
+    console.log(user)
+  }
   return user.profiles.find(profile => profile.id === id);
 };
 
