@@ -103,7 +103,8 @@ const Home = ({ navigation, route }) => {
           setNewTask={setNewTask}
         />
       )}
-      <TouchableOpacity onPress={() => setShowModal(true)}>
+      <TouchableOpacity onPress={() => setShowModal(true)}
+        style={{padding:10}}>
         <LinearGradient
           style={styles.createTaskButton}
           colors={["#76E2F4", "#615DEC", "#301781"]}
@@ -112,6 +113,8 @@ const Home = ({ navigation, route }) => {
             style={{
               fontFamily: "Fredoka-Bold",
               fontSize: calculateFontSize(20),
+              padding:10,
+              textAlign:'center'
             }}
           >
             Create new task
@@ -192,7 +195,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
   }, separator: {
-    height: 1, // Adjust height for horizontal line
+    height: '2%', // Adjust height for horizontal line
     width: '90%', // Adjust width as needed
     backgroundColor: '#aaa',
     alignSelf: 'center',

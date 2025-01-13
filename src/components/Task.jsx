@@ -1,4 +1,4 @@
-import { View, Text , StyleSheet, ImageBackground } from 'react-native'
+import { View, Text , StyleSheet, ImageBackground, Image } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import { LinearGradient } from 'expo-linear-gradient'
 import { calculateFontSize } from '../utils/FontUtils'
@@ -7,6 +7,7 @@ import { getSecondsRemaining } from '../utils/TimeUtils';
 import { getProfileById } from '../utils/ProfileUtils';
 import { taskTypes } from '../utils/TaskUtils';
 import ProfileBar from './ProfileBar';
+import avatarImages from '../utils/AvatarsUtils';
 
 const backgroundImages = {
   2: require('../assets/images/cleaning.jpg'),
@@ -20,8 +21,10 @@ const backgroundImages = {
 const Task = ({task}) => {
   task=task.item
   const assignedTo = getProfileById(null,task.assignedTo)
-  description=task.description.length>50? task.description.slice(0,50)+'....' : task.description
+  description=task.description.length>30? task.description.slice(0,30)+'....' : task.description
   console.log('my task1',task)
+
+  const [profile,setProfile]= useState(getProfileById(null,task.assignedTo))
 
 // Determine the background image based on the task type
 const getBackgroundImage = () => {
@@ -48,6 +51,9 @@ const getBackgroundImage = () => {
       style={styles.modalContent}>
       <View style={styles.overlay}>
       <View style={{alignItems:'center',alignContent:'center',flexDirection:'row'}}>
+        <View style={styles.roundedImage}>
+          <Image style={{height:'100%',width:'100%',resizeMode:'cover'}} source={avatarImages[profile.imageID]}/>
+        </View>
         <Text style={styles.nameText}>{assignedTo.name}</Text>
         <CountdownTimer initialSeconds={getSecondsRemaining(task.endTime)}/>
       </View>
@@ -86,8 +92,8 @@ const styles = StyleSheet.create({
   },
   roundedImage: {
     borderWidth: 2,
-    width: 50, // Increased width
-    height: 50, // Increased height
+    width: 30, // Increased width
+    height: 30, // Increased height
     borderRadius: 20, // Half of the width/height to make it a perfect circle
     overflow: "hidden", // Ensure the image is contained within the circle
     backgroundColor: "transparent",
