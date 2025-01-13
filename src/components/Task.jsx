@@ -8,6 +8,8 @@ import { getProfileById } from '../utils/ProfileUtils';
 import { taskTypes } from '../utils/TaskUtils';
 import ProfileBar from './ProfileBar';
 import avatarImages from '../utils/AvatarsUtils';
+import * as Animatable from 'react-native-animatable';
+import { Badge } from 'react-native-elements';
 
 const backgroundImages = {
   2: require('../assets/images/cleaning.jpg'),
@@ -18,6 +20,13 @@ const backgroundImages = {
   6: require('../assets/images/dish-wash.jpg')
 }
 
+const isNewTask = (startTime, thresholdHours = 3) => {
+  const currentTime = new Date(); // Get the current time
+  const taskStartTime = new Date(startTime); // Convert startTime string to a Date object
+  const timeDifference = (currentTime - taskStartTime) / (1000 * 60 * 60); // Difference in hours
+  return timeDifference <= thresholdHours; // Task is new if within the threshold
+};
+
 const Task = ({task}) => {
   task=task.item
   const assignedTo = getProfileById(null,task.assignedTo)
@@ -26,6 +35,9 @@ const Task = ({task}) => {
 
   const [profile,setProfile]= useState(getProfileById(null,task.assignedTo))
   const [remaining,setRemaining]=useState(true)
+  const [isNew,setIsNew]=useState(isNewTask(task.startTime,3))
+
+  console.log('new TASK',isNew)
 
 // Determine the background image based on the task type
 const getBackgroundImage = () => {
@@ -46,10 +58,15 @@ const getBackgroundImage = () => {
 };
 
   return (
+
     <ImageBackground
       source={getBackgroundImage()}
       resizeMode="cover"
-      style={[styles.modalContent,{height:remaining?130:130,borderColor:remaining?'green':'red'}]}>
+      style={[styles.modalBackground,{height:remaining?130:130,borderColor:remaining? 'green':'red'}]}>
+            {isNew && <Animatable.View animation="pulse" easing="ease-out" iterationCount="infinite" style={{position: 'absolute', top: 100, right: 0,height:40,width:40}}>
+            <Badge status="primary"
+            value={"NEW"}/>
+            </Animatable.View>}
       <View style={styles.overlay}>
       <View style={{alignItems:'center',alignContent:'center',flexDirection:'row'}}>
         <View style={styles.roundedImage}>
@@ -67,23 +84,24 @@ const getBackgroundImage = () => {
       </View>
       </View>
     </ImageBackground>
+
   )
 }
 
 const styles = StyleSheet.create({
-  modalContent: {
+modalBackground:{
     width: 180,
     height:130,
     paddingStart: "2%",
     paddingEnd: "2%",
-    borderRadius: 10,
-    elevation:5,
     alignSelf: "center",
-    borderColor: "grey",
-    borderWidth: 3,
     marginTop: "1%",
     flexDirection: "column",
-    overflow:'hidden'
+    borderColor: "grey",
+    borderWidth: 3,
+    overflow:'hidden',
+    borderRadius: 10,
+    elevation:5,
   },
   taskTitle: {
     backgroundColor: "white",

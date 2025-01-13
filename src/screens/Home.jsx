@@ -70,7 +70,7 @@ const Home = ({ navigation, route }) => {
         } finally {
           setLoading(false); // Reset loading once the task is uploaded
           setNewTask(null); // Reset the task after the upload
-          console.log('seetting tasks ', user.tasks)
+          console.log('seng tasks ', user.tasks)
           setTasks(user.tasks)
         }
       }
@@ -98,7 +98,7 @@ const Home = ({ navigation, route }) => {
 
   const renderItem = ({item}) =>{
     console.log('task rendering',item)
-    return <View style={{padding:8}}><Task task={{item}}/></View>
+    return <View style={{padding:5}}><Task task={{item}}/></View>
 
   }
 

@@ -20,6 +20,7 @@ export const CreateNewTask = ({creatorID,assignedTo,taskID,title,description,sta
     }
 }
 
+
 export const taskTypes = {
     1: "Outdoor",
     2: "House-Cleaning",
