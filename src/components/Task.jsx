@@ -46,6 +46,7 @@ const getBackgroundImage = () => {
       source={getBackgroundImage()}
       resizeMode="cover"
       style={styles.modalContent}>
+      <View style={styles.overlay}>
       <View style={{alignItems:'center',alignContent:'center',flexDirection:'row'}}>
         <Text style={styles.nameText}>{assignedTo.name}</Text>
         <CountdownTimer initialSeconds={getSecondsRemaining(task.endTime)}/>
@@ -57,6 +58,7 @@ const getBackgroundImage = () => {
         <Text style={styles.typeText}>Type: {taskTypes[task.type]}</Text>
         <Text style={styles.description}>{description}</Text>
       </View>
+      </View>
     </ImageBackground>
   )
 }
@@ -65,12 +67,13 @@ const styles = StyleSheet.create({
   modalContent: {
     width: 180,
     height:130,
-    //paddingStart: "2%",
-    //paddingEnd: "2%",
+    paddingStart: "2%",
+    paddingEnd: "2%",
     borderRadius: 10,
+    elevation:5,
     alignSelf: "center",
-    borderColor: "black",
-    borderWidth: 3,
+    borderColor: "grey",
+    borderWidth: 2,
     marginTop: "1%",
     flexDirection: "column",
     overflow:'hidden'
@@ -127,6 +130,7 @@ const styles = StyleSheet.create({
   detailText: {
     fontFamily: "Fredoka-Bold",
     textAlign: "center",
+    
   },
   dropdownList: {
     alignItems: "center",
@@ -153,10 +157,14 @@ const styles = StyleSheet.create({
     flexDirection:'column'
   },nameText:{
     fontFamily:'Fredoka-Bold',
-    fontSize:calculateFontSize(14)
+    fontSize:calculateFontSize(16),
   },typeText:{
-    fontSize:calculateFontSize(14),
+    fontSize:calculateFontSize(16),
     fontFamily:'Fredoka-Bold',
+  },overlay: {
+    ...StyleSheet.absoluteFillObject, // Covers the entire ImageBackground
+    backgroundColor: 'rgba(255, 255, 255, 0.36)', // Adjust the color and transparency
+    padding:'2%'
   }
 });
 

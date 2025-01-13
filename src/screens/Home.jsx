@@ -67,11 +67,12 @@ const Home = ({ navigation, route }) => {
         } finally {
           setLoading(false); // Reset loading once the task is uploaded
           setNewTask(null); // Reset the task after the upload
+          console.log('seetting tasks ', user.tasks)
           setTasks(user.tasks)
         }
       }
     };
-
+    setTasks(user.tasks)
     uploadTask();
   }, [task, dispatch, user, uploadUserData, loading]); // Re-run effect when task or user
 
@@ -134,6 +135,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#E4F1F4",
     alignItems: "center",
     marginTop: "5%",
+    padding:'2'
   },
   headerText: {
     fontSize: calculateFontSize(48),
@@ -173,6 +175,9 @@ const styles = StyleSheet.create({
   tasksContainer: {
     height: "80%",
     width: "90%",
+    backgroundColor:'white',
+    borderWidth:2,
+    borderColor:'grey',
     elevation: 5,
     borderRadius: 10,
     alignContent:'center',
@@ -183,7 +188,6 @@ const styles = StyleSheet.create({
     width: "90%",
   },contentContainerStyle:{
     flexGrow: 1,
-    justifyContent: 'center',
     alignItems: 'center',
   }, separator: {
     height: 1, // Adjust height for horizontal line
