@@ -46,6 +46,8 @@ const Home = ({ navigation, route }) => {
   const parental = profile ? profile.role === "parent" : true; // Always up-to-date
   const [tasks,setTasks] = useState(user.tasks)
   const [task, setNewTask] = useState();
+
+
   console.log("task", task);
   console.log('tasks Available',tasks)
 
@@ -73,14 +75,30 @@ const Home = ({ navigation, route }) => {
         }
       }
     };
-    setTasks(user.tasks)
+    setTasks([...tasks].sort((a, b) => {
+      const now = new Date();
+      const endTimeA = new Date(a.endTime);
+      const endTimeB = new Date(b.endTime);
+    
+      // If both tasks have future end times, sort them by endTime
+      if (endTimeA > now && endTimeB > now) {
+        return endTimeA - endTimeB;
+      }
+    
+      // If only one of the tasks has a future endTime, place it before the past one
+      if (endTimeA > now) return -1;
+      if (endTimeB > now) return 1;
+    
+      // If both tasks have passed end times, sort them by endTime in ascending order
+      return endTimeA - endTimeB;
+    }));
     uploadTask();
   }, [task, dispatch, user, uploadUserData, loading]); // Re-run effect when task or user
 
 
   const renderItem = ({item}) =>{
     console.log('task rendering',item)
-    return <Task task={{item}}/>
+    return <View style={{padding:8}}><Task task={{item}}/></View>
 
   }
 

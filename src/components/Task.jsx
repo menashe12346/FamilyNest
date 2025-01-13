@@ -49,7 +49,7 @@ const getBackgroundImage = () => {
     <ImageBackground
       source={getBackgroundImage()}
       resizeMode="cover"
-      style={[styles.modalContent,{borderColor:remaining?'green':'red'}]}>
+      style={[styles.modalContent,{height:remaining?130:70,borderColor:remaining?'green':'red'}]}>
       <View style={styles.overlay}>
       <View style={{alignItems:'center',alignContent:'center',flexDirection:'row'}}>
         <View style={styles.roundedImage}>
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     elevation:5,
     alignSelf: "center",
     borderColor: "grey",
-    borderWidth: 2,
+    borderWidth: 3,
     marginTop: "1%",
     flexDirection: "column",
     overflow:'hidden'
