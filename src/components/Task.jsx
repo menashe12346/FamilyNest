@@ -25,6 +25,7 @@ const Task = ({task}) => {
   console.log('my task1',task)
 
   const [profile,setProfile]= useState(getProfileById(null,task.assignedTo))
+  const [remaining,setRemaining]=useState(true)
 
 // Determine the background image based on the task type
 const getBackgroundImage = () => {
@@ -48,14 +49,14 @@ const getBackgroundImage = () => {
     <ImageBackground
       source={getBackgroundImage()}
       resizeMode="cover"
-      style={styles.modalContent}>
+      style={[styles.modalContent,{borderColor:remaining?'green':'red'}]}>
       <View style={styles.overlay}>
       <View style={{alignItems:'center',alignContent:'center',flexDirection:'row'}}>
         <View style={styles.roundedImage}>
           <Image style={{height:'100%',width:'100%',resizeMode:'cover'}} source={avatarImages[profile.imageID]}/>
         </View>
         <Text style={styles.nameText}>{assignedTo.name}</Text>
-        <CountdownTimer initialSeconds={getSecondsRemaining(task.endTime)}/>
+        <CountdownTimer remaining={remaining} setRemaining={setRemaining} initialSeconds={getSecondsRemaining(task.endTime)}/>
       </View>
       <View style={styles.container}>
         <View style={{alignContent:'center',flexDirection:'row'}}>

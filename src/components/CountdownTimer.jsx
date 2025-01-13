@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { calculateFontSize } from '../utils/FontUtils';
 
-const CountdownTimer = ({ initialSeconds }) => {
+const CountdownTimer = ({ initialSeconds, remaining, setRemaining }) => {
   const [secondsLeft, setSecondsLeft] = useState(initialSeconds);
 
   useEffect(() => {
@@ -35,9 +35,11 @@ const CountdownTimer = ({ initialSeconds }) => {
     }
   };
 
+  secondsLeft? setRemaining(true):setRemaining(false);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.timer}>
+      <Text style={[styles.timer,{color: secondsLeft>0? 'black':'red'}]}>
         {secondsLeft > 0 ? formatTime(secondsLeft) : 'Expired'}
       </Text>
     </View>
@@ -51,7 +53,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   timer: {
-    fontSize: calculateFontSize(16),
+    fontSize: calculateFontSize(14),
     fontFamily:'Fredoka-Bold'
   },
 });
