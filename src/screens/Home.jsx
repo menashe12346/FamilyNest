@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Image,
+  ImageBackground,
 } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -86,8 +87,10 @@ const Home = ({ navigation, route }) => {
   console.log('use111r',tasks)
 
   return (
-    <View style={styles.container}>
-      <View style={{ width: "90%", height: "10%" }}>
+    <ImageBackground style={styles.container}
+    source={require('../assets/backgrounds/pattern_2.png')}
+    resizeMode="cover">
+      <View style={{ marginTop:'5%' ,width: "90%", height: "10%" }}>
         <ProfileBar profile={profile} />
       </View>
       {showModal && (
@@ -125,7 +128,7 @@ const Home = ({ navigation, route }) => {
           ItemSeparatorComponent={() => <View style={styles.separator}/>}
         />
       </View>
-    </View>
+    </ImageBackground>
   );
 };
 
@@ -134,7 +137,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#E4F1F4",
     alignItems: "center",
-    marginTop: "5%",
     padding:'2'
   },
   headerText: {
@@ -175,10 +177,10 @@ const styles = StyleSheet.create({
   tasksContainer: {
     height: "80%",
     width: "90%",
-    backgroundColor:'white',
-    borderWidth:2,
-    borderColor:'grey',
-    elevation: 5,
+    //backgroundColor:'white',
+    //borderWidth:2,
+    //borderColor:'grey',
+    //elevation: 5,
     borderRadius: 10,
     alignContent:'center',
     justifyContent:'center',

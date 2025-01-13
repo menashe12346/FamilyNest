@@ -24,6 +24,7 @@ import {setReduxProfiles} from '../Redux/userSlice';
 import { setSelectedProfileId } from '../Redux/selectedProfileSlice';
 import { uploadUserData } from '../utils/UploadData';
 import { setUser} from '../Redux/userSlice';
+import { BackgroundImage } from '@rneui/base';
 
 const avatars = [require('../assets/avatars/avatar_1.png')];
 
@@ -130,6 +131,9 @@ const SelectProfileScreen = ({navigation}) => {
 
 
   return (
+    <BackgroundImage source={require('../assets/backgrounds/pattern_3.png')}
+    resizeMode='cover'
+    style={styles.container}>
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -249,7 +253,9 @@ const SelectProfileScreen = ({navigation}) => {
           </TouchableOpacity>
         </Animated.View>
       )}
+
     </KeyboardAvoidingView>
+    </BackgroundImage>
   );
 };
 export default SelectProfileScreen;
@@ -260,7 +266,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'linear-gradient(to bottom, #F0F8FF, #F9FAFB)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
   },
   title: {
     fontSize: 24,
@@ -322,7 +327,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 8,
     alignSelf: 'center',
-    marginTop: 20,
+    marginTop: '5%',
+    marginBottom:'5%'
   },
   addProfileButtonText: {
     color: 'white',
