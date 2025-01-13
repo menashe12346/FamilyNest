@@ -63,9 +63,9 @@ const getBackgroundImage = () => {
       source={getBackgroundImage()}
       resizeMode="cover"
       style={[styles.modalBackground,{height:remaining?130:130,borderColor:remaining? 'green':'red'}]}>
-            {isNew && <Animatable.View animation="pulse" easing="ease-out" iterationCount="infinite" style={{position: 'absolute', top: 100, right: 0,height:40,width:40}}>
+            {isNew && <Animatable.View animation="pulse" easing="ease-out" iterationCount="infinite" style={{position: 'absolute', top: 100, right: 0,height:40,width:80}}>
             <Badge status="primary"
-            value={"NEW"}/>
+            value={"NEW TASK"}/>
             </Animatable.View>}
       <View style={styles.overlay}>
       <View style={{alignItems:'center',alignContent:'center',flexDirection:'row'}}>
