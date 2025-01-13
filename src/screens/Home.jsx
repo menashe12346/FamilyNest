@@ -111,7 +111,7 @@ const Home = ({ navigation, route }) => {
       <View style={{ marginTop:'5%' ,width: "90%", height: "10%" }}>
         <ProfileBar profile={profile} />
       </View>
-      {showModal && (
+      {showModal && parental && (
         <CreateTask
           showModal={showModal}
           setShowModal={setShowModal}
@@ -121,7 +121,7 @@ const Home = ({ navigation, route }) => {
           setNewTask={setNewTask}
         />
       )}
-      <TouchableOpacity onPress={() => setShowModal(true)}
+      {parental && <TouchableOpacity onPress={() => setShowModal(true)}
         style={{padding:10}}>
         <LinearGradient
           style={styles.createTaskButton}
@@ -138,7 +138,7 @@ const Home = ({ navigation, route }) => {
             Create new task
           </Text>
         </LinearGradient>
-      </TouchableOpacity>
+      </TouchableOpacity>}
       <View style={styles.tasksContainer}>
         <FlatList
           numColumns={2}
