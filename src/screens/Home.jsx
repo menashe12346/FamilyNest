@@ -120,7 +120,8 @@ const Home = ({ navigation, route }) => {
           data={tasks} // List of profiles
           keyExtractor={(item) => item.id.toString()} // Ensure the id is converted to string
           renderItem={renderItem} // Render each item using ProfileBar
-          ItemSeparatorComponent={() => <View style={{height:5}}/>}
+          contentContainerStyle={styles.contentContainerStyle}
+          ItemSeparatorComponent={() => <View style={styles.separator}/>}
         />
       </View>
     </View>
@@ -172,7 +173,6 @@ const styles = StyleSheet.create({
   tasksContainer: {
     height: "80%",
     width: "90%",
-    backgroundColor: "red",
     elevation: 5,
     borderRadius: 10,
     alignContent:'center',
@@ -181,6 +181,15 @@ const styles = StyleSheet.create({
   createTaskButton: {
     borderRadius: 10,
     width: "90%",
+  },contentContainerStyle:{
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }, separator: {
+    height: 1, // Adjust height for horizontal line
+    width: '90%', // Adjust width as needed
+    backgroundColor: '#aaa',
+    alignSelf: 'center',
   },
 });
 

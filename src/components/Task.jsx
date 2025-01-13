@@ -1,4 +1,4 @@
-import { View, Text , StyleSheet } from 'react-native'
+import { View, Text , StyleSheet, ImageBackground } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import { LinearGradient } from 'expo-linear-gradient'
 import { calculateFontSize } from '../utils/FontUtils'
@@ -8,13 +8,44 @@ import { getProfileById } from '../utils/ProfileUtils';
 import { taskTypes } from '../utils/TaskUtils';
 import ProfileBar from './ProfileBar';
 
+const backgroundImages = {
+  2: require('../assets/images/cleaning.jpg'),
+  1: require('../assets/images/outdoor.jpg'),
+  3: require('../assets/images/laundry-pattern.jpg'),
+  4: require('../assets/images/pet-pattern.jpg'),
+  5: require('../assets/images/study.jpg'),
+  6: require('../assets/images/dish-wash.jpg')
+}
+
 const Task = ({task}) => {
   task=task.item
   const assignedTo = getProfileById(null,task.assignedTo)
-  description=task.description.slice(0,100)
+  description=task.description.length>50? task.description.slice(0,50)+'....' : task.description
   console.log('my task1',task)
+
+// Determine the background image based on the task type
+const getBackgroundImage = () => {
+  switch (task.type) {
+    case '1':
+      return backgroundImages[1]
+    case '2':
+      return backgroundImages[2]
+    case '3':
+      return backgroundImages[3];
+    case '4':
+      return backgroundImages[4]
+    case '5':
+      return backgroundImages[5]
+    default:
+      return
+  }
+};
+
   return (
-    <LinearGradient style={styles.modalContent} colors={['red','yellow']}>
+    <ImageBackground
+      source={getBackgroundImage()}
+      resizeMode="cover"
+      style={styles.modalContent}>
       <View style={{alignItems:'center',alignContent:'center',flexDirection:'row'}}>
         <Text style={styles.nameText}>{assignedTo.name}</Text>
         <CountdownTimer initialSeconds={getSecondsRemaining(task.endTime)}/>
@@ -26,14 +57,14 @@ const Task = ({task}) => {
         <Text style={styles.typeText}>Type: {taskTypes[task.type]}</Text>
         <Text style={styles.description}>{description}</Text>
       </View>
-    </LinearGradient>
+    </ImageBackground>
   )
 }
 
 const styles = StyleSheet.create({
   modalContent: {
     width: 180,
-    height:150,
+    height:130,
     //paddingStart: "2%",
     //paddingEnd: "2%",
     borderRadius: 10,
@@ -42,6 +73,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     marginTop: "1%",
     flexDirection: "column",
+    overflow:'hidden'
   },
   taskTitle: {
     backgroundColor: "white",
@@ -58,7 +90,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   instText: {
-    fontSize: calculateFontSize(18),
+    fontSize: calculateFontSize(20),
     fontFamily: "Fredoka-Bold",
     backgroundColor: "transparent",
   },
@@ -121,9 +153,9 @@ const styles = StyleSheet.create({
     flexDirection:'column'
   },nameText:{
     fontFamily:'Fredoka-Bold',
-    fontSize:calculateFontSize(12)
+    fontSize:calculateFontSize(14)
   },typeText:{
-    fontSize:calculateFontSize(12),
+    fontSize:calculateFontSize(14),
     fontFamily:'Fredoka-Bold',
   }
 });
