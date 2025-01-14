@@ -16,7 +16,6 @@ import { AntDesign } from "@expo/vector-icons";
 import { useState,useEffect } from "react";
 import TaskScreen from "../src/screens/TaskScreen";
 
-
 // Create a Stack Navigator
 const Stack = createNativeStackNavigator();
 

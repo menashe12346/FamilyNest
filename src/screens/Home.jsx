@@ -18,7 +18,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { setReduxProfiles, addReduxTask } from "../Redux/userSlice";
 import { setSelectedProfileId } from "../Redux/selectedProfileSlice";
 import { uploadUserData } from "../utils/UploadData";
-import { setUser } from "../Redux/userSlice";
 import {
   CreateNewProfile,
   getNewProfileID,

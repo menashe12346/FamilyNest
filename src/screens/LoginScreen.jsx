@@ -9,6 +9,7 @@ import { firebase } from '../../firebase';
 import { useDispatch } from 'react-redux';
 import { fetchUserData } from '../utils/FetchData';
 import { useSelector } from 'react-redux';
+import { setUser } from "../Redux/userSlice";
 
 const LoginScreen = () => {
 
@@ -32,39 +33,57 @@ const LoginScreen = () => {
     };
   });
 
-  const signIn = () => {
+  const signIn = async () => {
     if (username !== '' && password !== '') {
       console.log('Attempting to sign in...');
-      firebase.auth().signInWithEmailAndPassword(username, password)
-        .then(async (userCredential) => {
-          const user = userCredential.user.uid;
-          console.log('From LoginScreen (UID)', user);
-          const fetched = await fetchUserData(user,dispatch);
-          console.log('Fetched:', fetched);
-          if(fetched){
-            await handleSignIn();
-          }else{
-            console.log('User data not found');
-          }
-        })
-        .catch((error) => {
-          console.log('Error code:', error.code);
-          console.log('Error message:', error.message);
+      try {
+        const userCredential = await firebase.auth().signInWithEmailAndPassword(username, password);
+        const firebaseUser = userCredential.user;
+        console.log('From LoginScreen (UID)', firebaseUser.uid);
   
-          if (error.code === 'auth/invalid-email') {
-            console.log('That email address is invalid!');
-          } else if (error.code === 'auth/user-not-found') {
-            console.log('No user found with this email.');
-          } else if (error.code === 'auth/wrong-password') {
-            console.log('Incorrect password.');
-          } else {
-            console.error('An unexpected error occurred:', error);
-          }
-        });
+        // Fetch user data from Firestore
+        const userDoc = await firebase.firestore().collection('users').doc(firebaseUser.uid).get();
+  
+        if (userDoc.exists) {
+          const userData = userDoc.data(); // Fetch the user data from Firestore
+          console.log('Fetched user data:', userData);
+  
+          // Dispatch the user data to Redux
+          dispatch(
+            setUser({
+              uid: firebaseUser.uid, // Set user UID
+              email: firebaseUser.email, // Firebase email
+              familyName: userData.familyName || '', // Add Firestore data
+              userName: userData.userName || '',
+              profiles: userData.profiles || [],
+              tasks: userData.tasks || [],
+            })
+          );
+  
+          // Navigate to the main screen
+          await handleSignIn();
+        } else {
+          console.log('User document does not exist in Firestore');
+        }
+      } catch (error) {
+        console.log('Error code:', error.code);
+        console.log('Error message:', error.message);
+  
+        if (error.code === 'auth/invalid-email') {
+          console.log('That email address is invalid!');
+        } else if (error.code === 'auth/user-not-found') {
+          console.log('No user found with this email.');
+        } else if (error.code === 'auth/wrong-password') {
+          console.log('Incorrect password.');
+        } else {
+          console.error('An unexpected error occurred:', error);
+        }
+      }
     } else {
       console.log('Username and password cannot be empty');
     }
   };
+  
   
   const handleSignIn = async () => {
     // Navigate to the NewScreen when login is pressed
