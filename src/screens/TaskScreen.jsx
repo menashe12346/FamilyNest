@@ -4,13 +4,16 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   ImageBackground,
+  Image
 } from "react-native";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setReduxProfiles, addReduxTask } from "../Redux/userSlice";
-import { getProfileById } from "../utils/ProfileUtils";
+import { getProfileAge, getProfileById } from "../utils/ProfileUtils";
 import ProfileBar from "../components/ProfileBar";
 import { getBackgroundImage, getTaskById } from "../utils/TaskUtils";
+import avatarImages from "../utils/AvatarsUtils";
+import { calculateFontSize } from "../utils/FontUtils";
 
 const TaskScreen = ({ navigator, route }) => {
   console.log(route);
@@ -27,24 +30,29 @@ const TaskScreen = ({ navigator, route }) => {
   const [task, setTask] = useState(
     getTaskById(user.tasks, route.params.taskID)
   );
-  console.log("TASK SCREEN=", task);
+  const [assignedProfile,setAssignedProfile]=useState(getProfileById(null,task.assignedTo))
+  console.log("TASK SCREEN=", assignedProfile);
 
   return (
     <KeyboardAvoidingView style={styles.container}>
-      <View style={{ marginTop: "5%", width: "90%", height: "10%" }}>
-        <ProfileBar profile={profile} />
-      </View>
-      <View style={styles.taskContainer}>
-        <ImageBackground
-          source={getBackgroundImage({ type: task.type })}
-          style={{ height: "100%", width: "100%" }}
-          resizeMode="cover"
-        >
-          <View style={styles.overlay}>
-            <Text>{}</Text>
+      <ImageBackground
+        source={getBackgroundImage({ type: task.type })}
+        style={{ height: "100%", width: "100%" }}
+        resizeMode="cover"
+      >
+        <View style={styles.overlay}>
+          <View style={{ marginTop: "2%", width: "100%", height: "10%" }}>
+            <ProfileBar profile={profile} />
           </View>
-        </ImageBackground>
-      </View>
+          <View style={[styles.detailContainer,{alignItems:'center',marginTop:'3%',flexDirection:'row'}]}>
+          <Text style={styles.detailText}>Assigned to:</Text>
+            <View style={styles.roundedImage}>
+              <Image style={{resizeMode:'cover',height:60,width:60}}source={avatarImages[assignedProfile.imageID]}/>
+            </View>
+            <Text style={styles.detailText}>{assignedProfile.name},{getProfileAge(assignedProfile.birth_day)}</Text>
+          </View>
+        </View>
+      </ImageBackground>
     </KeyboardAvoidingView>
   );
 };
@@ -56,17 +64,29 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: "2",
   },
-  taskContainer: {
-    marginTop: "8%",
-    width: "90%", // Ensures full width
-    height: "60%", // Ensures full height
-    borderWidth: 3,
-  },
   overlay: {
     ...StyleSheet.absoluteFillObject, // Covers the entire ImageBackground
     backgroundColor: "rgba(248, 248, 248, 0.7)", // Adjust the color and transparency
     padding: "2%",
-  },
+  },roundedImage:{
+    marginStart:5,
+    justifyContent:'center',
+    borderWidth: 2,
+    width: 60, // Increased width
+    height: 60, // Increased height
+    borderRadius: 50, // Half of the width/height to make it a perfect circle
+    overflow: "hidden", // Ensure the image is contained within the circle
+    backgroundColor: "transparent",
+  },detailText:{
+    fontSize:calculateFontSize(30),
+    fontFamily:'Fredoka-Bold'
+  },detailContainer:{
+    // backgroundColor:'white',
+    // elevation:5,
+    // borderRadius:15,
+    // paddingVertical:10,
+    // paddingHorizontal:5,
+  }
 });
 
 export default TaskScreen;

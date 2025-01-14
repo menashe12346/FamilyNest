@@ -165,7 +165,7 @@ modalBackground:{
     fontFamily:'Fredoka-Bold',
   },overlay: {
     ...StyleSheet.absoluteFillObject, // Covers the entire ImageBackground
-    backgroundColor: 'rgba(255, 255, 255, 0.36)', // Adjust the color and transparency
+    backgroundColor: 'rgba(255, 255, 255, 0.48)', // Adjust the color and transparency
     padding:'2%'
   }
 });

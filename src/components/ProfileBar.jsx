@@ -9,18 +9,19 @@ import { FontAwesome } from "@expo/vector-icons";
 const ProfileBar = ({ profile, style, onPress }) => {
   console.log("Profile (HOME):", profile);
   const colors =
-    profile.gender === "male" ? ["#1E90FF", "#87CEFA"] : ["#FF69B4", "#FFB6C1"];
+    profile.gender === "male" ? ["#81BFDA","#87CEFA","#B1F0F7"] : ["#FB9EC6", "#FFB6C1","#FFE2E2"];
   return (
     <Pressable
       style={[
         styles.pressable,
         style,
-        { borderColor: profile.gender === "male" ? "#1E90FF" : "#FF69B4" },
+        { borderColor: profile.gender === "male" ? "#81BFDA" : "#FB9EC6" },
       ]}
       onLongPress={() => console.warn("ProfileBar pressed")}
       onPress={onPress}
     >
-      <LinearGradient colors={colors} style={styles.linearStyle}>
+      <LinearGradient colors={colors} style={styles.linearStyle} start={{ x: 0.5, y: 0.5 }} // Start at top-left
+  end={{ x: 1, y: 1 }} >
         <View style={styles.roundImage}>
           <Image
             source={avatarImages[profile.imageID]}
