@@ -5,20 +5,13 @@ import { calculateFontSize } from '../utils/FontUtils'
 import CountdownTimer from './CountdownTimer';
 import { getSecondsRemaining } from '../utils/TimeUtils';
 import { getProfileById } from '../utils/ProfileUtils';
-import { taskTypes } from '../utils/TaskUtils';
+import { taskTypes,getBackgroundImage } from '../utils/TaskUtils';
 import ProfileBar from './ProfileBar';
 import avatarImages from '../utils/AvatarsUtils';
 import * as Animatable from 'react-native-animatable';
 import { Badge } from 'react-native-elements';
 
-const backgroundImages = {
-  2: require('../assets/images/cleaning.jpg'),
-  1: require('../assets/images/outdoor.jpg'),
-  3: require('../assets/images/laundry-pattern.jpg'),
-  4: require('../assets/images/pet-pattern.jpg'),
-  5: require('../assets/images/study.jpg'),
-  6: require('../assets/images/dish-wash.jpg')
-}
+
 
 const isNewTask = (startTime, thresholdHours = 3) => {
   const currentTime = new Date(); // Get the current time
@@ -39,28 +32,12 @@ const Task = ({task}) => {
 
   console.log('new TASK',isNew)
 
-// Determine the background image based on the task type
-const getBackgroundImage = () => {
-  switch (task.type) {
-    case '1':
-      return backgroundImages[1]
-    case '2':
-      return backgroundImages[2]
-    case '3':
-      return backgroundImages[3];
-    case '4':
-      return backgroundImages[4]
-    case '5':
-      return backgroundImages[5]
-    default:
-      return
-  }
-};
+
 
   return (
 
     <ImageBackground
-      source={getBackgroundImage()}
+      source={getBackgroundImage({type:task.type})}
       resizeMode="cover"
       style={[styles.modalBackground,{height:remaining?130:130,borderColor:remaining? 'green':'red'}]}>
             {isNew && <Animatable.View animation="pulse" easing="ease-out" iterationCount="infinite" style={{position: 'absolute', top: 100, right: 0,height:40,width:80}}>

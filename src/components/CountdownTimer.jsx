@@ -35,7 +35,11 @@ const CountdownTimer = ({ initialSeconds, remaining, setRemaining }) => {
     }
   };
 
-  secondsLeft? setRemaining(true):setRemaining(false);
+
+
+   useEffect(() => {
+    setRemaining(secondsLeft > 0);
+  }, [secondsLeft, setRemaining]);
 
   return (
     <View style={styles.container}>

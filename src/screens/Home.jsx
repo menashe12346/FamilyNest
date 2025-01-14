@@ -98,8 +98,11 @@ const Home = ({ navigation, route }) => {
 
   const renderItem = ({item}) =>{
     console.log('task rendering',item)
-    return <View style={{padding:5}}><Task task={{item}}/></View>
+    return <TouchableOpacity onPress={()=>openTaskScreen({taskID:item.id})} style={{padding:5}}><Task task={{item}}/></TouchableOpacity>
+  }
 
+  const openTaskScreen =({taskID})=>{
+    navigation.navigate('TaskScreen',{taskID:taskID});
   }
 
   console.log('use111r',tasks)

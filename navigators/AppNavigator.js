@@ -14,6 +14,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AntDesign } from "@expo/vector-icons";
 import { useState,useEffect } from "react";
+import TaskScreen from "../src/screens/TaskScreen";
 
 
 // Create a Stack Navigator
@@ -73,6 +74,7 @@ const AppNavigator = () => {
         <Stack.Screen name="SignUp" component={SignUpScreen} />
         <Stack.Screen name="Drawer" component={DrawerNavigator} 
         options={{headerShown:false}}/>
+        <Stack.Screen name="TaskScreen" component={TaskScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
