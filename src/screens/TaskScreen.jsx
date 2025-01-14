@@ -14,6 +14,8 @@ import ProfileBar from "../components/ProfileBar";
 import { getBackgroundImage, getTaskById, taskTypes } from "../utils/TaskUtils";
 import avatarImages from "../utils/AvatarsUtils";
 import { calculateFontSize } from "../utils/FontUtils";
+import CountdownTimer from "../components/CountdownTimer";
+import { getSecondsRemaining } from "../utils/TimeUtils";
 
 const TaskScreen = ({ navigator, route }) => {
   console.log(route);
@@ -33,7 +35,8 @@ const TaskScreen = ({ navigator, route }) => {
   const [assignedProfile, setAssignedProfile] = useState(
     getProfileById(null, task.assignedTo)
   );
-  console.log("TASK SCREEN=", assignedProfile);
+  const [remaining, setRemaining] = useState(true);
+  console.log("TASK SCREEN=", task);
 
   return (
     <KeyboardAvoidingView style={styles.container}>
@@ -64,9 +67,23 @@ const TaskScreen = ({ navigator, route }) => {
                 {assignedProfile.name},
                 {getProfileAge(assignedProfile.birth_day)}
               </Text>
+              <CountdownTimer
+                remaining={remaining}
+                setRemaining={setRemaining}
+                initialSeconds={getSecondsRemaining(task.endTime)}
+              />
             </View>
+            <View style={styles.separator} />
             <Text style={styles.detailText}>Type: {taskTypes[task.type]}</Text>
-            <Text style={styles.detailText}>{task.description}</Text>
+            <View style={styles.separator} />
+            <Text style={styles.detailText}>
+              Description:{"\n"}
+              {task.description}
+            </Text>
+            <View style={styles.separator} />
+            <View style={{ alignItems: "center", flexDirection: "row" }}>
+              <Text style={styles.detailText}>Reward points: {task.reward}</Text>
+            </View>
           </View>
         </View>
       </ImageBackground>
@@ -101,10 +118,15 @@ const styles = StyleSheet.create({
     fontFamily: "Fredoka-Bold",
   },
   detailContainer: {
-    backgroundColor: "rgba(255, 255, 255, 0.88)", // Adjust the color and transparency
+    backgroundColor: "rgba(255, 255, 255, 0.57)", // Adjust the color and transparency
     borderRadius: 15,
     paddingVertical: 10,
     paddingHorizontal: 5,
+    borderColor: "grey",
+    borderWidth: 3,
+  },
+  separator: {
+    height: 10,
   },
 });
 

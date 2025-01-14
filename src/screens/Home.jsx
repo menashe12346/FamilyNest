@@ -40,7 +40,7 @@ const Home = ({ navigation, route }) => {
   console.log("User logged (SelectProfileScreen):", user);
   console.log("id", selectedUser);
 
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false); // To track if the upload is in progress
   const profile = getProfileById(user, selectedUser); // Always up-to-date
   const parental = profile ? profile.role === "parent" : true; // Always up-to-date

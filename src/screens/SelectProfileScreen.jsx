@@ -336,6 +336,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   addProfileContainer: {
+    width:300,
     backgroundColor: '#fff',
     padding: 20,
     borderRadius: 16,
@@ -345,9 +346,6 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 6,
     position: 'absolute',
-    top: '15%', // העלינו את המיקום למרכז המסך
-    left: '10%',
-    right: '10%',
     alignItems: 'center', // מרכז את התוכן
   },
   
