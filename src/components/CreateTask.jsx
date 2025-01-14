@@ -122,7 +122,9 @@ const CreateTask = ({ showModal, setShowModal, user, profile ,task,setNewTask })
         <View style={styles.descriptionView}>
           <TextInput
             style={styles.description}
-            placeholder="Task description"
+            placeholder={
+              `Task description: (for example) \n1. Hide cleaned dishes... 1\n2. Wash dirty dishes....\n3. Clean the sink...\n`
+            }
             multiline={true} // Allows the input to be multiline
             numberOfLines={5} // Set the number of lines that should be visible
             maxLength={195} // Limit the number of characters that can be entered
