@@ -5,6 +5,7 @@ import avatarImages from "../utils/AvatarsUtils";
 import { isMomDadSonDaughter, getProfileAge } from "../utils/ProfileUtils";
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome } from "@expo/vector-icons";
+import { Badge } from 'react-native-elements';
 
 const ProfileBar = ({ profile, style, onPress }) => {
   console.log("Profile (HOME):", profile);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { calculateFontSize } from '../utils/FontUtils';
+import { Badge } from 'react-native-elements';
 
 const CountdownTimer = ({ initialSeconds, remaining, setRemaining }) => {
   const [secondsLeft, setSecondsLeft] = useState(initialSeconds);
@@ -22,7 +23,7 @@ const CountdownTimer = ({ initialSeconds, remaining, setRemaining }) => {
     const seconds = totalSeconds % 60;
 
     if(days){
-        return `${days}d ${hours}:${minutes}:${seconds}`;
+        return `${(days*24)+hours}:${minutes}:${seconds}`;
     }else if(hours){
         return `${hours}:${minutes}:${seconds}`;
     }else if(minutes){
@@ -43,9 +44,11 @@ const CountdownTimer = ({ initialSeconds, remaining, setRemaining }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.timer,{color: secondsLeft>0? 'black':'red'}]}>
-        {secondsLeft > 0 ? formatTime(secondsLeft) : 'Expired'}
-      </Text>
+      <Badge status={secondsLeft>0? ((secondsLeft>60*60*2)?'success':'warning'):'error'}
+        value={secondsLeft > 0 ? formatTime(secondsLeft) : 'Expired'}
+        textStyle={styles.timer}
+        badgeStyle={{height:25,elevation:5}}
+        />
     </View>
   );
 };
@@ -57,8 +60,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   timer: {
-    fontSize: calculateFontSize(14),
-    fontFamily:'Fredoka-Bold'
+    fontSize: calculateFontSize(16),
+    fontFamily:'Fredoka-Bold',
+    color:'black',
+    textAlign:'center'
   },
 });
 
