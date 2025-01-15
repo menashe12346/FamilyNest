@@ -115,6 +115,56 @@ const SelectProfileScreen = ({navigation}) => {
       Alert.alert('Error', 'Please fill all fields, including selecting a role.');
     }
   };
+  const handleDeleteProfile = (profileId) => {
+    Alert.alert("Delete Profile", "Are you sure you want to delete this profile?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: () => {
+          const updatedProfiles = profiles.filter((profile) => profile.id !== profileId);
+          setProfiles(updatedProfiles);
+          dispatch(setReduxProfiles(updatedProfiles));
+          uploadUserData(user.uid, { profiles: updatedProfiles });
+        },
+      },
+    ]);
+  };
+  
+<FlatList
+  numColumns={2}
+  data={profiles}
+  ItemSeparatorComponent={() => <View style={styles.separator} />}
+  renderItem={({ item }) => (
+    <View
+      style={[
+        styles.profileContainer,
+        {
+          borderWidth: 4,
+          borderStyle: item.role === 'child' ? 'dashed' : 'solid',
+          borderColor: item.gender === 'male' ? '#007BFF' : '#FF69B4',
+        },
+      ]}
+    >
+      <View style={styles.avatarWrapper}>
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => handleDeleteProfile(item.id)}
+        >
+          <Text style={styles.deleteButtonText}>X</Text>
+        </TouchableOpacity>
+        <Image source={avatarImages[item.imageID]} style={styles.profileImage} />
+      </View>
+      <Text style={styles.profileName}>{item.name}</Text>
+      <Text style={styles.profileName}>{getProfileAge(item.birth_day)}</Text>
+    </View>
+  )}
+  keyExtractor={(item) => item.id}
+/>
+  
 
   const handleRoleSelect = (selectedRole) => {
     console.log('Selected role:', selectedRole);
@@ -234,7 +284,6 @@ const SelectProfileScreen = ({navigation}) => {
     <Text style={styles.genderButtonText}>Female</Text>
   </TouchableOpacity>
 </View>
-
           <TextInput
             value={newProfileCode}
             onChangeText={setNewProfileCode}
@@ -498,29 +547,8 @@ const styles = StyleSheet.create({
     position: 'relative',
     alignItems: 'center',
   },
-  deleteButton: {
-    position: 'absolute',
-    top: -5,
-    right: -5,
-    backgroundColor: '#FF4D4F',
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-  },
   genderIcon: {
     marginRight: 5, // רווח בין האייקון לטקסט
-  },
-  
-  deleteButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16,
   },
   codeModal: {
     position: 'absolute',
@@ -561,7 +589,29 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },separator:{
     marginVertical: '5%', // Add vertical gap
-  }
+  },
+  deleteButton: {
+    position: 'absolute',
+    top: 0, // מיקום למעלה
+    left: 0, // מיקום שמאלה
+    backgroundColor: '#FF4D4F',
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    zIndex: 10, // וודא עדיפות תצוגה
+  },
+  deleteButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 14,
+    textAlign: 'center',
+  },
 });
 
 

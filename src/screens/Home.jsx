@@ -5,24 +5,13 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
-  Image,
   ImageBackground,
 } from "react-native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import NewScreen from "./NewScreen";
-import SelectProfileScreen from "./SelectProfileScreen";
-import { calculateFontSize } from "../utils/FontUtils";
-import avatarImages from "../utils/AvatarsUtils";
 import { useDispatch, useSelector } from "react-redux";
-import { setReduxProfiles, addReduxTask } from "../Redux/userSlice";
-import { setSelectedProfileId } from "../Redux/selectedProfileSlice";
+import { addReduxTask } from "../Redux/userSlice";
 import { uploadUserData } from "../utils/UploadData";
 import {
-  CreateNewProfile,
-  getNewProfileID,
   getProfileById,
-  getProfileAge,
 } from "../utils/ProfileUtils";
 import ProfileBar from "../components/ProfileBar";
 import CreateTask from "../components/CreateTask";
@@ -30,87 +19,107 @@ import Task from "../components/Task";
 import { LinearGradient } from "expo-linear-gradient";
 import { FlatList } from "react-native-gesture-handler";
 
-const Home = ({ navigation, route }) => {
+const Home = ({ navigation }) => {
   const user = useSelector((state) => state.user.user);
   const selectedUser = useSelector(
     (state) => state.selectedProfile.selectedProfileId
-  ); //
+  );
   const dispatch = useDispatch();
-  console.log("User logged (SelectProfileScreen):", user);
-  console.log("id", selectedUser);
 
   const [showModal, setShowModal] = useState(false);
-  const [loading, setLoading] = useState(false); // To track if the upload is in progress
-  const profile = getProfileById(user, selectedUser); // Always up-to-date
-  const parental = profile ? profile.role === "parent" : true; // Always up-to-date
-  const [tasks,setTasks] = useState(user.tasks)
+  const [loading, setLoading] = useState(false);
+  const profile = getProfileById(user, selectedUser);
+  const parental = profile ? profile.role === "parent" : true;
   const [task, setNewTask] = useState();
 
+  const tasks = useSelector((state) => state.user.user.tasks || []);
+  const [sortedTasks, setSortedTasks] = useState([]);
+  const [filteredTasks, setFilteredTasks] = useState([]);
 
-  console.log("task", task);
-  console.log('tasks Available',tasks)
+  const [filterType, setFilterType] = useState(null);
+  const [filterStatus, setFilterStatus] = useState(null);
+  const [filterChild, setFilterChild] = useState(null);
+
+  const taskTypes = [...new Set(tasks.map((task) => task.type || "Uncategorized"))];
+  const taskStatusOptions = ["Open", "Overdue"];
+  const childrenNames = [...new Set(tasks.map((task) => task.assignedTo || "Unknown"))];
 
   useEffect(() => {
     const uploadTask = async () => {
       if (task && !loading) {
         try {
-          console.log("task to upload", task);
-          setLoading(true); // Set loading to true while uploading
-          await dispatch(addReduxTask(task)); // Dispatch task to Redux
-
-          // Wait for the next render to pick up the updated Redux state
-          const updatedUser = { ...user, tasks: [...user.tasks, task] };
-
-          await uploadUserData(user.uid, updatedUser); // Wait for user data upload to complete
-          console.log("Task uploaded successfully!");
-          console.log('tasks')
+          setLoading(true);
+          await dispatch(addReduxTask(task));
+          await uploadUserData(user.uid, { ...user, tasks: [...tasks, task] });
         } catch (error) {
           console.error("Error uploading task:", error);
         } finally {
-          setLoading(false); // Reset loading once the task is uploaded
-          setNewTask(null); // Reset the task after the upload
-          console.log('seng tasks ', user.tasks)
-          setTasks(user.tasks)
+          setLoading(false);
+          setNewTask(null);
         }
       }
     };
-    setTasks([...tasks].sort((a, b) => {
+
+    const sorted = [...tasks].sort((a, b) => {
       const now = new Date();
       const endTimeA = new Date(a.endTime);
       const endTimeB = new Date(b.endTime);
-    
-      // If both tasks have future end times, sort them by endTime
-      if (endTimeA > now && endTimeB > now) {
-        return endTimeA - endTimeB;
-      }
-    
-      // If only one of the tasks has a future endTime, place it before the past one
+
+      if (endTimeA > now && endTimeB > now) return endTimeA - endTimeB;
       if (endTimeA > now) return -1;
       if (endTimeB > now) return 1;
-    
-      // If both tasks have passed end times, sort them by endTime in ascending order
       return endTimeA - endTimeB;
-    }));
+    });
+
+    setSortedTasks(sorted);
     uploadTask();
-  }, [task, dispatch, user, uploadUserData, loading]); // Re-run effect when task or user
+  }, [task, dispatch, tasks, loading, user.uid]);
 
+  useEffect(() => {
+    let filtered = sortedTasks;
 
-  const renderItem = ({item}) =>{
-    console.log('task rendering',item)
-    return <TouchableOpacity onPress={()=>openTaskScreen({taskID:item.id})} style={{padding:5}}><Task task={{item}}/></TouchableOpacity>
-  }
+    if (filterType) {
+      filtered = filtered.filter((task) => task.type === filterType);
+    }
 
-  const openTaskScreen =({taskID})=>{
-    navigation.navigate('TaskScreen',{taskID:taskID});
-  }
+    if (filterStatus) {
+      const now = new Date();
+      if (filterStatus === "Open") {
+        filtered = filtered.filter((task) => new Date(task.endTime) > now);
+      } else if (filterStatus === "Overdue") {
+        filtered = filtered.filter((task) => new Date(task.endTime) <= now);
+      }
+    }
 
-  console.log('use111r',tasks)
+    if (filterChild) {
+      filtered = filtered.filter((task) => task.assignedTo === filterChild);
+    }
+
+    setFilteredTasks(filtered);
+  }, [filterType, filterStatus, filterChild, sortedTasks]);
+
+  const renderItem = ({ item }) => {
+    return (
+      <TouchableOpacity
+        onPress={() => openTaskScreen({ taskID: item.id })}
+        style={{ padding: 5 }}
+      >
+        <Task task={{ item }} />
+      </TouchableOpacity>
+    );
+  };
+
+  const openTaskScreen = ({ taskID }) => {
+    navigation.navigate("TaskScreen", { taskID: taskID });
+  };
 
   return (
-    <ImageBackground style={styles.container}
-    source={require('../assets/backgrounds/pattern_2.png')}
-    resizeMode="cover">
-      <View style={{ marginTop:'5%' ,width: "90%", height: "10%" }}>
+    <ImageBackground
+      style={styles.container}
+      source={require("../assets/backgrounds/pattern_2.png")}
+      resizeMode="cover"
+    >
+      <View style={{ marginTop: "5%", width: "90%", height: "10%" }}>
         <ProfileBar profile={profile} />
       </View>
       {showModal && parental && (
@@ -123,32 +132,87 @@ const Home = ({ navigation, route }) => {
           setNewTask={setNewTask}
         />
       )}
-      {parental && <TouchableOpacity onPress={() => setShowModal(true)}
-        style={{padding:10}}>
-        <LinearGradient
-          style={styles.createTaskButton}
-          colors={["#76E2F4", "#615DEC", "#301781"]}
+      {parental && (
+        <TouchableOpacity
+          onPress={() => setShowModal(true)}
+          style={{ padding: 10 }}
         >
-          <Text
-            style={{
-              fontFamily: "Fredoka-Bold",
-              fontSize: calculateFontSize(20),
-              padding:10,
-              textAlign:'center'
-            }}
+          <LinearGradient
+            style={styles.createTaskButton}
+            colors={["#76E2F4", "#615DEC", "#301781"]}
           >
-            Create new task
-          </Text>
-        </LinearGradient>
-      </TouchableOpacity>}
+            <Text
+              style={{
+                fontFamily: "Fredoka-Bold",
+                fontSize: 20,
+                padding: 10,
+                textAlign: "center",
+              }}
+            >
+              Create new task
+            </Text>
+          </LinearGradient>
+        </TouchableOpacity>
+      )}
+
+      {profile && (
+        <View style={styles.filterBarContainer}>
+          <TouchableOpacity
+            style={[styles.filterButton, filterType === null && styles.filterButtonActive]}
+            onPress={() => setFilterType(null)}
+          >
+            <Text style={styles.filterButtonText}>All Types</Text>
+          </TouchableOpacity>
+          {taskTypes.map((type) => (
+            <TouchableOpacity
+              key={type}
+              style={[styles.filterButton, filterType === type && styles.filterButtonActive]}
+              onPress={() => setFilterType(type)}
+            >
+              <Text style={styles.filterButtonText}>{type}</Text>
+            </TouchableOpacity>
+          ))}
+          <TouchableOpacity
+            style={[styles.filterButton, filterStatus === null && styles.filterButtonActive]}
+            onPress={() => setFilterStatus(null)}
+          >
+            <Text style={styles.filterButtonText}>All Status</Text>
+          </TouchableOpacity>
+          {taskStatusOptions.map((status) => (
+            <TouchableOpacity
+              key={status}
+              style={[styles.filterButton, filterStatus === status && styles.filterButtonActive]}
+              onPress={() => setFilterStatus(status)}
+            >
+              <Text style={styles.filterButtonText}>{status}</Text>
+            </TouchableOpacity>
+          ))}
+          <TouchableOpacity
+            style={[styles.filterButton, filterChild === null && styles.filterButtonActive]}
+            onPress={() => setFilterChild(null)}
+          >
+            <Text style={styles.filterButtonText}>All Profiles</Text>
+          </TouchableOpacity>
+          {childrenNames.map((child) => (
+            <TouchableOpacity
+              key={child}
+              style={[styles.filterButton, filterChild === child && styles.filterButtonActive]}
+              onPress={() => setFilterChild(child)}
+            >
+              <Text style={styles.filterButtonText}>{child}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+
       <View style={styles.tasksContainer}>
         <FlatList
           numColumns={2}
-          data={tasks} // List of profiles
-          keyExtractor={(item) => item.id.toString()} // Ensure the id is converted to string
-          renderItem={renderItem} // Render each item using ProfileBar
+          data={filteredTasks.length > 0 ? filteredTasks : sortedTasks}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
           contentContainerStyle={styles.contentContainerStyle}
-          ItemSeparatorComponent={() => <View style={styles.separator}/>}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
         />
       </View>
     </ImageBackground>
@@ -160,65 +224,50 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#E4F1F4",
     alignItems: "center",
-    padding:'2'
+    padding: "2",
   },
-  headerText: {
-    fontSize: calculateFontSize(48),
-    fontWeight: "bold",
-    color: "#542F2F",
-    marginBottom: "10%",
-  },
-  button: {
-    width: "17%",
-    height: "8%",
-    borderRadius: 800,
-    backgroundColor: "#B85455",
+  filterBarContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
     justifyContent: "center",
     alignItems: "center",
+    marginVertical: 10,
+    paddingHorizontal: 10,
   },
-  buttonText: {
-    fontSize: calculateFontSize(30),
-    color: "white",
-    fontWeight: "bold",
+  filterButton: {
+    backgroundColor: "#ddd",
+    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    margin: 5,
   },
-  avatarCircle: {
-    backgroundColor: "white",
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 2,
-    marginBottom: "5%",
-    width: 100, // Adjust the width as needed
-    height: 100, // Adjust the height as needed
-    borderRadius: 50, // Make it a circle
-    overflow: "hidden", // Ensure the image is contained within the circle
+  filterButtonActive: {
+    backgroundColor: "#615DEC",
   },
-  avatarImage: {
-    width: "100%", // Adjust the width to fill the circle
-    height: "100%", // Adjust the height to fill the circle
-    resizeMode: "cover",
+  filterButtonText: {
+    fontSize: 14,
+    color: "#fff",
   },
   tasksContainer: {
     height: "80%",
     width: "90%",
-    //backgroundColor:'white',
-    //borderWidth:2,
-    //borderColor:'grey',
-    //elevation: 5,
     borderRadius: 10,
-    alignContent:'center',
-    justifyContent:'center',
+    alignContent: "center",
+    justifyContent: "center",
   },
   createTaskButton: {
     borderRadius: 10,
     width: "90%",
-  },contentContainerStyle:{
+  },
+  contentContainerStyle: {
     flexGrow: 1,
-    alignItems: 'center',
-  }, separator: {
-    height: '2%', // Adjust height for horizontal line
-    width: '90%', // Adjust width as needed
-    backgroundColor: '#aaa',
-    alignSelf: 'center',
+    alignItems: "center",
+  },
+  separator: {
+    height: "2%",
+    width: "90%",
+    backgroundColor: "#aaa",
+    alignSelf: "center",
   },
 });
 
