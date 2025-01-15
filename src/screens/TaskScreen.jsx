@@ -24,6 +24,7 @@ import CountdownTimer from "../components/CountdownTimer";
 import { getSecondsRemaining } from "../utils/TimeUtils";
 import { MaterialIcons } from "@expo/vector-icons";
 import { firebase } from "../../firebase";
+import { Badge } from "react-native-elements";
 
 const TaskScreen = ({ navigation, route }) => {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -155,7 +156,7 @@ const TaskScreen = ({ navigation, route }) => {
         await userDocRef.update({ tasks: updatedTasks });
 
         // עדכון Redux
-        dispatch(setReduxProfiles({ ...user, tasks: updatedTasks }));
+        dispatch(updateReduxTask({ ...user, tasks: updatedTasks }));
 
         console.log("Task deleted successfully.");
       } else {
@@ -176,10 +177,7 @@ const TaskScreen = ({ navigation, route }) => {
     console.log("Approve task clicked");
 
     try {
-      const userDocRef = firebase
-        .firestore()
-        .collection("users")
-        .doc("rl0yP34KttOEJ6f5LeFZIKn87jn2");
+      const userDocRef = firebase.firestore().collection("users").doc(user.uid);
 
       const doc = await userDocRef.get();
       if (doc.exists) {
@@ -344,11 +342,13 @@ const TaskScreen = ({ navigation, route }) => {
                 {assignedProfile.name},
                 {getProfileAge(assignedProfile.birth_day)}
               </Text>
-              <CountdownTimer
+              {task.status!=='COMPLETED' && <CountdownTimer
                 remaining={remaining}
                 setRemaining={setRemaining}
                 initialSeconds={getSecondsRemaining(task.endTime)}
-              />
+              /> }
+              {task.status==='COMPLETED' && <Badge status="primary"
+              value={'Completed'} textStyle={{fontSize:15,fontFamily:'Fredoka-Bold',color:'#000000'}} containerStyle={{marginStart:30}} />}
             </View>
             <View style={styles.separator} />
             <Text style={styles.detailText}>Type: {taskTypes[task.type]}</Text>

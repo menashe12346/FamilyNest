@@ -39,7 +39,7 @@ const Task = ({task}) => {
     <ImageBackground
       source={getBackgroundImage({type:task.type})}
       resizeMode="cover"
-      style={[styles.modalBackground,{height:remaining?130:130,borderColor:remaining? 'green':'red'}]}>
+      style={[styles.modalBackground,{height:remaining?130:130,borderColor:(remaining || task.status==='COMPLETED' )? (task.status==='COMPLETED'? 'blue':'green') :'red'}]}>
       <View style={styles.overlay}>
       {isNew && <Animatable.View animation="pulse" easing="ease-out" iterationCount="infinite" style={{position: 'absolute', top: 100, right: 0,height:40,width:80}}>
             <Badge status="primary"
@@ -51,7 +51,8 @@ const Task = ({task}) => {
           <Image style={{height:'100%',width:'100%',resizeMode:'cover'}} source={avatarImages[profile.imageID]}/>
         </View>
         <Text style={styles.nameText}>{assignedTo.name}</Text>
-        <CountdownTimer remaining={remaining} setRemaining={setRemaining} initialSeconds={getSecondsRemaining(task.endTime)}/>
+        {task.status!=='COMPLETED' && <CountdownTimer remaining={remaining} setRemaining={setRemaining} initialSeconds={getSecondsRemaining(task.endTime)}/>}
+        {task.status==='COMPLETED' && <Badge status='primary' value={'Completed'} textStyle={{fontSize:12,fontFamily:'Fredoka-Bold',color:'#000000'}} />}
       </View>
       <View style={styles.container}>
         <View style={{alignContent:'center',flexDirection:'row'}}>
@@ -76,7 +77,7 @@ modalBackground:{
     marginTop: "1%",
     flexDirection: "column",
     borderColor: "grey",
-    borderWidth: 3,
+    borderWidth: 4,
     overflow:'hidden',
     borderRadius: 10,
     elevation:5,

@@ -64,13 +64,13 @@ const Home = ({ navigation, route }) => {
           await uploadUserData(user.uid, updatedUser); // Wait for user data upload to complete
           console.log("Task uploaded successfully!");
           console.log('tasks')
+          setTasks(user.tasks)
         } catch (error) {
           console.error("Error uploading task:", error);
         } finally {
           setLoading(false); // Reset loading once the task is uploaded
           setNewTask(null); // Reset the task after the upload
           console.log('seng tasks ', user.tasks)
-          setTasks(user.tasks)
         }
       }
     };
