@@ -27,6 +27,7 @@ const Home = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const [showModal, setShowModal] = useState(false);
+<<<<<<< HEAD
   const [loading, setLoading] = useState(false);
   const profile = getProfileById(user, selectedUser);
   const parental = profile ? profile.role === "parent" : true;
@@ -43,11 +44,25 @@ const Home = ({ navigation }) => {
   const taskTypes = [...new Set(tasks.map((task) => task.type || "Uncategorized"))];
   const taskStatusOptions = ["Open", "Overdue"];
   const childrenNames = [...new Set(tasks.map((task) => task.assignedTo || "Unknown"))];
+=======
+  const [loading, setLoading] = useState(false); // To track if the upload is in progress
+  const profile = getProfileById(user, selectedUser); // Always up-to-date
+  const parental = profile ? profile.role === "parent" : true; // Always up-to-date
+  const [task, setNewTask] = useState();
+
+  const tasks = useSelector((state) => state.user.user.tasks || []);
+
+  const [sortedTasks, setSortedTasks] = useState([]);
+
+  console.log("task", task);
+  console.log("tasks Available", tasks);
+>>>>>>> a9679cc648e11e4d21a0227da8455280761c2130
 
   useEffect(() => {
     const uploadTask = async () => {
       if (task && !loading) {
         try {
+<<<<<<< HEAD
           setLoading(true);
           await dispatch(addReduxTask(task));
           await uploadUserData(user.uid, { ...user, tasks: [...tasks, task] });
@@ -56,14 +71,33 @@ const Home = ({ navigation }) => {
         } finally {
           setLoading(false);
           setNewTask(null);
+=======
+          console.log("task to upload", task);
+          setLoading(true); // Set loading to true while uploading
+          await dispatch(addReduxTask(task)); // Dispatch task to Redux
+
+          // After dispatching, no need to manually update `user.tasks` or call setTasks
+          await uploadUserData(user.uid, { ...user, tasks: [...tasks, task] });
+          console.log("Task uploaded successfully!");
+        } catch (error) {
+          console.error("Error uploading task:", error);
+        } finally {
+          setLoading(false); // Reset loading once the task is uploaded
+          setNewTask(null); // Reset the task after the upload
+>>>>>>> a9679cc648e11e4d21a0227da8455280761c2130
         }
       }
     };
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> a9679cc648e11e4d21a0227da8455280761c2130
     const sorted = [...tasks].sort((a, b) => {
       const now = new Date();
       const endTimeA = new Date(a.endTime);
       const endTimeB = new Date(b.endTime);
+<<<<<<< HEAD
 
       if (endTimeA > now && endTimeB > now) return endTimeA - endTimeB;
       if (endTimeA > now) return -1;
@@ -112,6 +146,38 @@ const Home = ({ navigation }) => {
   const openTaskScreen = ({ taskID }) => {
     navigation.navigate("TaskScreen", { taskID: taskID });
   };
+=======
+
+      if (endTimeA > now && endTimeB > now) return endTimeA - endTimeB; // Both tasks are in the future
+      if (endTimeA > now) return -1; // Only 'a' is in the future
+      if (endTimeB > now) return 1; // Only 'b' is in the future
+      return endTimeA - endTimeB; // Both tasks are in the past
+    });
+
+    // Set the sorted tasks
+    setSortedTasks(sorted);
+
+    uploadTask();
+  }, [task, dispatch, tasks, loading, user.uid]); // Monitor relevant dependencies
+
+  const renderItem = ({ item }) => {
+    console.log("task rendering", item);
+    return (
+      <TouchableOpacity
+        onPress={() => openTaskScreen({ taskID: item.id })}
+        style={{ padding: 5 }}
+      >
+        <Task task={{ item }} />
+      </TouchableOpacity>
+    );
+  };
+
+  const openTaskScreen = ({ taskID }) => {
+    navigation.navigate("TaskScreen", { taskID: taskID });
+  };
+
+  console.log("use111r", tasks);
+>>>>>>> a9679cc648e11e4d21a0227da8455280761c2130
 
   return (
     <ImageBackground
@@ -144,7 +210,11 @@ const Home = ({ navigation }) => {
             <Text
               style={{
                 fontFamily: "Fredoka-Bold",
+<<<<<<< HEAD
                 fontSize: 20,
+=======
+                fontSize: calculateFontSize(20),
+>>>>>>> a9679cc648e11e4d21a0227da8455280761c2130
                 padding: 10,
                 textAlign: "center",
               }}
@@ -154,6 +224,7 @@ const Home = ({ navigation }) => {
           </LinearGradient>
         </TouchableOpacity>
       )}
+<<<<<<< HEAD
 
       {profile && (
         <View style={styles.filterBarContainer}>
@@ -211,6 +282,14 @@ const Home = ({ navigation }) => {
           data={filteredTasks.length > 0 ? filteredTasks : sortedTasks}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderItem}
+=======
+      <View style={styles.tasksContainer}>
+        <FlatList
+          numColumns={2}
+          data={sortedTasks} // List of profiles
+          keyExtractor={(item) => item.id.toString()} // Ensure the id is converted to string
+          renderItem={renderItem} // Render each item using ProfileBar
+>>>>>>> a9679cc648e11e4d21a0227da8455280761c2130
           contentContainerStyle={styles.contentContainerStyle}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
         />
@@ -225,6 +304,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#E4F1F4",
     alignItems: "center",
     padding: "2",
+<<<<<<< HEAD
+=======
+  },
+  headerText: {
+    fontSize: calculateFontSize(48),
+    fontWeight: "bold",
+    color: "#542F2F",
+    marginBottom: "10%",
+>>>>>>> a9679cc648e11e4d21a0227da8455280761c2130
   },
   filterBarContainer: {
     flexDirection: "row",
@@ -264,8 +352,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   separator: {
+<<<<<<< HEAD
     height: "2%",
     width: "90%",
+=======
+    height: "2%", // Adjust height for horizontal line
+    width: "90%", // Adjust width as needed
+>>>>>>> a9679cc648e11e4d21a0227da8455280761c2130
     backgroundColor: "#aaa",
     alignSelf: "center",
   },
