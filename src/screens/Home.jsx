@@ -43,12 +43,14 @@ const Home = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false); // To track if the upload is in progress
   const profile = getProfileById(user, selectedUser); // Always up-to-date
   const parental = profile ? profile.role === "parent" : true; // Always up-to-date
-  const [tasks,setTasks] = useState(user.tasks)
   const [task, setNewTask] = useState();
 
+  const tasks = useSelector((state) => state.user.user.tasks || []);
+
+  const [sortedTasks, setSortedTasks] = useState([]);
 
   console.log("task", task);
-  console.log('tasks Available',tasks)
+  console.log("tasks Available", tasks);
 
   useEffect(() => {
     const uploadTask = async () => {
@@ -58,59 +60,61 @@ const Home = ({ navigation, route }) => {
           setLoading(true); // Set loading to true while uploading
           await dispatch(addReduxTask(task)); // Dispatch task to Redux
 
-          // Wait for the next render to pick up the updated Redux state
-          const updatedUser = { ...user, tasks: [...user.tasks, task] };
-
-          await uploadUserData(user.uid, updatedUser); // Wait for user data upload to complete
+          // After dispatching, no need to manually update `user.tasks` or call setTasks
+          await uploadUserData(user.uid, { ...user, tasks: [...tasks, task] });
           console.log("Task uploaded successfully!");
-          console.log('tasks')
-          setTasks(user.tasks)
         } catch (error) {
           console.error("Error uploading task:", error);
         } finally {
           setLoading(false); // Reset loading once the task is uploaded
           setNewTask(null); // Reset the task after the upload
-          console.log('seng tasks ', user.tasks)
         }
       }
     };
-    setTasks([...tasks].sort((a, b) => {
+
+
+    const sorted = [...tasks].sort((a, b) => {
       const now = new Date();
       const endTimeA = new Date(a.endTime);
       const endTimeB = new Date(b.endTime);
-    
-      // If both tasks have future end times, sort them by endTime
-      if (endTimeA > now && endTimeB > now) {
-        return endTimeA - endTimeB;
-      }
-    
-      // If only one of the tasks has a future endTime, place it before the past one
-      if (endTimeA > now) return -1;
-      if (endTimeB > now) return 1;
-    
-      // If both tasks have passed end times, sort them by endTime in ascending order
-      return endTimeA - endTimeB;
-    }));
+
+      if (endTimeA > now && endTimeB > now) return endTimeA - endTimeB; // Both tasks are in the future
+      if (endTimeA > now) return -1; // Only 'a' is in the future
+      if (endTimeB > now) return 1; // Only 'b' is in the future
+      return endTimeA - endTimeB; // Both tasks are in the past
+    });
+
+    // Set the sorted tasks
+    setSortedTasks(sorted);
+
     uploadTask();
-  }, [task, dispatch, user, uploadUserData, loading]); // Re-run effect when task or user
+  }, [task, dispatch, tasks, loading, user.uid]); // Monitor relevant dependencies
 
+  const renderItem = ({ item }) => {
+    console.log("task rendering", item);
+    return (
+      <TouchableOpacity
+        onPress={() => openTaskScreen({ taskID: item.id })}
+        style={{ padding: 5 }}
+      >
+        <Task task={{ item }} />
+      </TouchableOpacity>
+    );
+  };
 
-  const renderItem = ({item}) =>{
-    console.log('task rendering',item)
-    return <TouchableOpacity onPress={()=>openTaskScreen({taskID:item.id})} style={{padding:5}}><Task task={{item}}/></TouchableOpacity>
-  }
+  const openTaskScreen = ({ taskID }) => {
+    navigation.navigate("TaskScreen", { taskID: taskID });
+  };
 
-  const openTaskScreen =({taskID})=>{
-    navigation.navigate('TaskScreen',{taskID:taskID});
-  }
-
-  console.log('use111r',tasks)
+  console.log("use111r", tasks);
 
   return (
-    <ImageBackground style={styles.container}
-    source={require('../assets/backgrounds/pattern_2.png')}
-    resizeMode="cover">
-      <View style={{ marginTop:'5%' ,width: "90%", height: "10%" }}>
+    <ImageBackground
+      style={styles.container}
+      source={require("../assets/backgrounds/pattern_2.png")}
+      resizeMode="cover"
+    >
+      <View style={{ marginTop: "5%", width: "90%", height: "10%" }}>
         <ProfileBar profile={profile} />
       </View>
       {showModal && parental && (
@@ -123,32 +127,36 @@ const Home = ({ navigation, route }) => {
           setNewTask={setNewTask}
         />
       )}
-      {parental && <TouchableOpacity onPress={() => setShowModal(true)}
-        style={{padding:10}}>
-        <LinearGradient
-          style={styles.createTaskButton}
-          colors={["#76E2F4", "#615DEC", "#301781"]}
+      {parental && (
+        <TouchableOpacity
+          onPress={() => setShowModal(true)}
+          style={{ padding: 10 }}
         >
-          <Text
-            style={{
-              fontFamily: "Fredoka-Bold",
-              fontSize: calculateFontSize(20),
-              padding:10,
-              textAlign:'center'
-            }}
+          <LinearGradient
+            style={styles.createTaskButton}
+            colors={["#76E2F4", "#615DEC", "#301781"]}
           >
-            Create new task
-          </Text>
-        </LinearGradient>
-      </TouchableOpacity>}
+            <Text
+              style={{
+                fontFamily: "Fredoka-Bold",
+                fontSize: calculateFontSize(20),
+                padding: 10,
+                textAlign: "center",
+              }}
+            >
+              Create new task
+            </Text>
+          </LinearGradient>
+        </TouchableOpacity>
+      )}
       <View style={styles.tasksContainer}>
         <FlatList
           numColumns={2}
-          data={tasks} // List of profiles
+          data={sortedTasks} // List of profiles
           keyExtractor={(item) => item.id.toString()} // Ensure the id is converted to string
           renderItem={renderItem} // Render each item using ProfileBar
           contentContainerStyle={styles.contentContainerStyle}
-          ItemSeparatorComponent={() => <View style={styles.separator}/>}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
         />
       </View>
     </ImageBackground>
@@ -160,7 +168,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#E4F1F4",
     alignItems: "center",
-    padding:'2'
+    padding: "2",
   },
   headerText: {
     fontSize: calculateFontSize(48),
@@ -205,20 +213,22 @@ const styles = StyleSheet.create({
     //borderColor:'grey',
     //elevation: 5,
     borderRadius: 10,
-    alignContent:'center',
-    justifyContent:'center',
+    alignContent: "center",
+    justifyContent: "center",
   },
   createTaskButton: {
     borderRadius: 10,
     width: "90%",
-  },contentContainerStyle:{
+  },
+  contentContainerStyle: {
     flexGrow: 1,
-    alignItems: 'center',
-  }, separator: {
-    height: '2%', // Adjust height for horizontal line
-    width: '90%', // Adjust width as needed
-    backgroundColor: '#aaa',
-    alignSelf: 'center',
+    alignItems: "center",
+  },
+  separator: {
+    height: "2%", // Adjust height for horizontal line
+    width: "90%", // Adjust width as needed
+    backgroundColor: "#aaa",
+    alignSelf: "center",
   },
 });
 
