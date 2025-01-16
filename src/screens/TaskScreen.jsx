@@ -385,7 +385,7 @@ const TaskScreen = ({ navigation, route }) => {
           </View>}
           <View style={{marginTop:10,backgroundColor:'cyan',flex:0.7}}>
             <Text>CHAT</Text>
-            {/* FLAT LIST HERE */}
+            {/* FLAT LIST HERE or Chat component here */}
           </View>
           <View style={{backgroundColor:'yellow',flex:0.3}}>
             <Text>TEXT BUTTONS</Text>
