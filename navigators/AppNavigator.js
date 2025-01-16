@@ -15,6 +15,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AntDesign } from "@expo/vector-icons";
 import { useState,useEffect } from "react";
 import TaskScreen from "../src/screens/TaskScreen";
+import RewardsScreen from "../src/screens/RewardsScreen";
 
 // Create a Stack Navigator
 const Stack = createNativeStackNavigator();
@@ -42,9 +43,11 @@ function TabNavigator({route}) {
       tabBarInactiveTintColor: "gray",
       headerShown: false,
     })}>
+
       <Tab.Screen name="Home" component={Home} initialParams={route.params} />
       <Tab.Screen name="NewScreen" component={NewScreen} initialParams={route.params}  />
       <Tab.Screen name="SelectProfileScreen" component={SelectProfileScreen}/>
+      <Tab.Screen name="Rewards" component={RewardsScreen}/>
     </Tab.Navigator>
   );
 }
