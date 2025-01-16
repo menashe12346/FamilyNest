@@ -25,11 +25,11 @@ import { getSecondsRemaining } from "../utils/TimeUtils";
 import { MaterialIcons } from "@expo/vector-icons";
 import { firebase } from "../../firebase";
 import { Badge } from "react-native-elements";
+import { FlatList } from "react-native-gesture-handler";
 
 const TaskScreen = ({ navigation, route }) => {
   const [menuVisible, setMenuVisible] = useState(false);
   const user = useSelector((state) => state.user.user);
-
 
   const toggleMenu = () => {
     setMenuVisible((prev) => !prev);
@@ -256,6 +256,9 @@ const TaskScreen = ({ navigation, route }) => {
 
   const profile = getProfileById(user, selectedUser); // Always up-to-date
   const parental = profile ? profile.role === "parent" : true; // Always up-to-date
+
+  console.log('profile.role',profile.role, parental)
+
   const [task, setTask] = useState(
     getTaskById(user.tasks, route.params.taskID)
   );
@@ -263,7 +266,7 @@ const TaskScreen = ({ navigation, route }) => {
     getProfileById(null, task.assignedTo)
   );
   const [remaining, setRemaining] = useState(true);
-  console.log("Task opened:",JSON.stringify(task,null,2))
+  console.log("Task opened:", JSON.stringify(task, null, 2));
 
   return (
     <KeyboardAvoidingView style={styles.container}>
@@ -343,13 +346,25 @@ const TaskScreen = ({ navigation, route }) => {
                 {assignedProfile.name},
                 {getProfileAge(assignedProfile.birth_day)}
               </Text>
-              {task.status!=='COMPLETED' && <CountdownTimer
-                remaining={remaining}
-                setRemaining={setRemaining}
-                initialSeconds={getSecondsRemaining(task.endTime)}
-              /> }
-              {task.status==='COMPLETED' && <Badge status="primary"
-              value={'Completed'} textStyle={{fontSize:15,fontFamily:'Fredoka-Bold',color:'#000000'}} containerStyle={{marginStart:30}} />}
+              {task.status !== "COMPLETED" && (
+                <CountdownTimer
+                  remaining={remaining}
+                  setRemaining={setRemaining}
+                  initialSeconds={getSecondsRemaining(task.endTime)}
+                />
+              )}
+              {task.status === "COMPLETED" && (
+                <Badge
+                  status="primary"
+                  value={"Completed"}
+                  textStyle={{
+                    fontSize: 15,
+                    fontFamily: "Fredoka-Bold",
+                    color: "#000000",
+                  }}
+                  containerStyle={{ marginStart: 30 }}
+                />
+              )}
             </View>
             <View style={styles.separator} />
             <Text style={styles.detailText}>Type: {taskTypes[task.type]}</Text>
@@ -364,6 +379,16 @@ const TaskScreen = ({ navigation, route }) => {
                 Reward points: {task.reward}
               </Text>
             </View>
+          </View>
+          {!parental && <View style={{ backgroundColor: "red",marginTop:'2%'}}>
+            <Text style={{fontSize:60,textAlign:'center'}}>Child buttons</Text>
+          </View>}
+          <View style={{marginTop:10,backgroundColor:'cyan',flex:0.7}}>
+            <Text>CHAT</Text>
+            {/* FLAT LIST HERE */}
+          </View>
+          <View style={{backgroundColor:'yellow',flex:0.3}}>
+            <Text>TEXT BUTTONS</Text>
           </View>
         </View>
       </ImageBackground>
