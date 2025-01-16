@@ -7,9 +7,9 @@ import {
   Image,
   TouchableOpacity,
   Modal,
-  TextInput, // Add this line to fix the issue 
+   TextInput, // Add this line to fix the issue 
 } from "react-native";
-import React, { useEffect,useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   updateReduxTask,
@@ -37,51 +37,19 @@ const TaskScreen = ({ navigation, route }) => {
   const toggleMenu = () => {
     setMenuVisible((prev) => !prev);
   };
-  const handleSendMessage = async () => {
-    if (newMessage.trim() === "") return; // לא לשלוח הודעה ריקה
+  const handleSendMessage = () => {
+    if (newMessage.trim() !== '') {
+      const newMessageObj = {
+        id: messages.length + 1, // מזהה ייחודי להודעה
+        profileId: profile.id, // מזהה הפרופיל השולח
+        text: newMessage,
+        timestamp: new Date().toISOString(), // זמן שליחה
+      };
   
-    const newChatMessage = {
-      profileId: selectedUser, // מזהה הפרופיל השולח
-      text: newMessage, // תוכן ההודעה
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(), // זמן ההודעה מהשרת
-    };
-  
-    try {
-      await firebase
-        .firestore()
-        .collection("taskChats")
-        .doc(task.id) // מזהה המשימה
-        .collection("messages")
-        .add(newChatMessage); // הוספת ההודעה לתת-אוסף
-  
-      setNewMessage(""); // ניקוי שדה ההודעה
-    } catch (error) {
-      console.error("Error sending message: ", error);
+      setMessages([...messages, newMessageObj]); // עדכון רשימת ההודעות
+      setNewMessage(''); // איפוס שדה הקלט
     }
   };
-  // האזנה לשינויים ב-Firestore כדי לטעון הודעות קיימות
-  useEffect(() => {
-    if (!task || !task.id) return; // ודא ש-task מוגדר
-  
-    const unsubscribe = firebase
-      .firestore()
-      .collection("taskChats")
-      .doc(task.id)
-      .collection("messages")
-      .orderBy("timestamp", "asc")
-      .onSnapshot((snapshot) => {
-        const loadedMessages = snapshot.docs
-          .map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }))
-          .filter((message) => message.text && typeof message.text === "string"); // בדוק שהטקסט הוא מחרוזת
-  
-        setMessages(loadedMessages);
-      });
-  
-    return () => unsubscribe();
-  }, [task]);
   
   const closeMenu = () => {
     setMenuVisible(false);
@@ -293,8 +261,8 @@ const TaskScreen = ({ navigation, route }) => {
   // עדכון ה-state המקומי כאשר המטלה ב-Redux משתנה
   React.useEffect(() => {
     const updatedTask = getTaskById(user.tasks, route.params.taskID);
-    if (updatedTask) setTask(updatedTask);
-}, [user.tasks, route.params.taskID]); // עדכן תלויות אם יש צורך
+    setTask(updatedTask);
+  }, [user.tasks]); // יפעל בכל פעם שהמטלות ב-Redux משתנות
 
   const selectedUser = useSelector(
     (state) => state.selectedProfile.selectedProfileId
@@ -549,50 +517,50 @@ const styles = StyleSheet.create({
   },
   chatList: {
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 10,
   },
   messageContainer: {
-    backgroundColor: "#e4e4e4",
-    marginVertical: 5,
-    borderRadius: 10,
+    marginBottom: 10,
+    backgroundColor: '#E4F1F4',
     padding: 10,
-    maxWidth: "80%",
+    borderRadius: 8,
   },
   messageText: {
     fontSize: 16,
-    color: "#333",
+    color: '#000',
   },
   timestampText: {
     fontSize: 12,
-    color: "#999",
-    alignSelf: "flex-end",
+    color: '#555',
+    textAlign: 'right',
     marginTop: 5,
   },
   inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: '#fff',
   },
-  Textinput: {
+  textInput: {
     flex: 1,
-    backgroundColor: "#fff",
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: '#CCC',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginRight: 10,
   },
   sendButton: {
-    backgroundColor: "#007BFF",
-    marginLeft: 10,
-    borderRadius: 20,
-    paddingVertical: 10,
+    backgroundColor: '#28A745',
     paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 8,
   },
   sendButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
+    color: '#FFF',
+    fontWeight: 'bold',
+  },  
 });
 
 export default TaskScreen;
