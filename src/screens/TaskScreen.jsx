@@ -7,8 +7,9 @@ import {
   Image,
   TouchableOpacity,
   Modal,
+  TextInput, // Add this line to fix the issue 
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect,useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   updateReduxTask,
@@ -30,11 +31,58 @@ import { FlatList } from "react-native-gesture-handler";
 const TaskScreen = ({ navigation, route }) => {
   const [menuVisible, setMenuVisible] = useState(false);
   const user = useSelector((state) => state.user.user);
-
+  const [messages, setMessages] = useState([]); // רשימת הודעות
+  const [newMessage, setNewMessage] = useState(''); // הודעה חדשה
+  
   const toggleMenu = () => {
     setMenuVisible((prev) => !prev);
   };
-
+  const handleSendMessage = async () => {
+    if (newMessage.trim() === "") return; // לא לשלוח הודעה ריקה
+  
+    const newChatMessage = {
+      profileId: selectedUser, // מזהה הפרופיל השולח
+      text: newMessage, // תוכן ההודעה
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(), // זמן ההודעה מהשרת
+    };
+  
+    try {
+      await firebase
+        .firestore()
+        .collection("taskChats")
+        .doc(task.id) // מזהה המשימה
+        .collection("messages")
+        .add(newChatMessage); // הוספת ההודעה לתת-אוסף
+  
+      setNewMessage(""); // ניקוי שדה ההודעה
+    } catch (error) {
+      console.error("Error sending message: ", error);
+    }
+  };
+  // האזנה לשינויים ב-Firestore כדי לטעון הודעות קיימות
+  useEffect(() => {
+    if (!task || !task.id) return; // ודא ש-task מוגדר
+  
+    const unsubscribe = firebase
+      .firestore()
+      .collection("taskChats")
+      .doc(task.id)
+      .collection("messages")
+      .orderBy("timestamp", "asc")
+      .onSnapshot((snapshot) => {
+        const loadedMessages = snapshot.docs
+          .map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+          .filter((message) => message.text && typeof message.text === "string"); // בדוק שהטקסט הוא מחרוזת
+  
+        setMessages(loadedMessages);
+      });
+  
+    return () => unsubscribe();
+  }, [task]);
+  
   const closeMenu = () => {
     setMenuVisible(false);
   };
@@ -245,8 +293,8 @@ const TaskScreen = ({ navigation, route }) => {
   // עדכון ה-state המקומי כאשר המטלה ב-Redux משתנה
   React.useEffect(() => {
     const updatedTask = getTaskById(user.tasks, route.params.taskID);
-    setTask(updatedTask);
-  }, [user.tasks]); // יפעל בכל פעם שהמטלות ב-Redux משתנות
+    if (updatedTask) setTask(updatedTask);
+}, [user.tasks, route.params.taskID]); // עדכן תלויות אם יש צורך
 
   const selectedUser = useSelector(
     (state) => state.selectedProfile.selectedProfileId
@@ -289,7 +337,7 @@ const TaskScreen = ({ navigation, route }) => {
                 activeOpacity={1}
                 onPress={closeMenu} // סגירה בלחיצה מחוץ לתפריט
               />
-
+  
               {/* תפריט נפתח */}
               <View style={styles.menuContainer}>
                 <TouchableOpacity
@@ -380,21 +428,50 @@ const TaskScreen = ({ navigation, route }) => {
               </Text>
             </View>
           </View>
-          {!parental && <View style={{ backgroundColor: "red",marginTop:'2%'}}>
-            <Text style={{fontSize:60,textAlign:'center'}}>Child buttons</Text>
-          </View>}
-          <View style={{marginTop:10,backgroundColor:'cyan',flex:0.7}}>
-            <Text>CHAT</Text>
-            {/* FLAT LIST HERE or Chat component here */}
+          {!parental && (
+            <View style={{ backgroundColor: "red", marginTop: "2%" }}>
+              <Text style={{ fontSize: 60, textAlign: "center" }}>
+                Child buttons
+              </Text>
+            </View>
+          )}
+          <View style={{ marginTop: 10, backgroundColor: "cyan", flex: 0.7 }}>
+            <FlatList
+              data={messages}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <View style={styles.messageContainer}>
+                  <Text style={styles.messageText}>
+                    {getProfileById(user, item.profileId)?.name}: {item.text}
+                  </Text>
+                  <Text style={styles.timestampText}>
+                    {new Date(item.timestamp).toLocaleTimeString()}
+                  </Text>
+                </View>
+              )}
+              contentContainerStyle={styles.chatList}
+            />
           </View>
-          <View style={{backgroundColor:'yellow',flex:0.3}}>
-            <Text>TEXT BUTTONS</Text>
-            {/* text input and buttons to send */}
+          <View style={{ backgroundColor: "yellow", flex: 0.3 }}>
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.textInput}
+                placeholder="Enter your message"
+                value={newMessage}
+                onChangeText={setNewMessage}
+              />
+              <TouchableOpacity
+                style={styles.sendButton}
+                onPress={handleSendMessage}
+              >
+                <Text style={styles.sendButtonText}>Send</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </ImageBackground>
     </KeyboardAvoidingView>
-  );
+  );  
 };
 
 const styles = StyleSheet.create({
@@ -469,6 +546,52 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     zIndex: 5, // שכבה מתחת לכפתור ההגדרות
+  },
+  chatList: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  messageContainer: {
+    backgroundColor: "#e4e4e4",
+    marginVertical: 5,
+    borderRadius: 10,
+    padding: 10,
+    maxWidth: "80%",
+  },
+  messageText: {
+    fontSize: 16,
+    color: "#333",
+  },
+  timestampText: {
+    fontSize: 12,
+    color: "#999",
+    alignSelf: "flex-end",
+    marginTop: 5,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 10,
+  },
+  Textinput: {
+    flex: 1,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: "#ccc",
+  },
+  sendButton: {
+    backgroundColor: "#007BFF",
+    marginLeft: 10,
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+  sendButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
 
