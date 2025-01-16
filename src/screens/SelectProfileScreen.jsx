@@ -86,8 +86,9 @@ const SelectProfileScreen = ({navigation}) => {
       role !== ''
     ) {
       const id = getNewProfileID({profiles: user.profiles})
+      let uploadedImageURI = ''
       if(!imageID){
-        setImageURI('https://uobdeuywixmstdrxugmh.supabase.co/storage/v1/object/public/pictures/'+user.uid+newProfileName)
+        uploadedImageURI = 'https://uobdeuywixmstdrxugmh.supabase.co/storage/v1/object/public/pictures/'+user.uid+newProfileName
         await uploadImage(imageURI.uri,user.uid+newProfileName)
         console.log('IMAGE URI example',imageURI)
         setImageID(0)
@@ -99,7 +100,7 @@ const SelectProfileScreen = ({navigation}) => {
         gender: newProfileGender,
         name: newProfileName,
         birth_day: birthDate,
-        avatarURI: imageURI,
+        avatarURI: uploadedImageURI,
         passkey: newProfileCode,
         imageID,
       });
