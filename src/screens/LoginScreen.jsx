@@ -63,11 +63,11 @@ const LoginScreen = () => {
           // Navigate to the main screen
           await handleSignIn();
         } else {
-          console.log('User document does not exist in Firestore');
+          console.warn('User document does not exist in Firestore');
         }
       } catch (error) {
-        console.log('Error code:', error.code);
-        console.log('Error message:', error.message);
+        console.error('Error code:', error.code);
+        console.error('Error message:', error.message);
   
         if (error.code === 'auth/invalid-email') {
           console.log('That email address is invalid!');

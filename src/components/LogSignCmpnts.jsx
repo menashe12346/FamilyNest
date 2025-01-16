@@ -212,7 +212,6 @@ export const GenderNameBDay = ({
               );
               const iconName = selectedGender ? selectedGender.icon : "";
               const iconColor = iconName === "female" ? "#c90076" : "#2986cc";
-              console.log(gender.value);
               return (
                 <FontAwesome name={iconName} size={20} color={iconColor} />
               );

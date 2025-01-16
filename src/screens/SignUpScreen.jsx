@@ -52,21 +52,21 @@ const signUp = ({user, navigation}) => {
         navigation.navigate('Drawer',user);
       })
       .catch((error) => {
-        console.log('Error code:', error.code);
-        console.log('Error message:', error.message);
+        console.error('Error code:', error.code);
+        console.error('Error message:', error.message);
 
         if (error.code === 'auth/email-already-in-use') {
-          console.log('That email address is already in use!');
+          console.warn('That email address is already in use!');
         } else if (error.code === 'auth/invalid-email') {
-          console.log('That email address is invalid!');
+          console.warn('That email address is invalid!');
         } else if (error.code === 'auth/weak-password') {
-          console.log('Password is too weak!');
+          console.warn('Password is too weak!');
         } else {
           console.error('An unexpected error occurred:', error);
         }
       });
   } else {
-    console.log('Username and password cannot be empty');
+    console.warn('Username and password cannot be empty');
   }
 };
 

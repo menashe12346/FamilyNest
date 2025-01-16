@@ -47,7 +47,6 @@ const CreateTask = ({ showModal, setShowModal, user, profile ,task,setNewTask })
   const [isFocusType, setIsFocusType] = useState(false);
 
   const handleValidation = () => {
-    console.log(date)
     if (!taskTitle.trim()) {
       alert("Please enter a task title.");
       return false;
@@ -73,10 +72,7 @@ const CreateTask = ({ showModal, setShowModal, user, profile ,task,setNewTask })
   };
 
   const handleAssign =()=>{
-      console.log('task:',taskTitle,description,time,date,valueType,rewardValue,assignedProfile)
-      console.log('before',user.tasks)
       const newId = getNewTaskID({tasks: user.tasks})
-      console.log(newId)
       const newTask = CreateNewTask({
         creatorID: profile.id,
         assignedTo: assignedProfile,
@@ -89,7 +85,7 @@ const CreateTask = ({ showModal, setShowModal, user, profile ,task,setNewTask })
         reward: rewardValue,
         minAge: 0,
       });
-      console.log('new Task',newTask)
+      console.log('New Task Created:',newTask)
       setNewTask(newTask)
       setShowModal(false)
   }

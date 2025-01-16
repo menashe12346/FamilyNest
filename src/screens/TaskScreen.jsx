@@ -262,7 +262,6 @@ const TaskScreen = ({ navigation, route }) => {
     getProfileById(null, task.assignedTo)
   );
   const [remaining, setRemaining] = useState(true);
-  console.log("TASK SCREEN=", task);
 
   return (
     <KeyboardAvoidingView style={styles.container}>

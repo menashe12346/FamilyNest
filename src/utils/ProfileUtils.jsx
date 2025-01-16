@@ -36,7 +36,6 @@ const formatDate= ({date}) =>{
 }
 
 export const getNewProfileID = ({profiles})=>{
-  console.log('profiles ID',profiles)
   let maxID = -1
   for (const profile of profiles){
       maxID=Math.max(profile.id , maxID)
@@ -47,7 +46,6 @@ export const getNewProfileID = ({profiles})=>{
 export const getProfileById = (user,id) => {
   if(!user){
     user = useSelector((state) => state.user.user);
-    console.log(user)
   }
   return user.profiles.find(profile => profile.id === id);
 };
@@ -66,7 +64,6 @@ export const getProfileAge = (birth_day) => {
 
 export const isMomDadSonDaughter =({profile})=>{
   if(!profile) return 'Profile not found'
-  console.log('Profile:',profile.role ,profile.gender)
   switch(profile.role){
     case 'parent':
       return profile.gender === 'male'? 'Father':'Mother'

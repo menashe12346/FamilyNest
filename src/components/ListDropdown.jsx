@@ -6,21 +6,16 @@ import { useState } from 'react';
 const ListDropdown = ({ profiles, style ,value , onChange }) => {
   const [showDropdown,setShowDropdown]= useState(false);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 145, left: 0 });
-  console.log('position ',dropdownPosition)
   profiles = profiles.profiles;
-  console.log('profiles to show:',profiles)
 
   const [selectedProfile,setSelected]= useState(profiles[0])
-  console.log('show dropdown1',showDropdown)
 
   // Toggle the visibility of the dropdown list
   const toggleDropdown = () => {
-    console.log('showDropDown',showDropdown);
     setShowDropdown(true);
   };
 
   const onProfileBarLayout = (event) => {
-    console.log('onLayout')
     const { x, y, height } = event.nativeEvent.layout;
     setDropdownPosition({
       top: y + height, // Position the dropdown below the ProfileBar
@@ -29,7 +24,6 @@ const ListDropdown = ({ profiles, style ,value , onChange }) => {
   };
 
 const renderItem = ({ item }) => {
-    console.log("item rendered:" ,item);
     return <View style={{height:75}}>
     <ProfileBar profile={item} onPress={()=>{
       setSelected(item)

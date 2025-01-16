@@ -33,11 +33,10 @@ const SelectProfileScreen = ({navigation}) => {
   const user = useSelector((state) => state.user.user);
   const selectedUser = useSelector((state) => state.selectedProfile.selectedProfileId);//
   const dispatch = useDispatch();
-  console.log('User logged (SelectProfileScreen):', user);
+  console.log('User logged (SelectProfileScreen):', JSON.stringify(user));
 
   const [parental, setParental] = useState((selectedUser)?
     getProfileById(user,selectedUser).role === 'parent' : true);
-  console.log('Parental:', parental);
 
   const [profiles,setProfiles] = useState(user.profiles)
   const [newProfileName, setNewProfileName] = useState('');
@@ -95,12 +94,11 @@ const SelectProfileScreen = ({navigation}) => {
         imageID
       });
       
-      console.log('\nNew profile:', newProfile);
+      console.log('New profile created:', newProfile);
       const updatedProfiles = [...profiles, newProfile];
       dispatch(setReduxProfiles(updatedProfiles));
 
       setProfiles(updatedProfiles);
-      console.log('\nProfiles (after update):', updatedProfiles);
 
       uploadUserData(user.uid, { profiles: updatedProfiles });
 
@@ -167,12 +165,10 @@ const SelectProfileScreen = ({navigation}) => {
   
 
   const handleRoleSelect = (selectedRole) => {
-    console.log('Selected role:', selectedRole);
     setRole(selectedRole);
   };
 
   const handleSelectProfile = (id) => () => {
-    console.log('Selected profile:', id);
     dispatch(setSelectedProfileId(id));
     console.log('Selected profile ID:', selectedUser);
     navigation.navigate('Home');

@@ -24,14 +24,10 @@ const Task = ({task}) => {
   task=task.item
   const assignedTo = getProfileById(null,task.assignedTo)
   description=task.description.length>30? task.description.slice(0,30)+'....' : task.description
-  console.log('my task1',task)
 
   const [profile,setProfile]= useState(getProfileById(null,task.assignedTo))
   const [remaining,setRemaining]=useState(true)
   const [isNew,setIsNew]=useState(isNewTask(task.startTime,3))
-
-  console.log('new TASK',isNew)
-
 
 
   return (

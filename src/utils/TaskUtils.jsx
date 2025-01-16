@@ -59,7 +59,6 @@ export const taskTypes = {
   
 
 export const getNewTaskID = ({tasks})=>{
-    console.log("idss",tasks.tasks)
     let maxID = -1
     for (const task of tasks){
         maxID=Math.max(task.id , maxID)

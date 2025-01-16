@@ -8,7 +8,6 @@ import { FontAwesome } from "@expo/vector-icons";
 import { Badge } from 'react-native-elements';
 
 const ProfileBar = ({ profile, style, onPress }) => {
-  console.log("Profile (HOME):", profile);
   const colors =
     profile.gender === "male" ? ["#81BFDA","#87CEFA","#B1F0F7"] : ["#FB9EC6", "#FFB6C1","#FFE2E2"];
   return (
