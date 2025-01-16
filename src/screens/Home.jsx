@@ -10,13 +10,14 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { addReduxTask } from "../Redux/userSlice";
 import { uploadUserData } from "../utils/UploadData";
-import { getProfileById } from "../utils/ProfileUtils";
+import {
+  getProfileById,
+} from "../utils/ProfileUtils";
 import ProfileBar from "../components/ProfileBar";
 import CreateTask from "../components/CreateTask";
 import Task from "../components/Task";
 import { LinearGradient } from "expo-linear-gradient";
 import { FlatList } from "react-native-gesture-handler";
-import * as taskUtils from "../utils/TaskUtils";
 
 const Home = ({ navigation }) => {
   const user = useSelector((state) => state.user.user);
@@ -39,13 +40,9 @@ const Home = ({ navigation }) => {
   const [filterStatus, setFilterStatus] = useState(null);
   const [filterChild, setFilterChild] = useState(null);
 
-  const taskTypes = [
-    ...new Set(tasks.map((task) => task.type || "Uncategorized")),
-  ];
-  const taskStatusOptions = ["Active", "Expired"];
-  const childrenId = [
-    ...new Set(tasks.map((task) => task.assignedTo || "Unknown")),
-  ];
+  const taskTypes = [...new Set(tasks.map((task) => task.type || "Uncategorized"))];
+  const taskStatusOptions = ["Open", "Overdue"];
+  const childrenNames = [...new Set(tasks.map((task) => task.assignedTo || "Unknown"))];
 
   useEffect(() => {
     const uploadTask = async () => {
@@ -158,56 +155,56 @@ const Home = ({ navigation }) => {
         </TouchableOpacity>
       )}
 
-      {true && (
-        <View style={styles.filtersView}>
-        <FlatList
-          data={[
-            { key: "All Types", type: null },
-            ...taskTypes.map((type) => ({
-              key: taskUtils.taskTypes[type],
-              type,
-            })),
-            { key: "All Status", type: null },
-            ...taskStatusOptions.map((status) => ({
-              key: status,
-              type: status,
-            })),
-            { key: "All Profiles", type: null },
-            ...childrenId.map((child) => ({
-              key: getProfileById(user, child).name,
-              type: child,
-            })),
-          ]}
-          horizontal
-          keyExtractor={(item) => item.key}
-          contentContainerStyle={styles.filterBarContainer}
-          renderItem={({ item }) => (
+      {profile && (
+        <View style={styles.filterBarContainer}>
+          <TouchableOpacity
+            style={[styles.filterButton, filterType === null && styles.filterButtonActive]}
+            onPress={() => setFilterType(null)}
+          >
+            <Text style={styles.filterButtonText}>All Types</Text>
+          </TouchableOpacity>
+          {taskTypes.map((type) => (
             <TouchableOpacity
-              style={[
-                styles.filterButton,
-                (filterType === item.type ||
-                  filterStatus === item.type ||
-                  filterChild === item.type) &&
-                  styles.filterButtonActive,
-              ]}
-              onPress={() => {
-                if (item.type === null) {
-                  if (item.key === "All Types") setFilterType(null);
-                  if (item.key === "All Status") setFilterStatus(null);
-                  if (item.key === "All Profiles") setFilterChild(null);
-                } else {
-                  if (taskTypes.includes(item.type)) setFilterType(item.type);
-                  else if (taskStatusOptions.includes(item.type))
-                    setFilterStatus(item.type);
-                  else setFilterChild(item.type);
-                }
-              }}
+              key={type}
+              style={[styles.filterButton, filterType === type && styles.filterButtonActive]}
+              onPress={() => setFilterType(type)}
             >
-              <Text style={styles.filterButtonText}>{item.key}</Text>
+              <Text style={styles.filterButtonText}>{type}</Text>
             </TouchableOpacity>
-          )}
-        />
-      </View>)}
+          ))}
+          <TouchableOpacity
+            style={[styles.filterButton, filterStatus === null && styles.filterButtonActive]}
+            onPress={() => setFilterStatus(null)}
+          >
+            <Text style={styles.filterButtonText}>All Status</Text>
+          </TouchableOpacity>
+          {taskStatusOptions.map((status) => (
+            <TouchableOpacity
+              key={status}
+              style={[styles.filterButton, filterStatus === status && styles.filterButtonActive]}
+              onPress={() => setFilterStatus(status)}
+            >
+              <Text style={styles.filterButtonText}>{status}</Text>
+            </TouchableOpacity>
+          ))}
+          <TouchableOpacity
+            style={[styles.filterButton, filterChild === null && styles.filterButtonActive]}
+            onPress={() => setFilterChild(null)}
+          >
+            <Text style={styles.filterButtonText}>All Profiles</Text>
+          </TouchableOpacity>
+          {childrenNames.map((child) => (
+            <TouchableOpacity
+              key={child}
+              style={[styles.filterButton, filterChild === child && styles.filterButtonActive]}
+              onPress={() => setFilterChild(child)}
+            >
+              <Text style={styles.filterButtonText}>{child}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+
       <View style={styles.tasksContainer}>
         <FlatList
           numColumns={2}
@@ -230,7 +227,6 @@ const styles = StyleSheet.create({
     padding: "2",
   },
   filterBarContainer: {
-    backgroundColor: "red",
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
@@ -249,15 +245,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#615DEC",
   },
   filterButtonText: {
-    fontFamily: "Fredoka-Bold",
     fontSize: 14,
     color: "#fff",
   },
   tasksContainer: {
-    flex: 1,  // Allow the container to take full available space
+    height: "80%",
     width: "90%",
     borderRadius: 10,
-
+    alignContent: "center",
+    justifyContent: "center",
   },
   createTaskButton: {
     borderRadius: 10,
@@ -273,34 +269,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#aaa",
     alignSelf: "center",
   },
-  filterBarContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 10,
-  },
-  filterButton: {
-    backgroundColor: "#ddd",
-    borderRadius: 20,
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    margin: 5,
-  },
-  filterButtonActive: {
-    backgroundColor: "#615DEC",
-  },
-  filterButtonText: {
-    fontSize: 14,
-    color: "#fff",
-  },filtersView:{
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    alignItems: "center",
-    marginVertical: 10,
-    paddingHorizontal: 10,
-    width:'90%',
-    overflow:'scroll'
-  }
 });
 
 export default Home;
