@@ -30,6 +30,7 @@ const TaskScreen = ({ navigation, route }) => {
   const [menuVisible, setMenuVisible] = useState(false);
   const user = useSelector((state) => state.user.user);
 
+
   const toggleMenu = () => {
     setMenuVisible((prev) => !prev);
   };
@@ -262,6 +263,7 @@ const TaskScreen = ({ navigation, route }) => {
     getProfileById(null, task.assignedTo)
   );
   const [remaining, setRemaining] = useState(true);
+  console.log("Task opened:",JSON.stringify(task,null,2))
 
   return (
     <KeyboardAvoidingView style={styles.container}>
