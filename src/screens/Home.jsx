@@ -276,7 +276,6 @@ const styles = StyleSheet.create({
   filterBarContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 10,
     paddingHorizontal: 10,
   },
   filterButton: {
