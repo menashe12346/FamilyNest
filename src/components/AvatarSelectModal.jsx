@@ -1,5 +1,5 @@
 import { View, Image, Modal, StyleSheet, TouchableOpacity , Text ,Alert} from 'react-native'
-import React from 'react'
+import React ,{useState,useEffect} from 'react'
 import { Button } from '@rneui/base'
 import { FlatList } from 'react-native-gesture-handler'
 import * as ImagePicker from 'expo-image-picker';
@@ -7,7 +7,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 
 const AvatarSelectModal = ({imageURI, setImageURI ,imageID, setImageID,showModal,setShowModal}) => {
-    const [CameraPhotoURI, setCameraPhoto] = React.useState(null)
+    const [CameraPhotoURI, setCameraPhoto] = useState(null)
 
     const data = [
       { id: '0', type: 'camera', uri: require('../assets/images/camera.png') }, // Camera item
@@ -74,9 +74,11 @@ const AvatarSelectModal = ({imageURI, setImageURI ,imageID, setImageID,showModal
         if (!result.canceled) {
           // Save the image URI
           setCameraPhoto(result.assets[0].uri);
+          console.log(result.assets[0].uri)
           console.log('Captured Image URI:', CameraPhotoURI);
           console.log('Result:', {uri: CameraPhotoURI});
           setImageURI({uri: CameraPhotoURI})
+          setImageID(0)
         }
       };
 
@@ -91,6 +93,16 @@ const AvatarSelectModal = ({imageURI, setImageURI ,imageID, setImageID,showModal
             return <TouchableOpacity onPress={openCamera}><Image source={CameraPhotoURI? {uri: CameraPhotoURI}: require('../assets/images/camera.png')} style={styles.cameraImage}/></TouchableOpacity>
         }
       };
+
+      useEffect(() => {
+        if (CameraPhotoURI) {
+          console.log('Captured Image URI:', CameraPhotoURI);
+          console.log('Result:', { uri: CameraPhotoURI });
+          setImageURI({uri: CameraPhotoURI})
+          setImageID(0)
+          
+        }
+      }, [CameraPhotoURI]);  // This effect runs every time cameraPhoto changes
 
 //TODO add chosen one show add camera sensor or gallery , adjust styles
     console.log("Show Modal:",showModal)

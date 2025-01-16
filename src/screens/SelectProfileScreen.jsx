@@ -25,6 +25,7 @@ import { setSelectedProfileId } from '../Redux/selectedProfileSlice';
 import { uploadUserData } from '../utils/UploadData';
 import { setUser} from '../Redux/userSlice';
 import { BackgroundImage } from '@rneui/base';
+import supabase from '../../supabaseCleint';
 
 const avatars = [require('../assets/avatars/avatar_1.png')];
 
@@ -78,7 +79,7 @@ const SelectProfileScreen = ({navigation}) => {
     console.log('Adding profile...');
     if (
       newProfileName.trim() !== '' &&
-      imageID &&
+      (imageURI || imageID) &&
       birthDate &&
       newProfileGender &&
       newProfileCode.length === 4 &&
@@ -91,11 +92,17 @@ const SelectProfileScreen = ({navigation}) => {
         gender: newProfileGender,
         name: newProfileName,
         birth_day: birthDate,
-        avatarURI: selectedAvatar,
+        avatarURI: imageURI,
         passkey: newProfileCode,
-        imageID
+        imageID,
       });
       
+      if(!imageID){
+        console.log('IMAGE URI example',imageURI)
+        supabase.st
+        setImageID(1)
+      }
+
       console.log('New profile created:', newProfile);
       const updatedProfiles = [...profiles, newProfile];
       dispatch(setReduxProfiles(updatedProfiles));
