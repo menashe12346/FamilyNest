@@ -389,6 +389,7 @@ const TaskScreen = ({ navigation, route }) => {
           </View>
           <View style={{backgroundColor:'yellow',flex:0.3}}>
             <Text>TEXT BUTTONS</Text>
+            {/* text input and buttons to send */}
           </View>
         </View>
       </ImageBackground>
