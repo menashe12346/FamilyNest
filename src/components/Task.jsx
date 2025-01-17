@@ -29,6 +29,9 @@ const Task = ({task}) => {
   const [remaining,setRemaining]=useState(true)
   const [isNew,setIsNew]=useState(isNewTask(task.startTime,3))
 
+  
+  const profileImage = (profile.imageID)? avatarImages[profile.imageID] : {uri: profile.avatarURI}
+
 
   return (
 
@@ -44,7 +47,7 @@ const Task = ({task}) => {
             </Animatable.View>}
       <View style={{alignItems:'center',alignContent:'center',flexDirection:'row'}}>
         <View style={styles.roundedImage}>
-          <Image style={{height:'100%',width:'100%',resizeMode:'cover'}} source={avatarImages[profile.imageID]}/>
+          <Image style={{height:'100%',width:'100%',resizeMode:'cover'}} source={profileImage}/>
         </View>
         <Text style={styles.nameText}>{assignedTo.name}</Text>
         {task.status!=='COMPLETED' && <CountdownTimer remaining={remaining} setRemaining={setRemaining} initialSeconds={getSecondsRemaining(task.endTime)}/>}

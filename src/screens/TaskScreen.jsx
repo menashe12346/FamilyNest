@@ -47,6 +47,9 @@ const TaskScreen = ({ navigation, route }) => {
   const [chat, setChat] = useState(task.chat); // רשימת הודעות
   const [newMessage, setNewMessage] = useState(''); // הודעה חדשה
 
+  
+  const profileImage = (profile.imageID)? avatarImages[profile.imageID] : {uri: profile.avatarURI}
+
   const handleSendMessage = async () => {
     if (newMessage.trim() !== '') {
       const newMessageObj = {
@@ -402,7 +405,7 @@ const TaskScreen = ({ navigation, route }) => {
               <View style={styles.roundedImage}>
                 <Image
                   style={{ resizeMode: "cover", height: 40, width: 40 }}
-                  source={avatarImages[assignedProfile.imageID]}
+                  source={profileImage}
                 />
               </View>
               <Text style={styles.detailText}>

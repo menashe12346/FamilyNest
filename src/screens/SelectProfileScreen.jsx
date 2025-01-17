@@ -148,8 +148,11 @@ const SelectProfileScreen = ({navigation}) => {
   numColumns={2}
   data={profiles}
   ItemSeparatorComponent={() => <View style={styles.separator} />}
-  renderItem={({ item }) => (
-    <View
+  renderItem={({ item }) => {
+    
+    const profileImage = (item.imageID)? avatarImages[item.imageID] : {uri: item.avatarURI}
+    console.log("Oprofile image ",profileImage)
+    return (<View
       style={[
         styles.profileContainer,
         {
@@ -166,12 +169,12 @@ const SelectProfileScreen = ({navigation}) => {
         >
           <Text style={styles.deleteButtonText}>X</Text>
         </TouchableOpacity>
-        <Image source={avatarImages[item.imageID]} style={styles.profileImage} />
+        <Image source={profileImage} style={styles.profileImage} />
       </View>
       <Text style={styles.profileName}>{item.name}</Text>
       <Text style={styles.profileName}>{getProfileAge(item.birth_day)}</Text>
     </View>
-  )}
+  )}}
   keyExtractor={(item) => item.id}
 />
   
