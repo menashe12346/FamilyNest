@@ -485,8 +485,9 @@ const TaskScreen = ({ navigation, route }) => {
             <FlatList
               data={chat}
               keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => (
-                <View
+              renderItem={({ item }) => {
+                const name= profile.id === item.profileId ? 'Me' : getProfileById(user, item.profileId)?.name
+                return(<View
                   style={[
                     styles.messageContainer,
                     {
@@ -499,14 +500,16 @@ const TaskScreen = ({ navigation, route }) => {
                     },
                   ]}
                 >
-                  <Text style={styles.messageText}>
-                    {getProfileById(user, item.profileId)?.name}: {item.text}
+                  <Text style={[styles.messageText,{fontWeight:'800'}]}> 
+                  {name}: </Text>
+                  <View style={{flexDirection:'column'}}><Text style={styles.messageText}>
+                    {item.text}
                   </Text>
                   <Text style={styles.timestampText}>
                     {new Date(item.timestamp).toLocaleTimeString()}
-                  </Text>
+                  </Text></View>
                 </View>
-              )}
+              )}}
               contentContainerStyle={styles.chatList}
             />
           </View>
@@ -610,6 +613,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   messageContainer: {
+    flexDirection:'row',
     marginBottom: 10,
     backgroundColor: "#E4F1F4",
     padding: 10,
