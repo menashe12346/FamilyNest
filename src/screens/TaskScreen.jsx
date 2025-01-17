@@ -18,7 +18,7 @@ import {
 } from "../Redux/userSlice";
 import { getProfileAge, getProfileById } from "../utils/ProfileUtils";
 import ProfileBar from "../components/ProfileBar";
-import { getBackgroundImage, getTaskById, taskTypes } from "../utils/TaskUtils";
+import { getBackgroundImage, getTaskById, taskTypes, updateTaskStatus } from "../utils/TaskUtils";
 import avatarImages from "../utils/AvatarsUtils";
 import { calculateFontSize } from "../utils/FontUtils";
 import CountdownTimer from "../components/CountdownTimer";
@@ -330,42 +330,7 @@ const TaskScreen = ({ navigation, route }) => {
 
   const handleComplete = async()=>{
     console.log("Changing status...")
-    setTask((prevTask) => ({
-      ...prevTask,
-      status: "WAITING_COMPLETE",
-    }));
-    console.log('new status',task)
-
-    try {
-      const userDocRef = firebase.firestore().collection("users").doc(user.uid);
-
-      // Fetch the current user document
-      const doc = await userDocRef.get();
-      if (doc.exists) {
-      const data = doc.data();
-      const tasks = data.tasks;
-
-      // Find the task to update
-      const taskIndex = tasks.findIndex((t) => t.id === task.id);
-      if (taskIndex !== -1) {
-        tasks[taskIndex].status = "WAITING_COMPLETE";
-
-        // Update Firestore with the new task status
-        await userDocRef.update({ tasks });
-
-        // Update Redux
-        dispatch(updateReduxTask({ ...task, status: "WAITING_COMPLETE" }));
-
-        console.log("Task status updated successfully in Firestore and Redux.");
-      } else {
-        console.error("Task not found in Firestore.");
-      }
-      } else {
-      console.error("User document not found.");
-      }
-    } catch (error) {
-      console.error("Error updating task status:", error);
-    }
+    updateTaskStatus({user,task,status:"WAITING_COMPETE",dispatch})
 
   }
 

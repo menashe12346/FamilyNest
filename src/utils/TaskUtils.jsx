@@ -1,3 +1,6 @@
+import { updateReduxTask } from '../Redux/userSlice';
+import { firebase } from "../../firebase";
+
 export const CreateNewTask = ({creatorID,assignedTo,taskID,title,description,startTime,endTime,startDate,endDate,type,reward,minAge}) =>{
     console.log("Details:",creatorID,assignedTo,taskID,title,description,startTime,endTime,type,reward,minAge)
 
@@ -72,7 +75,37 @@ export const getTaskById = (tasks, id) => {
     return tasks.find((task) => task.id === id);
   };
 
-export const updateTaskStatus = ({task})=>{
-
+export const updateTaskStatus = async ({user,task,status,dispatch})=>{
+  console.log('user',user)
+      try {
+        const userDocRef = firebase.firestore().collection("users").doc(user.uid);
+  
+        // Fetch the current user document
+        const doc = await userDocRef.get();
+        if (doc.exists) {
+        const data = doc.data();
+        const tasks = data.tasks;
+  
+        // Find the task to update
+        const taskIndex = tasks.findIndex((t) => t.id === task.id);
+        if (taskIndex !== -1) {
+          tasks[taskIndex].status = status;
+  
+          // Update Firestore with the new task status
+          await userDocRef.update({ tasks });
+  
+          // Update Redux
+          dispatch(updateReduxTask({ ...task, status: status }));
+  
+          console.log("Task status updated successfully in Firestore and Redux.");
+        } else {
+          console.error("Task not found in Firestore.");
+        }
+        } else {
+        console.error("User document not found.");
+        }
+      } catch (error) {
+        console.error("Error updating task status:", error);
+      }
 
 }
