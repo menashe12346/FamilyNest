@@ -10,21 +10,23 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // Create the Supabase client
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Example: Upload a file to the "Pictures" bucket
 export const uploadImage = async (filePath, fileName) => {
-  console.log('Uploading...')
+  console.log('Uploading...');
   try {
+    const fileExtension = '.jpeg'; // Adjust this based on your file type
+    const fullFileName = fileName.endsWith(fileExtension) ? fileName : `${fileName}${fileExtension}`;
+    
     const file = {
       uri: filePath,
-      type: 'jpeg', // Adjust based on file type
-      name: fileName,
+      type: 'image/jpeg', // Correct MIME type
+      name: fullFileName,
     };
 
-    console.log('filke',file)
+    console.log('File to upload:', file);
 
     const { data, error } = await supabase.storage
       .from('ProfilePictures') // Specify bucket name
-      .upload(fileName, file);
+      .upload(fullFileName, file);
 
     if (error) throw error;
 

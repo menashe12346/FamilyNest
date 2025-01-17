@@ -89,7 +89,7 @@ const SelectProfileScreen = ({navigation}) => {
       let uploadedImageURI = ''
       if(!imageID){
         uploadedImageURI = 'https://uobdeuywixmstdrxugmh.supabase.co/storage/v1/object/public/ProfilePictures/'+user.uid.slice(0,10)+newProfileName+'.jpeg'
-        await uploadImage(imageURI.uri,user.uid+newProfileName)
+        await uploadImage(imageURI.uri,user.uid.slice(0,10)+newProfileName)
         console.log('IMAGE URI example',imageURI)
         setImageID(0)
       }
@@ -144,40 +144,6 @@ const SelectProfileScreen = ({navigation}) => {
     ]);
   };
   
-<FlatList
-  numColumns={2}
-  data={profiles}
-  ItemSeparatorComponent={() => <View style={styles.separator} />}
-  renderItem={({ item }) => {
-    
-    const profileImage = (item.imageID)? avatarImages[item.imageID] : {uri: item.avatarURI}
-    console.log("Oprofile image ",profileImage)
-    return (<View
-      style={[
-        styles.profileContainer,
-        {
-          borderWidth: 4,
-          borderStyle: item.role === 'child' ? 'dashed' : 'solid',
-          borderColor: item.gender === 'male' ? '#007BFF' : '#FF69B4',
-        },
-      ]}
-    >
-      <View style={styles.avatarWrapper}>
-        <TouchableOpacity
-          style={styles.deleteButton}
-          onPress={() => handleDeleteProfile(item.id)}
-        >
-          <Text style={styles.deleteButtonText}>X</Text>
-        </TouchableOpacity>
-        <Image source={profileImage} style={styles.profileImage} />
-      </View>
-      <Text style={styles.profileName}>{item.name}</Text>
-      <Text style={styles.profileName}>{getProfileAge(item.birth_day)}</Text>
-    </View>
-  )}}
-  keyExtractor={(item) => item.id}
-/>
-  
 
   const handleRoleSelect = (selectedRole) => {
     setRole(selectedRole);
@@ -204,18 +170,21 @@ const SelectProfileScreen = ({navigation}) => {
         numColumns={2}
         data={profiles}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
-        renderItem={({ item }) => (
+        renderItem={({ item }) => {
+    
+          const profileImage = (item.imageID)? avatarImages[item.imageID] : {uri: item.avatarURI}
+          return (
           <TouchableOpacity onPress={handleSelectProfile(item.id)} style={[styles.profileContainer ,
            {borderWidth:4,
            borderStyle: item.role==='child'? 'dashed':'solid', 
            borderColor: item.gender === 'male' ? '#007BFF' : '#FF69B4'}]}>
             <View style={styles.avatarWrapper}>
-              <Image source={avatarImages[item.imageID]} style={styles.profileImage} />
+              <Image source={profileImage} style={styles.profileImage} />
             </View>
             <Text style={styles.profileName}>{item.name}</Text>
             <Text style={styles.profileName}>{getProfileAge(item.birth_day)}</Text>
           </TouchableOpacity>
-        )}
+        )}}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.flatListContainer}
       />
