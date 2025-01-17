@@ -34,12 +34,13 @@ const SelectProfileScreen = ({navigation}) => {
   const user = useSelector((state) => state.user.user);
   const selectedUser = useSelector((state) => state.selectedProfile.selectedProfileId);//
   const dispatch = useDispatch();
-  console.log('User logged (SelectProfileScreen) :', JSON.stringify(user.email,null,1));
+  console.log('User logged (SelectProfileScreen) :', JSON.stringify(user,null,1));
 
   const [parental, setParental] = useState((selectedUser)?
     getProfileById(user,selectedUser).role === 'parent' : true);
 
   const [profiles,setProfiles] = useState(user.profiles)
+  console.log("Available profiles",profiles)
   const [newProfileName, setNewProfileName] = useState('');
   const [birthDate, setBirthDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -111,7 +112,7 @@ const SelectProfileScreen = ({navigation}) => {
       dispatch(setReduxProfiles(updatedProfiles));
 
       setProfiles(updatedProfiles);
-
+      console.log('user.uid',user.uid)
       uploadUserData(user.uid, { profiles: updatedProfiles });
 
       setNewProfileName('');

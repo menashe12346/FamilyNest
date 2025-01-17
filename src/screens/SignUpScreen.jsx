@@ -6,6 +6,8 @@ import { firebase } from '../../firebase';
 import { PasswordsComponent,UserFamilyComponent,EmailComponent,GenderNameBDay, ProfilePictureSelector } from '../components/LogSignCmpnts';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { CreateNewProfile } from '../utils/ProfileUtils';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from '../Redux/userSlice';
 
 
 const validateFields = (user) => {
@@ -16,55 +18,68 @@ const validateFields = (user) => {
   return true;
 };
 
-const signUp = ({user, navigation}) => {
-
-    // Get a reference to the Firestore database
+const signUp = async ({ user, navigation, dispatch }) => {
+  // Get a reference to the Firestore database
   const db = firebase.firestore();
   const usersRef = db.collection('users');
 
-  if (!validateFields(user)){
+  if (!validateFields(user)) {
     Alert.alert('Please fill in all fields');
-    return
+    return;
   }
 
   if (user.email !== '' && user.password !== '') {
     console.log('Attempting to sign up...');
-    firebase.auth().createUserWithEmailAndPassword(user.email, user.password)
-      .then((userCredential) => {
-        const newUser = userCredential.user.uid;
-        console.log('User created successfully (UID):', newUser);
-        usersRef.doc(newUser).set({
-          uid: newUser,
-          familyName: user.familyName,
-          userName: user.userName,
-          email: user.email,
-          phoneNumber: user.phoneNumber,
-          partnerEmail: user.partnerEmail,
-          profiles: user.profiles,
-          tasks: user.tasks,
-        })
-        .then(() => {
-          console.log('User document created successfully in Firestore');
-        })
-        .catch((error) => {
-          console.error('Error creating user document in Firestore:', error);
-        });
-        navigation.navigate('Drawer',user);
-      })
-      .catch((error) => {
-        console.error('Error code:', error.code);
-        console.error('Error message:', error.message);
 
-        if (error.code === 'auth/email-already-in-use') {
-          console.warn('That email address is already in use!');
-        } else if (error.code === 'auth/invalid-email') {
-          console.warn('That email address is invalid!');
-        } else if (error.code === 'auth/weak-password') {
-          console.warn('Password is too weak!');
-        } else {
-          console.error('An unexpected error occurred:', error);
-        }
+    try {
+      // Create user with Firebase Authentication
+      const userCredential = await firebase.auth().createUserWithEmailAndPassword(user.email, user.password);
+      const newUser = userCredential.user.uid;
+      console.log('User created successfully (UID):', newUser);
+
+      // Set user document in Firestore
+      await usersRef.doc(newUser).set({
+        uid: newUser,
+        familyName: user.familyName,
+        userName: user.userName,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        partnerEmail: user.partnerEmail,
+        profiles: user.profiles,
+        tasks: user.tasks,
       });
+
+      console.log('User document created successfully in Firestore');
+
+      // Dispatch to Redux store
+      const reduxUser = {
+        uid: newUser,
+        familyName: user.familyName,
+        userName: user.userName,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        partnerEmail: user.partnerEmail,
+        profiles: user.profiles,
+        tasks: user.tasks,
+      };
+      dispatch(setUser(reduxUser));
+
+      // Navigate to the next screen
+      navigation.navigate('Drawer', user);
+
+    } catch (error) {
+      console.error('Error occurred:', error);
+
+      if (error.code === 'auth/email-already-in-use') {
+        console.warn('That email address is already in use!');
+      } else if (error.code === 'auth/invalid-email') {
+        console.warn('That email address is invalid!');
+      } else if (error.code === 'auth/weak-password') {
+        console.warn('Password is too weak!');
+      } else {
+        console.error('An unexpected error occurred:', error);
+      }
+    }
   } else {
     console.warn('Username and password cannot be empty');
   }
@@ -129,6 +144,7 @@ const SignUpButtonComponent = ({ onSignUp }) => (
 export default function App() {
 
   const navigation = useNavigation();
+  const dispatch = useDispatch()
 
   const [user, setUser]= useState(
     {
@@ -222,7 +238,7 @@ const data = [
           user.password=password
           user.profiles = [CreateNewProfile({id:1,gender,role:'parent',name:firstName,birth_day:date,avatarURI:imageID,passkey:passkey,imageID:imageID})]
           user
-          return <SignUpButtonComponent onSignUp={()=>signUp({user, navigation})} />;
+          return <SignUpButtonComponent onSignUp={()=>signUp({user, navigation,dispatch})} />;
         case 'profile-picture':
           return <ProfilePictureSelector imageURI={imageURI} setImageURI={setImageURI} imageID={imageID} setImageID={setImageID}/>
       default:

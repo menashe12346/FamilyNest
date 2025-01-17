@@ -48,49 +48,60 @@ const TaskScreen = ({ navigation, route }) => {
   const [newMessage, setNewMessage] = useState(''); // הודעה חדשה
 
   
-  const profileImage = (profile.imageID)? avatarImages[profile.imageID] : {uri: profile.avatarURI}
+  const profileImage = (assignedProfile.imageID)? avatarImages[assignedProfile.imageID] : {uri: assignedProfile.avatarURI}
 
   const handleSendMessage = async () => {
+    console.log("Sending message...");
+    console.log('New message before trimming:', newMessage);
+  
     if (newMessage.trim() !== '') {
+      console.log('Message is valid:', newMessage);
+      console.log('chat length:', chat.length);
+      console.log('profile ID:', profile.id);
+      console.log('newMessage:', newMessage);
+  
       const newMessageObj = {
-        id: chat.length + 1, // Unique message ID
-        profileId: profile.id, // Sender's profile ID
+        id: chat.length + 1,
+        profileId: profile.id,
         text: newMessage,
-        timestamp: new Date().toISOString(), // Timestamp
+        timestamp: new Date().toISOString(),
       };
+
+      console.info("after new obj")
   
       // Update local state
       const updatedChat = [...chat, newMessageObj];
       setChat(updatedChat);
+      console.log('Updated chat:', updatedChat);
   
-      // Update task with the new chat
       const updatedTask = {
         ...task,
-        chat: updatedChat, // Use updatedChat here
+        chat: updatedChat,
       };
   
       try {
         const userDocRef = firebase.firestore().collection("users").doc(user.uid);
-  
-        // Fetch the current user document
         const doc = await userDocRef.get();
+        console.log('User document exists:', doc.exists);
+  
         if (doc.exists) {
           const data = doc.data();
-          const tasks = data.tasks;
+          console.log('Document data:', data);
   
-          // Find and update the appropriate task
+          const tasks = data.tasks;
           const taskIndex = tasks.findIndex((t) => t.id === task.id);
+  
           if (taskIndex !== -1) {
             tasks[taskIndex] = updatedTask;
   
-            // Update the array in Firestore
+            // Update Firestore
             await userDocRef.update({ tasks });
+            console.log("Task updated successfully in Firestore");
   
-            // Update Redux
+            // Update Redux state
             dispatch(updateReduxTask(updatedTask));
             setTask(updatedTask);
-  
-            console.log("Task updated successfully in Firestore and Redux.");
+            console.log("Task updated in Redux.");
           } else {
             console.error("Task not found in Firestore.");
           }
@@ -99,10 +110,13 @@ const TaskScreen = ({ navigation, route }) => {
         }
       } catch (error) {
         console.error("Error updating task:", error);
+        alert("Error updating task. Please try again.");
       }
   
       // Reset the input field
       setNewMessage('');
+    } else {
+      console.log('Message is empty or only whitespace.');
     }
   };
   
@@ -478,7 +492,7 @@ const TaskScreen = ({ navigation, route }) => {
                 style={styles.textInput}
                 placeholder="Enter your message"
                 value={newMessage}
-                onChangeText={setNewMessage}
+                onChangeText={(message)=>setNewMessage(message)}
               />
               <TouchableOpacity
                 style={styles.sendButton}
