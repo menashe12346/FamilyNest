@@ -104,7 +104,7 @@ const LoginScreen = () => {
     <View style={styles.container}>
       <Animated.View style={animatedView}>
           <View style={styles.loginBackgrondContainer}>
-              <Image source={require("../assets/images/top_house2.png")} style={styles.backgroundImage}/>
+              <Image source={require("../assets/images/Designer.png")} style={styles.backgroundImage}/>
           </View>
         <View style={styles.helloContainer}>
           <Text style={styles.helloText}>Welcome!</Text>
@@ -112,6 +112,7 @@ const LoginScreen = () => {
         <View>
           <Text style={styles.loginText}>Login to your account</Text>
         </View>
+        <View style={{marginTop:20}}/>
         <TextInputField
           placeholder="Username or Email address"
           iconName="user"
@@ -154,7 +155,7 @@ const LoginScreen = () => {
 
 const styles = StyleSheet.create({
     container:{
-        backgroundColor: "#E4F1F4",
+        backgroundColor: "#FFFFFF",
         flex: 1
     },loginBackgrondContainer:{
       height:'27%',
@@ -164,6 +165,7 @@ const styles = StyleSheet.create({
       width:"100%",
       resizeMode:'contain'
     },helloContainer:{
+      marginTop:10
     },helloText:{
       textAlign:"center",
       fontSize: calculateFontSize(45) ,
@@ -178,7 +180,7 @@ const styles = StyleSheet.create({
       marginBottom:'1%'
     },logInContainer:{
       flexDirection:"row",
-      marginTop:'3%',
+      marginTop:'1%',
       marginHorizontal:'50%',
       width:"90%",
       justifyContent:'flex-start'
@@ -197,7 +199,7 @@ const styles = StyleSheet.create({
       height:'50%',
       width:'50%',
       textAlign:'center',
-      marginTop:'0%',
+      marginTop:'-60',
       zIndex:-1,
     },
     lowBlob:{

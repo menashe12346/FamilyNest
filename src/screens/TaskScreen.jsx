@@ -26,8 +26,9 @@ import { getSecondsRemaining } from "../utils/TimeUtils";
 import { MaterialIcons } from "@expo/vector-icons";
 import { firebase } from "../../firebase";
 import { Badge } from "react-native-elements";
-import { FlatList } from "react-native-gesture-handler";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { generateColor } from "../utils/ChatColors";
+import { uploadUserData } from "../utils/UploadData";
 
 const TaskScreen = ({ navigation, route }) => {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -327,6 +328,47 @@ const TaskScreen = ({ navigation, route }) => {
     closeMenu();
   };
 
+  const handleComplete = async()=>{
+    console.log("Changing status...")
+    setTask((prevTask) => ({
+      ...prevTask,
+      status: "WAITING_COMPLETE",
+    }));
+    console.log('new status',task)
+
+    try {
+      const userDocRef = firebase.firestore().collection("users").doc(user.uid);
+
+      // Fetch the current user document
+      const doc = await userDocRef.get();
+      if (doc.exists) {
+      const data = doc.data();
+      const tasks = data.tasks;
+
+      // Find the task to update
+      const taskIndex = tasks.findIndex((t) => t.id === task.id);
+      if (taskIndex !== -1) {
+        tasks[taskIndex].status = "WAITING_COMPLETE";
+
+        // Update Firestore with the new task status
+        await userDocRef.update({ tasks });
+
+        // Update Redux
+        dispatch(updateReduxTask({ ...task, status: "WAITING_COMPLETE" }));
+
+        console.log("Task status updated successfully in Firestore and Redux.");
+      } else {
+        console.error("Task not found in Firestore.");
+      }
+      } else {
+      console.error("User document not found.");
+      }
+    } catch (error) {
+      console.error("Error updating task status:", error);
+    }
+
+  }
+
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -358,7 +400,6 @@ const TaskScreen = ({ navigation, route }) => {
 
   const [remaining, setRemaining] = useState(true);
   console.log("Task opened:", JSON.stringify(task, null, 2));
-  
 
   return (
     <KeyboardAvoidingView style={styles.container}>
@@ -419,97 +460,112 @@ const TaskScreen = ({ navigation, route }) => {
               </View>
             </Modal>
           )}
-          <View style={{ marginTop: "2%", width: "100%", height: "10%" }}>
+          <View style={{ marginTop: "2%", width: "100%", height: "8%" }}>
             <ProfileBar profile={profile} />
           </View>
+
           <View
             style={[
               styles.detailContainer,
-              { marginTop: "3%", flexDirection: "column" },
+              { height:'35%',marginTop: "3%", flexDirection: "column" },
             ]}
           >
-            <View style={{ alignItems: "center", flexDirection: "row" }}>
-              <Text style={styles.detailText}>Assigned to:</Text>
-              <View style={styles.roundedImage}>
-                <Image
-                  style={{ resizeMode: "cover", height: 40, width: 40 }}
-                  source={profileImage}
-                />
+            <ScrollView>
+              <View style={{ alignItems: "center", flexDirection: "row" }}>
+                <Text style={styles.detailText}>Assigned to:</Text>
+                <View style={styles.roundedImage}>
+                  <Image
+                    style={{ resizeMode: "cover", height: 40, width: 40 }}
+                    source={profileImage}
+                  />
+                </View>
+                <Text style={styles.detailText}>
+                  {assignedProfile.name},
+                  {getProfileAge(assignedProfile.birth_day)}
+                </Text>
+                {task.status !== "COMPLETED" && (
+                  <CountdownTimer
+                    remaining={remaining}
+                    setRemaining={setRemaining}
+                    initialSeconds={getSecondsRemaining(task.endTime)}
+                  />
+                )}
+                {task.status === "COMPLETED" && (
+                  <Badge
+                    status="primary"
+                    value={"Completed"}
+                    textStyle={{
+                      fontSize: 15,
+                      fontFamily: "Fredoka-Bold",
+                      color: "#000000",
+                    }}
+                    containerStyle={{ marginStart: 30 }}
+                  />
+                )}
               </View>
+              <View style={styles.separator} />
               <Text style={styles.detailText}>
-                {assignedProfile.name},
-                {getProfileAge(assignedProfile.birth_day)}
+                Type: {taskTypes[task.type]}
               </Text>
-              {task.status !== "COMPLETED" && (
-                <CountdownTimer
-                  remaining={remaining}
-                  setRemaining={setRemaining}
-                  initialSeconds={getSecondsRemaining(task.endTime)}
-                />
-              )}
-              {task.status === "COMPLETED" && (
-                <Badge
-                  status="primary"
-                  value={"Completed"}
-                  textStyle={{
-                    fontSize: 15,
-                    fontFamily: "Fredoka-Bold",
-                    color: "#000000",
-                  }}
-                  containerStyle={{ marginStart: 30 }}
-                />
-              )}
-            </View>
-            <View style={styles.separator} />
-            <Text style={styles.detailText}>Type: {taskTypes[task.type]}</Text>
-            <View style={styles.separator} />
-            <Text style={styles.detailText}>
-              Description:{"\n"}
-              {task.description}
-            </Text>
-            <View style={styles.separator} />
-            <View style={{ alignItems: "center", flexDirection: "row" }}>
+              <View style={styles.separator} />
               <Text style={styles.detailText}>
-                Reward points: {task.reward}
+                Description:{"\n"}
+                {task.description}
               </Text>
-            </View>
-          </View>
-          {!parental && (
-            <View style={{ backgroundColor: "red", marginTop: "2%" }}>
-              <Text style={{ fontSize: 60, textAlign: "center" }}>
-                Child buttons
-              </Text>
+              <View style={styles.separator} />
+              <View style={{ alignItems: "center", flexDirection: "row" }}>
+                <Text style={styles.detailText}>
+                  Reward points: {task.reward}
+                </Text>
+                {!parental && (
+            <View style={{ marginTop: "2%" }}>
+              <TouchableOpacity style={styles.completeButton}
+              onPress={handleComplete}>
+                <Text>Complete task</Text>
+              </TouchableOpacity>
             </View>
           )}
+              </View> 
+              <View style={{height:10}}/>
+            </ScrollView>
+          </View>
           <View style={styles.chatContainer}>
             <FlatList
               data={chat}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => {
-                const name= profile.id === item.profileId ? 'Me' : getProfileById(user, item.profileId)?.name
-                return(<View
-                  style={[
-                    styles.messageContainer,
-                    {
-                      backgroundColor:
-                        profile.id === item.profileId ? "#AEEA94" : generateColor(item.profileId),
-                      alignSelf:
-                        profile.id === item.profileId
-                          ? "flex-start"
-                          : "flex-end",
-                    },
-                  ]}
-                >
-                  <Text style={[styles.messageText,{fontWeight:'800'}]}> 
-                  {name}: </Text>
-                  <View style={{flexDirection:'column'}}><Text style={styles.messageText}>
-                    {item.text}
-                  </Text>
-                  <Text style={styles.timestampText}>
-                    {new Date(item.timestamp).toLocaleTimeString()}
-                  </Text></View>
-                </View>
-              )}}
+                const name =
+                  profile.id === item.profileId
+                    ? "Me"
+                    : getProfileById(user, item.profileId)?.name;
+                return (
+                  <View
+                    style={[
+                      styles.messageContainer,
+                      {
+                        backgroundColor:
+                          profile.id === item.profileId
+                            ? "#AEEA94"
+                            : generateColor(item.profileId),
+                        alignSelf:
+                          profile.id === item.profileId
+                            ? "flex-start"
+                            : "flex-end",
+                      },
+                    ]}
+                  >
+                    <Text style={[styles.messageText, { fontWeight: "800" }]}>
+                      {name}:{" "}
+                    </Text>
+                    <View style={{ flexDirection: "column" }}>
+                      <Text style={styles.messageText}>{item.text}</Text>
+                      <Text style={styles.timestampText}>
+                        {new Date(item.timestamp).toLocaleTimeString()}
+                      </Text>
+                    </View>
+                  </View>
+                );
+              }}
               contentContainerStyle={styles.chatList}
             />
           </View>
@@ -613,7 +669,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   messageContainer: {
-    flexDirection:'row',
+    flexDirection: "row",
     marginBottom: 10,
     backgroundColor: "#E4F1F4",
     padding: 10,
@@ -636,9 +692,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     backgroundColor: "#fff",
-    elevation:5,
-    borderRadius:20,
-    marginBottom:20
+    elevation: 5,
+    borderRadius: 20,
+    marginBottom: 20,
   },
   textInput: {
     flex: 1,
@@ -658,14 +714,23 @@ const styles = StyleSheet.create({
   sendButtonText: {
     color: "#FFF",
     fontWeight: "bold",
-  },chatContainer:{
+  },
+  chatContainer: {
     marginTop: 10,
     backgroundColor: "rgba(255, 255, 255, 0.57)", // Adjust the color and transparency
     borderRadius: 15,
-    borderColor:'grey',
-    borderWidth:3,
-     flex: 0.7 
-  }
+    borderColor: "grey",
+    borderWidth: 3,
+    flex: 0.7,
+  },
+  completeButton: {
+    padding: 10,
+    backgroundColor: "white",
+    borderRadius: 10,
+    elevation: 10,
+    marginStart:'25%',
+    alignSelf:'center'
+  },
 });
 
 export default TaskScreen;
