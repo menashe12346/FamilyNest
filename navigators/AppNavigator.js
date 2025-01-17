@@ -26,7 +26,6 @@ const Tab = createBottomTabNavigator();
 function TabNavigator({route}) {
   return (
     <Tab.Navigator
-    initialRouteName={"SelectProfileScreen"}
     screenOptions={({ route }) => ({
       tabBarIcon: ({ focused, color, size }) => {
         let iconName;
@@ -34,7 +33,7 @@ function TabNavigator({route}) {
           iconName = focused ? "home" : "home";
         } else if (route.name === "NewScreen") {
           iconName = focused ? "pluscircle" : "pluscircleo";
-        } else if (route.name === "SelectProfileScreen") {
+        } else if (route.name === "Rewards") {
           iconName = focused ? "star" : "staro";
         }
         return <AntDesign name={iconName} size={size} color={color} />;
@@ -46,8 +45,9 @@ function TabNavigator({route}) {
 
       <Tab.Screen name="Home" component={Home} initialParams={route.params} />
       <Tab.Screen name="NewScreen" component={NewScreen} initialParams={route.params}  />
-      <Tab.Screen name="SelectProfileScreen" component={SelectProfileScreen}/>
-      <Tab.Screen name="Rewards" component={RewardsScreen}/>
+      {/* <Tab.Screen name="SelectProfileScreen" component={SelectProfileScreen}/> */}
+      <Tab.Screen name="RewardsScreen" component={RewardsScreen}
+      options={{title:'Rewards'}}/>
     </Tab.Navigator>
   );
 }
@@ -55,8 +55,23 @@ function TabNavigator({route}) {
 
 function DrawerNavigator({route}) {
   return (
-    <Drawer.Navigator>
-      <Drawer.Screen name="TabNavigator" component={TabNavigator} initialParams={route.params} />
+    <Drawer.Navigator
+    initialRouteName="SelectProfileScreen">
+     <Drawer.Screen
+        name="TabNavigator"
+        component={TabNavigator}
+        initialParams={route.params}
+        options={{
+          drawerItemStyle: { display: 'none' }, // Hide from drawer menu
+          title:''
+        }}
+      />
+      <Drawer.Screen name="SelectProfileScreen" component={SelectProfileScreen}
+      options={
+        {
+          title:"Select Profile"
+        }
+      }/>
     </Drawer.Navigator>
   );
 }

@@ -152,7 +152,7 @@ const SelectProfileScreen = ({navigation}) => {
   const handleSelectProfile = (id) => () => {
     dispatch(setSelectedProfileId(id));
     console.log('Selected profile ID:', selectedUser);
-    navigation.navigate('Home');
+    navigation.navigate('TabNavigator',{screen:'Home'});
   }
 
 
