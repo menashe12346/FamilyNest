@@ -7,9 +7,9 @@ import {
   Image,
   TouchableOpacity,
   Modal,
-   TextInput, // Add this line to fix the issue 
+  TextInput, // Add this line to fix the issue
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   updateReduxTask,
@@ -27,6 +27,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { firebase } from "../../firebase";
 import { Badge } from "react-native-elements";
 import { FlatList } from "react-native-gesture-handler";
+import { generateColor } from "../utils/ChatColors";
 
 const TaskScreen = ({ navigation, route }) => {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -35,31 +36,39 @@ const TaskScreen = ({ navigation, route }) => {
     getTaskById(user.tasks, route.params.taskID)
   );
 
+  useEffect(() => {
+    if (task && task.title) {
+      navigation.setOptions({
+        title: task.title,
+      });
+    }
+  });
+
   const [assignedProfile, setAssignedProfile] = useState(
     getProfileById(null, task.assignedTo)
   );
-  
+
   const toggleMenu = () => {
     setMenuVisible((prev) => !prev);
   };
 
-
   const [chat, setChat] = useState(task.chat); // רשימת הודעות
-  const [newMessage, setNewMessage] = useState(''); // הודעה חדשה
+  const [newMessage, setNewMessage] = useState(""); // הודעה חדשה
 
-  
-  const profileImage = (assignedProfile.imageID)? avatarImages[assignedProfile.imageID] : {uri: assignedProfile.avatarURI}
+  const profileImage = assignedProfile.imageID
+    ? avatarImages[assignedProfile.imageID]
+    : { uri: assignedProfile.avatarURI };
 
   const handleSendMessage = async () => {
     console.log("Sending message...");
-    console.log('New message before trimming:', newMessage);
-  
-    if (newMessage.trim() !== '') {
-      console.log('Message is valid:', newMessage);
-      console.log('chat length:', chat.length);
-      console.log('profile ID:', profile.id);
-      console.log('newMessage:', newMessage);
-  
+    console.log("New message before trimming:", newMessage);
+
+    if (newMessage.trim() !== "") {
+      console.log("Message is valid:", newMessage);
+      console.log("chat length:", chat.length);
+      console.log("profile ID:", profile.id);
+      console.log("newMessage:", newMessage);
+
       const newMessageObj = {
         id: chat.length + 1,
         profileId: profile.id,
@@ -67,37 +76,40 @@ const TaskScreen = ({ navigation, route }) => {
         timestamp: new Date().toISOString(),
       };
 
-      console.info("after new obj")
-  
+      console.info("after new obj");
+
       // Update local state
       const updatedChat = [...chat, newMessageObj];
       setChat(updatedChat);
-      console.log('Updated chat:', updatedChat);
-  
+      console.log("Updated chat:", updatedChat);
+
       const updatedTask = {
         ...task,
         chat: updatedChat,
       };
-  
+
       try {
-        const userDocRef = firebase.firestore().collection("users").doc(user.uid);
+        const userDocRef = firebase
+          .firestore()
+          .collection("users")
+          .doc(user.uid);
         const doc = await userDocRef.get();
-        console.log('User document exists:', doc.exists);
-  
+        console.log("User document exists:", doc.exists);
+
         if (doc.exists) {
           const data = doc.data();
-          console.log('Document data:', data);
-  
+          console.log("Document data:", data);
+
           const tasks = data.tasks;
           const taskIndex = tasks.findIndex((t) => t.id === task.id);
-  
+
           if (taskIndex !== -1) {
             tasks[taskIndex] = updatedTask;
-  
+
             // Update Firestore
             await userDocRef.update({ tasks });
             console.log("Task updated successfully in Firestore");
-  
+
             // Update Redux state
             dispatch(updateReduxTask(updatedTask));
             setTask(updatedTask);
@@ -112,14 +124,14 @@ const TaskScreen = ({ navigation, route }) => {
         console.error("Error updating task:", error);
         alert("Error updating task. Please try again.");
       }
-  
+
       // Reset the input field
-      setNewMessage('');
+      setNewMessage("");
     } else {
-      console.log('Message is empty or only whitespace.');
+      console.log("Message is empty or only whitespace.");
     }
   };
-  
+
   const closeMenu = () => {
     setMenuVisible(false);
   };
@@ -342,11 +354,11 @@ const TaskScreen = ({ navigation, route }) => {
   const profile = getProfileById(user, selectedUser); // Always up-to-date
   const parental = profile ? profile.role === "parent" : true; // Always up-to-date
 
-  console.log('profile.role',profile.role, parental)
-
+  console.log("profile.role", profile.role, parental);
 
   const [remaining, setRemaining] = useState(true);
   console.log("Task opened:", JSON.stringify(task, null, 2));
+  
 
   return (
     <KeyboardAvoidingView style={styles.container}>
@@ -356,55 +368,57 @@ const TaskScreen = ({ navigation, route }) => {
         resizeMode="cover"
       >
         <View style={styles.overlay}>
-          <Modal
-            transparent={true}
-            visible={menuVisible}
-            animationType="fade"
-            onRequestClose={closeMenu}
-          >
-            <View style={styles.modalContainer}>
-              {/* רקע כהה שמקיף את המסך */}
-              <TouchableOpacity
-                style={styles.modalOverlay}
-                activeOpacity={1}
-                onPress={closeMenu} // סגירה בלחיצה מחוץ לתפריט
-              />
-  
-              {/* תפריט נפתח */}
-              <View style={styles.menuContainer}>
+          {parental && (
+            <Modal
+              transparent={true}
+              visible={menuVisible}
+              animationType="fade"
+              onRequestClose={closeMenu}
+            >
+              <View style={styles.modalContainer}>
+                {/* רקע כהה שמקיף את המסך */}
                 <TouchableOpacity
-                  style={styles.menuItem}
-                  onPress={handleExtendTime}
-                >
-                  <Text style={styles.menuText}>Extend Time</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.menuItem}
-                  onPress={handleTransferProfile}
-                >
-                  <Text style={styles.menuText}>Transfer the task</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.menuItem}
-                  onPress={handleEditTask}
-                >
-                  <Text style={styles.menuText}>Edit task</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.menuItem}
-                  onPress={handleDeleteTask}
-                >
-                  <Text style={styles.menuText}>Delete task</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.menuItem}
-                  onPress={handleApproveTask}
-                >
-                  <Text style={styles.menuText}>Accept task</Text>
-                </TouchableOpacity>
+                  style={styles.modalOverlay}
+                  activeOpacity={1}
+                  onPress={closeMenu} // סגירה בלחיצה מחוץ לתפריט
+                />
+
+                {/* תפריט נפתח */}
+                <View style={styles.menuContainer}>
+                  <TouchableOpacity
+                    style={styles.menuItem}
+                    onPress={handleExtendTime}
+                  >
+                    <Text style={styles.menuText}>Extend Time</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.menuItem}
+                    onPress={handleTransferProfile}
+                  >
+                    <Text style={styles.menuText}>Transfer the task</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.menuItem}
+                    onPress={handleEditTask}
+                  >
+                    <Text style={styles.menuText}>Edit task</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.menuItem}
+                    onPress={handleDeleteTask}
+                  >
+                    <Text style={styles.menuText}>Delete task</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.menuItem}
+                    onPress={handleApproveTask}
+                  >
+                    <Text style={styles.menuText}>Accept task</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          </Modal>
+            </Modal>
+          )}
           <View style={{ marginTop: "2%", width: "100%", height: "10%" }}>
             <ProfileBar profile={profile} />
           </View>
@@ -467,14 +481,24 @@ const TaskScreen = ({ navigation, route }) => {
               </Text>
             </View>
           )}
-          <View style={{ marginTop: 10, backgroundColor: "cyan", flex: 0.7 }}>
+          <View style={styles.chatContainer}>
             <FlatList
               data={chat}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
-                <View style={[styles.messageContainer,{
-                  backgroundColor:(profile.id===item.profileId)? '#AEEA94':'#E4F1F4',
-                  alignSelf:(profile.id===item.profileId)?'flex-start':'flex-end'}]}>
+                <View
+                  style={[
+                    styles.messageContainer,
+                    {
+                      backgroundColor:
+                        profile.id === item.profileId ? "#AEEA94" : generateColor(item.profileId),
+                      alignSelf:
+                        profile.id === item.profileId
+                          ? "flex-start"
+                          : "flex-end",
+                    },
+                  ]}
+                >
                   <Text style={styles.messageText}>
                     {getProfileById(user, item.profileId)?.name}: {item.text}
                   </Text>
@@ -486,13 +510,13 @@ const TaskScreen = ({ navigation, route }) => {
               contentContainerStyle={styles.chatList}
             />
           </View>
-          <View style={{ backgroundColor: "yellow", flex: 0.3 }}>
+          <View>
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.textInput}
                 placeholder="Enter your message"
                 value={newMessage}
-                onChangeText={(message)=>setNewMessage(message)}
+                onChangeText={(message) => setNewMessage(message)}
               />
               <TouchableOpacity
                 style={styles.sendButton}
@@ -505,7 +529,7 @@ const TaskScreen = ({ navigation, route }) => {
         </View>
       </ImageBackground>
     </KeyboardAvoidingView>
-  );  
+  );
 };
 
 const styles = StyleSheet.create({
@@ -587,47 +611,57 @@ const styles = StyleSheet.create({
   },
   messageContainer: {
     marginBottom: 10,
-    backgroundColor: '#E4F1F4',
+    backgroundColor: "#E4F1F4",
     padding: 10,
     borderRadius: 8,
   },
   messageText: {
     fontSize: calculateFontSize(14),
-    fontFamily:'Arial',
-    color: '#000',
+    fontFamily: "Arial",
+    color: "#000",
   },
   timestampText: {
     fontSize: 12,
-    color: '#555',
-    textAlign: 'right',
+    color: "#555",
+    textAlign: "right",
     marginTop: 5,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 10,
     paddingVertical: 5,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
+    elevation:5,
+    borderRadius:20,
+    marginBottom:20
   },
   textInput: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#CCC',
+    borderColor: "#CCC",
     borderRadius: 8,
     paddingHorizontal: 10,
     paddingVertical: 5,
     marginRight: 10,
   },
   sendButton: {
-    backgroundColor: '#28A745',
+    backgroundColor: "#28A745",
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 8,
   },
   sendButtonText: {
-    color: '#FFF',
-    fontWeight: 'bold',
-  },  
+    color: "#FFF",
+    fontWeight: "bold",
+  },chatContainer:{
+    marginTop: 10,
+    backgroundColor: "rgba(255, 255, 255, 0.57)", // Adjust the color and transparency
+    borderRadius: 15,
+    borderColor:'grey',
+    borderWidth:3,
+     flex: 0.7 
+  }
 });
 
 export default TaskScreen;
