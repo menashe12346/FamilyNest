@@ -27,7 +27,8 @@ import { getProfileById } from "../utils/ProfileUtils";
  * rewards:[{rank1,prize},....{rank2,prize}....]
  * 
  * 
- * available components from:   react-native-chart-kit
+ * available components from:   react-native-chart-kit, react-native-svg-charts
+ * (look for bar chart horizontal)
  * 
  */
 
