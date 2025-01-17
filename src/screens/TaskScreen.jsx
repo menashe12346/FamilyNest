@@ -31,23 +31,75 @@ import { FlatList } from "react-native-gesture-handler";
 const TaskScreen = ({ navigation, route }) => {
   const [menuVisible, setMenuVisible] = useState(false);
   const user = useSelector((state) => state.user.user);
-  const [messages, setMessages] = useState([]); // רשימת הודעות
-  const [newMessage, setNewMessage] = useState(''); // הודעה חדשה
+  const [task, setTask] = useState(
+    getTaskById(user.tasks, route.params.taskID)
+  );
+
+  const [assignedProfile, setAssignedProfile] = useState(
+    getProfileById(null, task.assignedTo)
+  );
   
   const toggleMenu = () => {
     setMenuVisible((prev) => !prev);
   };
-  const handleSendMessage = () => {
+
+
+  const [chat, setChat] = useState(task.chat); // רשימת הודעות
+  const [newMessage, setNewMessage] = useState(''); // הודעה חדשה
+
+  const handleSendMessage = async () => {
     if (newMessage.trim() !== '') {
       const newMessageObj = {
-        id: messages.length + 1, // מזהה ייחודי להודעה
-        profileId: profile.id, // מזהה הפרופיל השולח
+        id: chat.length + 1, // Unique message ID
+        profileId: profile.id, // Sender's profile ID
         text: newMessage,
-        timestamp: new Date().toISOString(), // זמן שליחה
+        timestamp: new Date().toISOString(), // Timestamp
       };
   
-      setMessages([...messages, newMessageObj]); // עדכון רשימת ההודעות
-      setNewMessage(''); // איפוס שדה הקלט
+      // Update local state
+      const updatedChat = [...chat, newMessageObj];
+      setChat(updatedChat);
+  
+      // Update task with the new chat
+      const updatedTask = {
+        ...task,
+        chat: updatedChat, // Use updatedChat here
+      };
+  
+      try {
+        const userDocRef = firebase.firestore().collection("users").doc(user.uid);
+  
+        // Fetch the current user document
+        const doc = await userDocRef.get();
+        if (doc.exists) {
+          const data = doc.data();
+          const tasks = data.tasks;
+  
+          // Find and update the appropriate task
+          const taskIndex = tasks.findIndex((t) => t.id === task.id);
+          if (taskIndex !== -1) {
+            tasks[taskIndex] = updatedTask;
+  
+            // Update the array in Firestore
+            await userDocRef.update({ tasks });
+  
+            // Update Redux
+            dispatch(updateReduxTask(updatedTask));
+            setTask(updatedTask);
+  
+            console.log("Task updated successfully in Firestore and Redux.");
+          } else {
+            console.error("Task not found in Firestore.");
+          }
+        } else {
+          console.error("User document not found.");
+        }
+      } catch (error) {
+        console.error("Error updating task:", error);
+      }
+  
+      // Reset the input field
+      setNewMessage('');
     }
   };
   
@@ -275,12 +327,7 @@ const TaskScreen = ({ navigation, route }) => {
 
   console.log('profile.role',profile.role, parental)
 
-  const [task, setTask] = useState(
-    getTaskById(user.tasks, route.params.taskID)
-  );
-  const [assignedProfile, setAssignedProfile] = useState(
-    getProfileById(null, task.assignedTo)
-  );
+
   const [remaining, setRemaining] = useState(true);
   console.log("Task opened:", JSON.stringify(task, null, 2));
 
@@ -405,10 +452,12 @@ const TaskScreen = ({ navigation, route }) => {
           )}
           <View style={{ marginTop: 10, backgroundColor: "cyan", flex: 0.7 }}>
             <FlatList
-              data={messages}
+              data={chat}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
-                <View style={styles.messageContainer}>
+                <View style={[styles.messageContainer,{
+                  backgroundColor:(profile.id===item.profileId)? '#AEEA94':'#E4F1F4',
+                  alignSelf:(profile.id===item.profileId)?'flex-start':'flex-end'}]}>
                   <Text style={styles.messageText}>
                     {getProfileById(user, item.profileId)?.name}: {item.text}
                   </Text>
@@ -526,7 +575,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   messageText: {
-    fontSize: 16,
+    fontSize: calculateFontSize(14),
+    fontFamily:'Arial',
     color: '#000',
   },
   timestampText: {
