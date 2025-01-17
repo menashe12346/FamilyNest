@@ -27,6 +27,8 @@ import { getProfileById } from "../utils/ProfileUtils";
  * rewards:[{rank1,prize},....{rank2,prize}....]
  * 
  * 
+ * available components from:   react-native-chart-kit
+ * 
  */
 
 const RewardsScreen = () => {
