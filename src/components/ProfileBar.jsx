@@ -10,6 +10,11 @@ import { Badge } from 'react-native-elements';
 const ProfileBar = ({ profile, style, onPress }) => {
   const colors =
     profile.gender === "male" ? ["#81BFDA","#87CEFA","#B1F0F7"] : ["#FB9EC6", "#FFB6C1","#FFE2E2"];
+
+  const profileImage = (profile.imageID)? avatarImages[profile.imageID] : {uri: profile.avatarURI}
+
+  console.log("the profile image",profileImage)
+  
   return (
     <Pressable
       style={[
@@ -24,7 +29,7 @@ const ProfileBar = ({ profile, style, onPress }) => {
   end={{ x: 1, y: 1 }} >
         <View style={styles.roundImage}>
           <Image
-            source={avatarImages[profile.imageID]}
+            source={profileImage}
             style={styles.avatarImage}
           />
         </View>

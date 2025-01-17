@@ -71,3 +71,8 @@ export const getTaskById = (tasks, id) => {
     // Find and return the task with the given ID
     return tasks.find((task) => task.id === id);
   };
+
+export const updateTaskStatus = ({task})=>{
+
+
+}

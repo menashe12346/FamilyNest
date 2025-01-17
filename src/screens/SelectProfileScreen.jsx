@@ -88,7 +88,7 @@ const SelectProfileScreen = ({navigation}) => {
       const id = getNewProfileID({profiles: user.profiles})
       let uploadedImageURI = ''
       if(!imageID){
-        uploadedImageURI = 'https://uobdeuywixmstdrxugmh.supabase.co/storage/v1/object/public/pictures/'+user.uid+newProfileName
+        uploadedImageURI = 'https://uobdeuywixmstdrxugmh.supabase.co/storage/v1/object/public/ProfilePictures/'+user.uid.slice(0,10)+newProfileName+'.jpeg'
         await uploadImage(imageURI.uri,user.uid+newProfileName)
         console.log('IMAGE URI example',imageURI)
         setImageID(0)
