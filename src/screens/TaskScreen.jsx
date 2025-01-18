@@ -18,7 +18,13 @@ import {
 } from "../Redux/userSlice";
 import { getProfileAge, getProfileById } from "../utils/ProfileUtils";
 import ProfileBar from "../components/ProfileBar";
-import { getBackgroundImage, getTaskById, taskTypes, updateTaskStatus } from "../utils/TaskUtils";
+import {
+  getBackgroundImage,
+  getTaskAnimations,
+  getTaskById,
+  taskTypes,
+  updateTaskStatus,
+} from "../utils/TaskUtils";
 import avatarImages from "../utils/AvatarsUtils";
 import { calculateFontSize } from "../utils/FontUtils";
 import CountdownTimer from "../components/CountdownTimer";
@@ -29,6 +35,7 @@ import { Badge } from "react-native-elements";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { generateColor } from "../utils/ChatColors";
 import { uploadUserData } from "../utils/UploadData";
+import LottieView from "lottie-react-native";
 
 const TaskScreen = ({ navigation, route }) => {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -36,8 +43,6 @@ const TaskScreen = ({ navigation, route }) => {
   const [task, setTask] = useState(
     getTaskById(user.tasks, route.params.taskID)
   );
-
-
 
   const [assignedProfile, setAssignedProfile] = useState(
     getProfileById(null, task.assignedTo)
@@ -322,11 +327,10 @@ const TaskScreen = ({ navigation, route }) => {
     closeMenu();
   };
 
-  const handleStatus = async(taskStatus)=>{
-    console.log("Changing status...")
-    updateTaskStatus({user,task,status:taskStatus,dispatch})
-
-  }
+  const handleStatus = async (taskStatus) => {
+    console.log("Changing status...");
+    updateTaskStatus({ user, task, status: taskStatus, dispatch });
+  };
 
   useEffect(() => {
     if (task && task.title) {
@@ -334,13 +338,13 @@ const TaskScreen = ({ navigation, route }) => {
         title: task.title,
       });
     }
-  
+
     const currentTime = new Date();
     const taskEndTime = new Date(task.endTime);
-  
-    if (taskEndTime > currentTime && task.status === 'EXPIRED') {
+
+    if (taskEndTime > currentTime && task.status === "EXPIRED") {
       handleStatus("ACTIVE");
-    } else if (taskEndTime < currentTime && task.status === 'ACTIVE') {
+    } else if (taskEndTime < currentTime && task.status === "ACTIVE") {
       handleStatus("EXPIRED");
     }
   }, [task, navigation]);
@@ -443,7 +447,7 @@ const TaskScreen = ({ navigation, route }) => {
           <View
             style={[
               styles.detailContainer,
-              { height:'35%',marginTop: "3%", flexDirection: "column" },
+              { height: "35%", marginTop: "3%", flexDirection: "column" },
             ]}
           >
             <ScrollView>
@@ -494,15 +498,23 @@ const TaskScreen = ({ navigation, route }) => {
                   Reward points: {task.reward}
                 </Text>
                 {!parental && (
-            <View style={{ marginTop: "2%" }}>
-              <TouchableOpacity style={styles.completeButton}
-              onPress={handleStatus("WAITING_COMPLETE")}>
-                <Text>Complete task</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-              </View> 
-              <View style={{height:10}}/>
+                  <View style={{ marginTop: "2%" }}>
+                    <TouchableOpacity
+                      style={styles.completeButton}
+                      onPress={handleStatus("WAITING_COMPLETE")}
+                    >
+                      <Text>Complete task</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+              <LottieView
+                source={getTaskAnimations(task.type)}
+                style={{ width: "100%", height: "100%" }}
+                autoPlay
+                loop
+              />
+              <View style={{ height: 10 }} />
             </ScrollView>
           </View>
           <View style={styles.chatContainer}>
@@ -704,8 +716,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 10,
     elevation: 10,
-    marginStart:'25%',
-    alignSelf:'center'
+    marginStart: "25%",
+    alignSelf: "center",
   },
 });
 

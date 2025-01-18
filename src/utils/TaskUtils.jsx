@@ -52,6 +52,33 @@ export const getBackgroundImage = ({type}) => {
     }
   };
 
+    // Determine the background image based on the task type
+export const getTaskAnimations = ({type}) => {
+  const taskAnimations = {
+      2: require('../assets/animations/cleaning.json'),
+      1: require('../assets/animations/outdoor.json'),
+      3: require('../assets/animations/laundry.json'),
+      4: require('../assets/animations/dog-waiting.json'),
+      5: require('../assets/animations/learning.json'),
+      6: require('../assets/animations/other.json')
+    }
+
+  switch (type) {
+    case '1':
+      return taskAnimations[1]
+    case '2':
+      return taskAnimations[2]
+    case '3':
+      return taskAnimations[3];
+    case '4':
+      return taskAnimations[4]
+    case '5':
+      return taskAnimations[5]
+    default:
+      return
+  }
+};
+
 export const taskTypes = {
     1: "Outdoor",
     2: "House-Cleaning",

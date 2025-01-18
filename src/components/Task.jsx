@@ -12,6 +12,7 @@ import * as Animatable from "react-native-animatable";
 import { Badge } from "react-native-elements";
 import { updateTaskStatus } from "../utils/TaskUtils";
 import { useDispatch, useSelector } from "react-redux";
+import LottieView from "lottie-react-native";
 
 const isNewTask = (startTime, thresholdHours = 3) => {
   const currentTime = new Date(); // Get the current time
