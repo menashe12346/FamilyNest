@@ -329,7 +329,7 @@ const TaskScreen = ({ navigation, route }) => {
 
   const handleStatus = async (taskStatus) => {
     console.log("Changing status...");
-    updateTaskStatus({ user, task, status: taskStatus, dispatch });
+    //updateTaskStatus({ user, task, status: taskStatus, dispatch });
   };
 
   useEffect(() => {
@@ -505,15 +505,17 @@ const TaskScreen = ({ navigation, route }) => {
                     >
                       <Text>Complete task</Text>
                     </TouchableOpacity>
+                    <View style={styles.animationTask}>
+                      <LottieView
+                        source={getTaskAnimations({ type: task.type })}
+                        style={{ width: 100, height: 100 }}
+                        autoPlay
+                        loop
+                      />
+                    </View>
                   </View>
                 )}
               </View>
-              <LottieView
-                source={getTaskAnimations(task.type)}
-                style={{ width: "100%", height: "100%" }}
-                autoPlay
-                loop
-              />
               <View style={{ height: 10 }} />
             </ScrollView>
           </View>
@@ -718,6 +720,14 @@ const styles = StyleSheet.create({
     elevation: 10,
     marginStart: "25%",
     alignSelf: "center",
+  },
+  animationTask: {
+    position:'absolute',
+    height: 100,
+    width: 100,
+    marginTop:-85,
+    marginHorizontal:80,
+    zIndex: -1,
   },
 });
 

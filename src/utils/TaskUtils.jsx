@@ -54,6 +54,7 @@ export const getBackgroundImage = ({type}) => {
 
     // Determine the background image based on the task type
 export const getTaskAnimations = ({type}) => {
+  console.log("animationtype",type)
   const taskAnimations = {
       2: require('../assets/animations/cleaning.json'),
       1: require('../assets/animations/outdoor.json'),
