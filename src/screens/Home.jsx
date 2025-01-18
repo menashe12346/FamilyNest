@@ -86,14 +86,15 @@ const Home = ({ navigation }) => {
     }
 
     if (filterStatus) {
-      const now = new Date();
-      if (filterStatus === "Open") {
-        filtered = filtered.filter((task) => new Date(task.endTime) > now);
-      } else if (filterStatus === "Overdue") {
-        filtered = filtered.filter((task) => new Date(task.endTime) <= now);
+      if (filterStatus === "Active") {
+        filtered = filtered.filter((task) => task.status!=='EXPIRED');
+      } else if (filterStatus === "Expired") {
+        filtered = filtered.filter((task) => task.status==='EXPIRED');
       }
     }
-
+    if(!parental){
+      setFilterChild(selectedUser)
+    }
     if (filterChild) {
       filtered = filtered.filter((task) => task.assignedTo === filterChild);
     }
@@ -160,58 +161,63 @@ const Home = ({ navigation }) => {
 
       {true && (
         <View style={styles.filtersView}>
-        <FlatList
-          data={[
-            { key: "All Types", type: null },
-            ...taskTypes.map((type) => ({
-              key: taskUtils.taskTypes[type],
-              type,
-            })),
-            { key: "All Status", type: null },
-            ...taskStatusOptions.map((status) => ({
-              key: status,
-              type: status,
-            })),
-            { key: "All Profiles", type: null },
-            ...childrenId.map((child) => ({
-              key: getProfileById(user, child).name,
-              type: child,
-            })),
-          ]}
-          horizontal
-          keyExtractor={(item) => item.key}
-          contentContainerStyle={styles.filterBarContainer}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={[
-                styles.filterButton,
-                (filterType === item.type ||
-                  filterStatus === item.type ||
-                  filterChild === item.type) &&
-                  styles.filterButtonActive,
-              ]}
-              onPress={() => {
-                if (item.type === null) {
-                  if (item.key === "All Types") setFilterType(null);
-                  if (item.key === "All Status") setFilterStatus(null);
-                  if (item.key === "All Profiles") setFilterChild(null);
-                } else {
-                  if (taskTypes.includes(item.type)) setFilterType(item.type);
-                  else if (taskStatusOptions.includes(item.type))
-                    setFilterStatus(item.type);
-                  else setFilterChild(item.type);
-                }
-              }}
-            >
-              <Text style={styles.filterButtonText}>{item.key}</Text>
-            </TouchableOpacity>
-          )}
-        />
-      </View>)}
+          <FlatList
+            data={[
+              { key: "All Types", type: null },
+              ...taskTypes.map((type) => ({
+                key: taskUtils.taskTypes[type],
+                type,
+              })),
+              { key: "All Status", type: null },
+              ...taskStatusOptions.map((status) => ({
+                key: status,
+                type: status,
+              })),
+              ...(parental
+                ? [
+                    { key: "All Profiles", type: null },
+                    ...childrenId.map((child) => ({
+                      key: getProfileById(user, child).name,
+                      type: child,
+                    })),
+                  ]
+                : []),
+            ]}
+            horizontal
+            keyExtractor={(item) => item.key}
+            contentContainerStyle={styles.filterBarContainer}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={[
+                  styles.filterButton,
+                  (filterType === item.type ||
+                    filterStatus === item.type ||
+                    filterChild === item.type) &&
+                    styles.filterButtonActive,
+                ]}
+                onPress={() => {
+                  if (item.type === null) {
+                    if (item.key === "All Types") setFilterType(null);
+                    if (item.key === "All Status") setFilterStatus(null);
+                    if (item.key === "All Profiles") setFilterChild(null);
+                  } else {
+                    if (taskTypes.includes(item.type)) setFilterType(item.type);
+                    else if (taskStatusOptions.includes(item.type))
+                      setFilterStatus(item.type);
+                    else setFilterChild(item.type);
+                  }
+                }}
+              >
+                <Text style={styles.filterButtonText}>{item.key}</Text>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+      )}
       <View style={styles.tasksContainer}>
         <FlatList
           numColumns={2}
-          data={filteredTasks.length > 0 ? filteredTasks : sortedTasks}
+          data={filteredTasks.length>0 ? filteredTasks : sortedTasks}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderItem}
           contentContainerStyle={styles.contentContainerStyle}

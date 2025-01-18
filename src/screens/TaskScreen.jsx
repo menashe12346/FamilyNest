@@ -37,13 +37,7 @@ const TaskScreen = ({ navigation, route }) => {
     getTaskById(user.tasks, route.params.taskID)
   );
 
-  useEffect(() => {
-    if (task && task.title) {
-      navigation.setOptions({
-        title: task.title,
-      });
-    }
-  });
+
 
   const [assignedProfile, setAssignedProfile] = useState(
     getProfileById(null, task.assignedTo)
@@ -328,11 +322,24 @@ const TaskScreen = ({ navigation, route }) => {
     closeMenu();
   };
 
-  const handleComplete = async()=>{
+  const handleStatus = async(taskStatus)=>{
     console.log("Changing status...")
-    updateTaskStatus({user,task,status:"WAITING_COMPETE",dispatch})
+    updateTaskStatus({user,task,status:taskStatus,dispatch})
 
   }
+
+  useEffect(() => {
+    if (task && task.title) {
+      navigation.setOptions({
+        title: task.title,
+      });
+    }
+    if(remaining && task.status==='EXPIRED'){
+      handleStatus("ACTIVE")
+    }else if(!remaining && task.status!=='EXPIRED' && task.status!=='WAITING_COMPLETE'){
+      handleStatus("EXPIRED")
+    }
+  });
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -485,7 +492,7 @@ const TaskScreen = ({ navigation, route }) => {
                 {!parental && (
             <View style={{ marginTop: "2%" }}>
               <TouchableOpacity style={styles.completeButton}
-              onPress={handleComplete}>
+              onPress={handleStatus("WAITING_COMPLETE")}>
                 <Text>Complete task</Text>
               </TouchableOpacity>
             </View>

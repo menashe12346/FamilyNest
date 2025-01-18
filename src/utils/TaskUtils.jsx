@@ -1,5 +1,6 @@
 import { updateReduxTask } from '../Redux/userSlice';
 import { firebase } from "../../firebase";
+import { useDispatch } from 'react-redux';
 
 export const CreateNewTask = ({creatorID,assignedTo,taskID,title,description,startTime,endTime,startDate,endDate,type,reward,minAge}) =>{
     console.log("Details:",creatorID,assignedTo,taskID,title,description,startTime,endTime,type,reward,minAge)
@@ -75,8 +76,8 @@ export const getTaskById = (tasks, id) => {
     return tasks.find((task) => task.id === id);
   };
 
-export const updateTaskStatus = async ({user,task,status,dispatch})=>{
-  console.log('user',user)
+export const updateTaskStatus = async ({user,task,status,dispatch = useDispatch()})=>{
+  console.log('task status',status,user)
       try {
         const userDocRef = firebase.firestore().collection("users").doc(user.uid);
   
