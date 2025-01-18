@@ -77,7 +77,7 @@ export const getTaskById = (tasks, id) => {
   };
 
 export const updateTaskStatus = async ({user,task,status,dispatch = useDispatch()})=>{
-  console.log('task status',status,user)
+  console.log('task status',status,user.tasks)
       try {
         const userDocRef = firebase.firestore().collection("users").doc(user.uid);
   

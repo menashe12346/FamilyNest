@@ -334,9 +334,9 @@ const TaskScreen = ({ navigation, route }) => {
         title: task.title,
       });
     }
-    if(remaining && task.status==='EXPIRED'){
+    if(task.endTime > new Date() && task.status==='EXPIRED'){
       handleStatus("ACTIVE")
-    }else if(!remaining && task.status!=='EXPIRED' && task.status!=='WAITING_COMPLETE'){
+    }else if(task.endTime < new Date() && task.status==='ACTIVE'){
       handleStatus("EXPIRED")
     }
   });

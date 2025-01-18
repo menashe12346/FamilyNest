@@ -39,14 +39,10 @@ const Task = ({ task }) => {
     : { uri: profile.avatarURI };
 
   useEffect(() => {
-    if (remaining && task.status === "EXPIRED") {
-      handleStatus("ACTIVE");
-    } else if (
-      !remaining &&
-      task.status !== "EXPIRED" &&
-      task.status !== "WAITING_COMPLETE"
-    ) {
-      handleStatus("EXPIRED");
+    if(task.endTime > new Date() && task.status==='EXPIRED'){
+      handleStatus("ACTIVE")
+    }else if(task.endTime < new Date() && task.status==='ACTIVE'){
+      handleStatus("EXPIRED")
     }
   });
 
