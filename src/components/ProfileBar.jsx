@@ -5,16 +5,21 @@ import avatarImages from "../utils/AvatarsUtils";
 import { isMomDadSonDaughter, getProfileAge } from "../utils/ProfileUtils";
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome } from "@expo/vector-icons";
-import { Badge } from 'react-native-elements';
+import { Badge } from "react-native-elements";
+import LottieView from "lottie-react-native";
 
 const ProfileBar = ({ profile, style, onPress }) => {
   const colors =
-    profile.gender === "male" ? ["#81BFDA","#87CEFA","#B1F0F7"] : ["#FB9EC6", "#FFB6C1","#FFE2E2"];
+    profile.gender === "male"
+      ? ["#81BFDA", "#87CEFA", "#B1F0F7"]
+      : ["#FB9EC6", "#FFB6C1", "#FFE2E2"];
 
-  const profileImage = (profile.imageID)? avatarImages[profile.imageID] : {uri: profile.avatarURI}
+  const profileImage = profile.imageID
+    ? avatarImages[profile.imageID]
+    : { uri: profile.avatarURI };
 
-  console.log("the profile image",profileImage)
-  
+  console.log("the profile image", profileImage);
+
   return (
     <Pressable
       style={[
@@ -25,13 +30,14 @@ const ProfileBar = ({ profile, style, onPress }) => {
       onLongPress={() => console.warn("ProfileBar pressed")}
       onPress={onPress}
     >
-      <LinearGradient colors={colors} style={styles.linearStyle} start={{ x: 0.5, y: 0.5 }} // Start at top-left
-  end={{ x: 1, y: 1 }} >
+      <LinearGradient
+        colors={colors}
+        style={styles.linearStyle}
+        start={{ x: 0.5, y: 0.5 }} // Start at top-left
+        end={{ x: 1, y: 1 }}
+      >
         <View style={styles.roundImage}>
-          <Image
-            source={profileImage}
-            style={styles.avatarImage}
-          />
+          <Image source={profileImage} style={styles.avatarImage} />
         </View>
         <View style={styles.profileDetails}>
           <Text style={styles.nameStyle}>
@@ -46,21 +52,27 @@ const ProfileBar = ({ profile, style, onPress }) => {
         </FontAwesome>
       </View> */}
         <Text style={styles.nameStyle}></Text>
-        {profile.role==='child' && <View
-          style={{
-            marginStart: "20%",
-            flexDirection: "row",
-            justifyContent: "center",
-          }}
-        >
-          <View style={styles.rewardView}>
-            <Image
-              style={styles.rewardImage}
-              source={require("../assets/images/reward.png")}
-            />
+        {profile.role === "child" && (
+          <View
+            style={{
+              marginStart: "20%",
+              flexDirection: "row",
+              justifyContent: "center",
+            }}
+          >
+            <View style={styles.rewardView}>
+              <LottieView
+                source={require("../assets/animations/reward.json")}
+                style={{ width: 100, height: 100, alignSelf: "center" }}
+                autoPlay={true}
+                loop={false}
+              />
+            </View>
           </View>
+        )}
+        {profile.role === "child" && (
           <Text style={styles.roleText}>{profile.reward}</Text>
-        </View>}
+        )}
       </LinearGradient>
     </Pressable>
   );
@@ -116,8 +128,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   rewardView: {
-    height: 40,
-    width: 40,
+    justifyContent: "center",
+    height: 100,
+    width: 50,
   },
   rewardImage: {
     height: 40,

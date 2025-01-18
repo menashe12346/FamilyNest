@@ -38,13 +38,17 @@ const Task = ({ task }) => {
     ? avatarImages[profile.imageID]
     : { uri: profile.avatarURI };
 
-  useEffect(() => {
-    if(task.endTime > new Date() && task.status==='EXPIRED'){
-      handleStatus("ACTIVE")
-    }else if(task.endTime < new Date() && task.status==='ACTIVE'){
-      handleStatus("EXPIRED")
-    }
-  });
+    useEffect(() => {
+    
+      const currentTime = new Date();
+      const taskEndTime = new Date(task.endTime);
+    
+      if (taskEndTime > currentTime && task.status === 'EXPIRED') {
+        handleStatus("ACTIVE");
+      } else if (taskEndTime < currentTime && task.status === 'ACTIVE') {
+        handleStatus("EXPIRED");
+      }
+    }, [task]);
 
   const handleStatus = async (taskStatus) => {
     console.log("Changing status...",taskStatus);

@@ -334,12 +334,16 @@ const TaskScreen = ({ navigation, route }) => {
         title: task.title,
       });
     }
-    if(task.endTime > new Date() && task.status==='EXPIRED'){
-      handleStatus("ACTIVE")
-    }else if(task.endTime < new Date() && task.status==='ACTIVE'){
-      handleStatus("EXPIRED")
+  
+    const currentTime = new Date();
+    const taskEndTime = new Date(task.endTime);
+  
+    if (taskEndTime > currentTime && task.status === 'EXPIRED') {
+      handleStatus("ACTIVE");
+    } else if (taskEndTime < currentTime && task.status === 'ACTIVE') {
+      handleStatus("EXPIRED");
     }
-  });
+  }, [task, navigation]);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({

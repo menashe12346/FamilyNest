@@ -2,6 +2,7 @@ import { View, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import React from "react";
 import { getProfileById } from "../utils/ProfileUtils";
+import LottieView from "lottie-react-native";
 
 
 /**
@@ -44,7 +45,13 @@ const RewardsScreen = () => {
 
   return (
     <View>
-      <Text>RewardsScreen</Text>
+      <Text>RewardsScreen2</Text>
+      <LottieView
+        source={require("../assets/animations/reward.json")}
+        style={{width: "100%", height: "100%"}}
+        autoPlay
+        loop
+      />
     </View>
   );
 };
