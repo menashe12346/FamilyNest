@@ -10,6 +10,7 @@ const CreateReward = ({ show, setShowModal }) => {
   const [selectedReward, setSelectedReward] = useState(
     require("../assets/animations/rewards/present.json")
   );
+  const [selectedRewardText, setSelectedRewardText] = useState("");
 
   const [price, setPrice] = useState();
   const [amount, setAmount] = useState(0);
@@ -29,7 +30,10 @@ const CreateReward = ({ show, setShowModal }) => {
     return (
       <TouchableOpacity
         style={styles.rewardAnimation}
-        onPress={() => {setSelectedReward(item.content)}}
+        onPress={() => {
+          setSelectedReward(item.content);
+          setSelectedRewardText(item.reward);
+        }}
       >
         <LottieView
           source={item.content}
@@ -68,19 +72,22 @@ const CreateReward = ({ show, setShowModal }) => {
               )}
             />
           </View>
-          <View style={{ marginTop:30 }} />
+          <View style={{ marginTop: 30 }} />
           <View>
             <Text style={[styles.semiBoldText, { textAlign: "center" }]}>
               Set price and quantity:
             </Text>
           </View>
           <View style={styles.selectedContainer}>
-            <LottieView
-              source={selectedReward}
-              style={{ width: 120, height: 120 }}
-              autoPlay={true}
-              loop={true}
-            />
+            <View>
+              <LottieView
+                source={selectedReward}
+                style={{ width: 120, height: 120 }}
+                autoPlay={true}
+                loop={true}
+              />
+              <Text style={[styles.semiBoldText,{fontSize:calculateFontSize(14),textAlign:'center'}]}>{selectedRewardText}</Text>
+            </View>
             <View
               style={{
                 alignContent: "center",
@@ -109,17 +116,25 @@ const CreateReward = ({ show, setShowModal }) => {
               </View>
             </View>
           </View>
-          <View style={{alignSelf:'center',padding:4,flexDirection:'row'}}>
-          <TouchableOpacity style={styles.selectButton} onPress={handleSubmit}>
-            <Text style={[styles.semiBoldText, { textAlign: "center" }]}>
-              Add Reward
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.selectButton} onPress={handleCancel}>
-            <Text style={[styles.semiBoldText, { textAlign: "center" }]}>
-              Cancel
-            </Text>
-          </TouchableOpacity>
+          <View
+            style={{ alignSelf: "center", padding: 4, flexDirection: "row" }}
+          >
+            <TouchableOpacity
+              style={styles.selectButton}
+              onPress={handleSubmit}
+            >
+              <Text style={[styles.semiBoldText, { textAlign: "center" }]}>
+                Add Reward
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.selectButton}
+              onPress={handleCancel}
+            >
+              <Text style={[styles.semiBoldText, { textAlign: "center" }]}>
+                Cancel
+              </Text>
+            </TouchableOpacity>
           </View>
           <View style={{ height: 20 }} />
         </View>
@@ -180,7 +195,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     elevation: 10,
     padding: 5,
-    marginHorizontal:10
+    marginHorizontal: 10,
   },
   selectedContainer: {
     alignItems: "flex-start",

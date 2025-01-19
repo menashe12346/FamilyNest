@@ -95,7 +95,7 @@ const RewardsScreen = () => {
             loop={false}
             onAnimationFinish={handleAnimationFinish} // Trigger on finish
           />
-          <Text style={styles.createText}>Add targets and rewards</Text>
+          <Text style={styles.createText}>Add rewards</Text>
         </View>
       </TouchableOpacity>
       <CreateReward show={show} setShowModal={setShowModal} />
@@ -127,7 +127,9 @@ const styles = StyleSheet.create({
     shadowRadius:4
   },createText:{
     fontSize:calculateFontSize(20),
-    fontFamily:'Fredoka-Bold',
+    fontFamily:'Fredoka-Medium',
+    maxWidth:90,
+    alignContent:'center'
   }
 });
 
