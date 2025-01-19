@@ -66,14 +66,14 @@ const Task = ({ task }) => {
           borderColor:
             remaining || task.status === "COMPLETED"
               ? task.status === "COMPLETED"
-                ? "blue"
-                : "green"
-              : "red",
+                ? "#4635B1"
+                : "#5DB996"
+              : "#EB5A3C",
         },
       ]}
     >
       <View style={styles.overlay}>
-        {isNew && task.status==='NEW_TASK' && (
+        {isNew && task.status === "NEW_TASK" && (
           <Animatable.View
             animation="pulse"
             easing="ease-out"
@@ -87,13 +87,21 @@ const Task = ({ task }) => {
             }}
           >
             <Badge
+              badgeStyle={{
+                backgroundColor: "#98D8EF",
+                height: 30,
+                minWidth: 30, // Ensure enough space for text
+                paddingHorizontal: 10, // Add padding for text
+                borderRadius: 15, // Ensure rounded corners
+              }}
               status="primary"
               value={"NEW TASK!"}
               textStyle={{
                 fontSize: 12,
-                fontFamily: "Fredoka-Bold",
+                fontFamily: "Fredoka-SemiBold",
                 color: "#000000",
               }}
+              containerStyle={{ marginVertical: -10 }}
             />
           </Animatable.View>
         )}
@@ -110,7 +118,7 @@ const Task = ({ task }) => {
               source={profileImage}
             />
           </View>
-          <Text style={styles.nameText}>{assignedTo.name}</Text>
+          <Text style={styles.nameText}> {assignedTo.name} </Text>
           {task.status !== "COMPLETED" && (
             <CountdownTimer
               remaining={remaining}
@@ -122,20 +130,31 @@ const Task = ({ task }) => {
             <Badge
               status="primary"
               value={"Completed"}
+              badgeStyle={{
+                backgroundColor:'#4CC9FE',
+                height: 30,
+                minWidth: 30, // Ensure enough space for text
+                paddingHorizontal: 2, // Add padding for text
+                borderRadius: 15, // Ensure rounded corners
+              }}
               textStyle={{
-                fontSize: 12,
-                fontFamily: "Fredoka-Bold",
-                color: "#000000",
+                fontSize: calculateFontSize(12),
+                fontFamily: "Fredoka-Regular",
+                color: "black",
+                textAlign: "center",
               }}
             />
           )}
         </View>
         <View style={styles.container}>
           <View style={{ alignContent: "center", flexDirection: "row" }}>
-            <Text style={styles.instText}>{task.title}</Text>
+            <Text style={styles.lightText}>{task.title}</Text>
           </View>
-          <Text style={styles.typeText}>Type: {taskTypes[task.type]}</Text>
-          <Text style={styles.description}>{description}</Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={styles.detailText}>Type: </Text>
+            <Text style={styles.lightText}>{taskTypes[task.type]}</Text>
+          </View>
+          <Text style={styles.lightText}>{description}</Text>
         </View>
       </View>
       {task.status === "WAITING_COMPLETE" && (
@@ -147,13 +166,13 @@ const Task = ({ task }) => {
             bottom: 3,
             right: 3,
             flexDirection: "row",
-            borderRadius:10,
-            elevation:10,
-            justifyContent:'center'
+            borderRadius: 10,
+            elevation: 10,
+            justifyContent: "center",
           }}
         >
           <Animatable.Text
-            style={[styles.detailText, { fontSize:10,color: "#333333" }]}
+            style={[styles.detailText, { fontSize: 10, color: "#333333" }]}
             animation="pulse"
             iterationCount="infinite" // Set to infinite to keep pulsing
             duration={1000} // Adjust the speed of the pulse
@@ -182,7 +201,7 @@ const styles = StyleSheet.create({
     marginTop: "1%",
     flexDirection: "column",
     borderColor: "grey",
-    borderWidth: 4,
+    borderWidth: 3,
     overflow: "hidden",
     borderRadius: 10,
     elevation: 5,
@@ -238,8 +257,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
   detailText: {
-    fontFamily: "Fredoka-Bold",
+    fontFamily: "Fredoka-SemiBold",
     textAlign: "center",
+    fontSize: calculateFontSize(12),
+  },
+  lightText: {
+    fontFamily: "Fredoka-Regular",
+    fontSize: calculateFontSize(12),
   },
   dropdownList: {
     alignItems: "center",
@@ -269,7 +293,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   nameText: {
-    fontFamily: "Fredoka-Bold",
+    fontFamily: "Fredoka-SemiBold",
     fontSize: calculateFontSize(16),
   },
   typeText: {
@@ -278,7 +302,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject, // Covers the entire ImageBackground
-    backgroundColor: "rgba(255, 255, 255, 0.48)", // Adjust the color and transparency
+    backgroundColor: "rgba(255, 255, 255, 0.7)", // Adjust the color and transparency
     padding: "2%",
   },
 });

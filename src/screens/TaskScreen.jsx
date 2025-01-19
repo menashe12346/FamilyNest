@@ -36,6 +36,7 @@ import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { generateColor } from "../utils/ChatColors";
 import { uploadUserData } from "../utils/UploadData";
 import LottieView from "lottie-react-native";
+import * as Animatable from "react-native-animatable";
 
 const TaskScreen = ({ navigation, route }) => {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -291,7 +292,7 @@ const TaskScreen = ({ navigation, route }) => {
           const rewardPoints = tasks[taskIndex].reward;
 
           tasks[taskIndex].status = "COMPLETED"; // שינוי ל-"Completed"
-          tasks[taskIndex].endTime = new Date();
+          tasks[taskIndex].endTime = new Date().toISOString;
 
           const profileIndex = profiles.findIndex((p) => p.id === assignedTo);
           if (profileIndex !== -1) {
@@ -475,14 +476,15 @@ const TaskScreen = ({ navigation, route }) => {
             <View style={styles.lineSeparator} />
             <ScrollView>
               <View style={{ alignItems: "center", flexDirection: "row" }}>
-                <Text style={styles.detailText}>Assigned to:</Text>
+                <Text style={styles.semiBoldText}>Assigned to:{" "}</Text>
                 <View style={styles.roundedImage}>
                   <Image
-                    style={{ resizeMode: "cover", height: 40, width: 40 }}
+                    style={{ resizeMode: "cover", height: 30, width: 30 }}
                     source={profileImage}
                   />
                 </View>
-                <Text style={styles.detailText}>
+                <Text style={styles.lightText}>
+                  {" "}
                   {assignedProfile.name},
                   {getProfileAge(assignedProfile.birth_day)}
                 </Text>
@@ -495,6 +497,13 @@ const TaskScreen = ({ navigation, route }) => {
                 )}
                 {task.status === "COMPLETED" && (
                   <Badge
+                  badgeStyle={{
+                    backgroundColor: '#98D8EF',
+                    height: 30,
+                    minWidth: 30, // Ensure enough space for text
+                    paddingHorizontal: 10, // Add padding for text
+                    borderRadius: 15, // Ensure rounded corners
+                  }}
                     status="primary"
                     value={"Completed"}
                     textStyle={{
@@ -502,24 +511,29 @@ const TaskScreen = ({ navigation, route }) => {
                       fontFamily: "Fredoka-Bold",
                       color: "#000000",
                     }}
-                    containerStyle={{ marginStart: 30 }}
+                    containerStyle={{marginStart: 30 }}
                   />
                 )}
               </View>
               <View style={styles.separator} />
-              <Text style={styles.detailText}>
-                Type: {taskTypes[task.type]}
-              </Text>
+              <View style={{alignItems:'center',flexDirection:'row'}}>
+                <Text style={styles.semiBoldText}>Type: </Text>
+                <Text style={styles.lightText}>{taskTypes[task.type]}</Text>
+              </View>
               <View style={styles.separator} />
-              <Text style={styles.detailText}>
-                Description:{"\n"}
-                {task.description}
-              </Text>
+              <Text style={styles.semiBoldText}>Description:{"\n"}</Text>
+              <Text style={styles.lightText}>{task.description}</Text>
               <View style={styles.separator} />
               <View style={{ alignItems: "center", flexDirection: "row" }}>
-                <Text style={styles.detailText}>
-                  Reward points: {task.reward}
-                </Text>
+                <Text style={styles.semiBoldText}>Reward points: </Text>
+                <Animatable.View
+                  animation="swing"
+                  duration={1500}
+                  iterationCount="infinite"
+                  style={styles.coinStyle}
+                >
+                  <Text style={styles.lightText}>{task.reward}</Text>
+                </Animatable.View>
                 {!parental && task.status !== "EXPIRED" && (
                   <View style={{ marginTop: "2%" }}>
                     <TouchableOpacity
@@ -596,11 +610,11 @@ const TaskScreen = ({ navigation, route }) => {
                       },
                     ]}
                   >
-                    <Text style={[styles.messageText, { fontWeight: "800" }]}>
+                    <Text style={[styles.messageText]}>
                       {name}:{" "}
                     </Text>
                     <View style={{ flexDirection: "column" }}>
-                      <Text style={styles.messageText}>{item.text}</Text>
+                      <Text style={styles.messageContext}>{item.text}</Text>
                       <Text style={styles.timestampText}>
                         {new Date(item.timestamp).toLocaleTimeString()}
                       </Text>
@@ -649,15 +663,19 @@ const styles = StyleSheet.create({
     marginStart: 5,
     justifyContent: "center",
     borderWidth: 2,
-    width: 40, // Increased width
-    height: 40, // Increased height
-    borderRadius: 50, // Half of the width/height to make it a perfect circle
+    width: 30, // Increased width
+    height: 30, // Increased height
+    //borderRadius: 50, // Half of the width/height to make it a perfect circle
     overflow: "hidden", // Ensure the image is contained within the circle
     backgroundColor: "transparent",
   },
-  detailText: {
+  semiBoldText: {
     fontSize: calculateFontSize(22),
-    fontFamily: "Fredoka-Bold",
+    fontFamily: "Fredoka-SemiBold",
+  },
+  lightText: {
+    fontSize: calculateFontSize(18),
+    fontFamily: "Fredoka-Regular",
   },
   detailContainer: {
     backgroundColor: "rgba(255, 255, 255, 0.57)", // Adjust the color and transparency
@@ -719,10 +737,13 @@ const styles = StyleSheet.create({
   },
   messageText: {
     fontSize: calculateFontSize(14),
-    fontFamily: "Arial",
+    fontFamily: "Fredoka-SemiBold",
     color: "#000",
-  },
-  timestampText: {
+  },messageContext:{
+    fontSize: calculateFontSize(14),
+    fontFamily: "Fredoka-Regular",
+    color: "#000",
+  },timestampText: {
     fontSize: 12,
     color: "#555",
     textAlign: "right",
@@ -791,6 +812,13 @@ const styles = StyleSheet.create({
     height: 1, // Thickness of the line
     backgroundColor: "#999", // Color of the line
     marginVertical: 3, // Space above and below the line
+  },
+  coinStyle: {
+    backgroundColor: "#F3C623",
+    borderRadius: 50,
+    padding: 3,
+    borderColor: "black",
+    borderWidth: 2,
   },
 });
 

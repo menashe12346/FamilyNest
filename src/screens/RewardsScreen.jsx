@@ -13,7 +13,7 @@ import LottieView from "lottie-react-native";
 import ProfileBar from "../components/ProfileBar";
 import { calculateFontSize } from "../utils/FontUtils";
 import { useState,useEffect,useRef } from "react";
-import CreateRewardSet from "../components/CreateRewardSet";
+import CreateReward from "../components/CreateReward";
 
 
 /**
@@ -100,7 +100,7 @@ const RewardsScreen = () => {
           <Text style={styles.createText}>Add targets and rewards</Text>
         </View>
       </TouchableOpacity>
-      <CreateRewardSet show={show} setShowModal={setShowModal} />
+      <CreateReward show={show} setShowModal={setShowModal} />
     </ImageBackground>
   );
 };
@@ -119,8 +119,8 @@ const styles = StyleSheet.create({
   },
   createCompetition: {
     marginTop:10,
-    padding:2,
-    backgroundColor: "rgba(253, 253, 253, 0.93)", // Adjust the color and transparency
+    paddingHorizontal:10,
+    backgroundColor: "rgb(253, 253, 253)", // Adjust the color and transparency
     flexDirection:'row',
     alignItems:'center',
     borderRadius:10,
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     shadowRadius:4
   },createText:{
     fontSize:calculateFontSize(20),
-    fontFamily:'Fredoka-Bold'
+    fontFamily:'Fredoka-Bold',
   }
 });
 

@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   },
   nameStyle: {
     fontSize: calculateFontSize(24),
-    fontFamily: "Fredoka-Bold",
+    fontFamily: "Fredoka-SemiBold",
   },
   roundImage: {
     marginStart: "2%",
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   },
   roleText: {
     fontSize: calculateFontSize(18),
-    fontFamily: "Fredoka-Bold",
+    fontFamily: "Fredoka-Regular",
     backgroundColor: "transparent",
   },
   linearStyle: {

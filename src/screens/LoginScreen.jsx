@@ -160,7 +160,7 @@ const LoginScreen = () => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={{alignSelf:'center',marginTop:20}} onPress={handleCreateAccount}>
+        <TouchableOpacity style={{alignSelf:'center',marginTop:50}} onPress={handleCreateAccount}>
           <Text style={styles.footerText}>
             Don't have an account?
             <Text style={{ textDecorationLine: "underline" }}>Create</Text>
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   loginBackgrondContainer: {
-    height: "27%",
+    height: "25%",
   },
   backgroundImage: {
     marginTop: "1%",
