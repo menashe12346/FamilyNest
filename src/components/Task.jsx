@@ -23,7 +23,7 @@ const isNewTask = (startTime, thresholdHours = 3) => {
 
 const Task = ({ task }) => {
   const user = useSelector((state) => state.user.user);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   task = task.item;
   const assignedTo = getProfileById(null, task.assignedTo);
   description =
@@ -39,20 +39,19 @@ const Task = ({ task }) => {
     ? avatarImages[profile.imageID]
     : { uri: profile.avatarURI };
 
-    useEffect(() => {
-    
-      const currentTime = new Date();
-      const taskEndTime = new Date(task.endTime);
-    
-      if (taskEndTime > currentTime && task.status === 'EXPIRED') {
-        handleStatus("ACTIVE");
-      } else if (taskEndTime < currentTime && task.status === 'ACTIVE') {
-        handleStatus("EXPIRED");
-      }
-    }, [task]);
+  useEffect(() => {
+    const currentTime = new Date();
+    const taskEndTime = new Date(task.endTime);
+
+    if (taskEndTime > currentTime && task.status === "EXPIRED") {
+      handleStatus("ACTIVE");
+    } else if (taskEndTime < currentTime && task.status === "ACTIVE") {
+      handleStatus("EXPIRED");
+    }
+  }, [task]);
 
   const handleStatus = async (taskStatus) => {
-    console.log("Changing status...",taskStatus);
+    console.log("Changing status...", taskStatus);
     updateTaskStatus({ user, task, status: taskStatus, dispatch });
   };
 
@@ -139,6 +138,36 @@ const Task = ({ task }) => {
           <Text style={styles.description}>{description}</Text>
         </View>
       </View>
+      {task.status === "WAITING_COMPLETE" && (
+        <View
+          style={{
+            backgroundColor: "rgba(67, 192, 78, 0.73)", // Adjust the color and transparency
+            padding: 4,
+            position: "absolute",
+            bottom: 3,
+            right: 3,
+            flexDirection: "row",
+            borderRadius:10,
+            elevation:10,
+            justifyContent:'center'
+          }}
+        >
+          <Animatable.Text
+            style={[styles.detailText, { fontSize:14,color: "#333333" }]}
+            animation="pulse"
+            iterationCount="infinite" // Set to infinite to keep pulsing
+            duration={1000} // Adjust the speed of the pulse
+          >
+            Verify
+          </Animatable.Text>
+          <LottieView
+            source={require("../assets/animations/notification.json")}
+            autoPlay={true}
+            loop={true}
+            style={{ height: 20, width: 20 }}
+          />
+        </View>
+      )}
     </ImageBackground>
   );
 };

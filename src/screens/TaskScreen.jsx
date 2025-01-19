@@ -9,7 +9,7 @@ import {
   Modal,
   TextInput, // Add this line to fix the issue
 } from "react-native";
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   updateReduxTask,
@@ -291,7 +291,7 @@ const TaskScreen = ({ navigation, route }) => {
           const rewardPoints = tasks[taskIndex].reward;
 
           tasks[taskIndex].status = "COMPLETED"; // שינוי ל-"Completed"
-          tasks[taskIndex].endTime = null;
+          tasks[taskIndex].endTime = new Date();
 
           const profileIndex = profiles.findIndex((p) => p.id === assignedTo);
           if (profileIndex !== -1) {
@@ -331,12 +331,12 @@ const TaskScreen = ({ navigation, route }) => {
 
   const handleStatus = async (taskStatus) => {
     console.log("Changing status...");
-    if(taskStatus==="WAITING_COMPLETE"){
-      if(animationRef.current){
+    if (taskStatus === "WAITING_COMPLETE") {
+      if (animationRef.current) {
         animationRef.current.play();
       }
     }
-    //updateTaskStatus({ user, task, status: taskStatus, dispatch });
+    updateTaskStatus({ user, task, status: taskStatus, dispatch });
   };
 
   useEffect(() => {
@@ -437,12 +437,14 @@ const TaskScreen = ({ navigation, route }) => {
                   >
                     <Text style={styles.menuText}>Delete task</Text>
                   </TouchableOpacity>
-                  {task.status==='WAITING_COMPLETE' &&<TouchableOpacity
-                    style={styles.menuItem}
-                    onPress={handleApproveTask}
-                  >
-                    <Text style={styles.menuText}>Accept task</Text>
-                  </TouchableOpacity>}
+                  {task.status === "WAITING_COMPLETE" && (
+                    <TouchableOpacity
+                      style={styles.menuItem}
+                      onPress={handleApproveTask}
+                    >
+                      <Text style={styles.menuText}>Accept task</Text>
+                    </TouchableOpacity>
+                  )}
                 </View>
               </View>
             </Modal>
@@ -504,18 +506,18 @@ const TaskScreen = ({ navigation, route }) => {
                 <Text style={styles.detailText}>
                   Reward points: {task.reward}
                 </Text>
-                {!parental && (
+                {!parental && task.status!=='EXPIRED' && (
                   <View style={{ marginTop: "2%" }}>
                     <TouchableOpacity
                       style={styles.completeButton}
-                      onPress={()=>handleStatus("WAITING_COMPLETE")}
+                      onPress={() => handleStatus("WAITING_COMPLETE")}
                     >
                       <Text>Complete task</Text>
                     </TouchableOpacity>
                     <View style={styles.animationTask}>
                       <LottieView
                         source={getTaskAnimations({ type: task.type })}
-                        style={{ width: 100, height: 100,zIndex:-1 }}
+                        style={{ width: 100, height: 100, zIndex: -1 }}
                         autoPlay
                         loop
                       />
@@ -525,24 +527,36 @@ const TaskScreen = ({ navigation, route }) => {
               </View>
               <View style={{ height: 40 }} />
               <LottieView
-                     ref={animationRef}
-                     source={require('../assets/animations/confetti.json')}
-                     style={{
-                      width: 500,
-                      height: 500,
-                      position: 'absolute',
-                      top: '50%', // Position vertically in the center
-                      left: '50%', // Position horizontally in the center
-                      transform: [{ translateX: -250 }, { translateY: -250 }], // Offset by half the width/height to truly center it
-                    }}
-                    speed={0.5}
-                     autoPlay={false}
-                     loop={false}
-                    />
+                ref={animationRef}
+                source={require("../assets/animations/confetti.json")}
+                style={{
+                  width: 500,
+                  height: 500,
+                  position: "absolute",
+                  top: "50%", // Position vertically in the center
+                  left: "50%", // Position horizontally in the center
+                  transform: [{ translateX: -250 }, { translateY: -250 }], // Offset by half the width/height to truly center it
+                }}
+                speed={0.5}
+                autoPlay={false}
+                loop={false}
+              />
             </ScrollView>
           </View>
           <View style={styles.chatContainer}>
+            <View style={{flexDirection:'row', justifyContent:'center'}}>
             <Text style={styles.chatTitle}>Task Chat:</Text>
+            <LottieView
+              source={require("../assets/animations/chat.json")}
+              style={{
+                width: 35,
+                height: 35,
+                alignSelf:'center'
+              }}
+              autoPlay={true}
+              loop={true}
+            />
+            </View>
             <View style={styles.lineSeparator} />
             <FlatList
               data={chat}
@@ -744,7 +758,7 @@ const styles = StyleSheet.create({
     elevation: 10,
     marginStart: "25%",
     alignSelf: "center",
-    zIndex:2
+    zIndex: 2,
   },
   animationTask: {
     position: "absolute",
@@ -753,15 +767,17 @@ const styles = StyleSheet.create({
     marginTop: -85,
     marginHorizontal: 80,
     zIndex: -1,
-  },chatTitle:{
-    fontFamily:'Fredoka-Bold',
-    fontSize:calculateFontSize(20),
-    alignSelf:'center'
-  },lineSeparator:{
+  },
+  chatTitle: {
+    fontFamily: "Fredoka-Bold",
+    fontSize: calculateFontSize(20),
+    alignSelf: "center",
+  },
+  lineSeparator: {
     height: 1, // Thickness of the line
-    backgroundColor: '#999', // Color of the line
+    backgroundColor: "#999", // Color of the line
     marginVertical: 3, // Space above and below the line
-  }
+  },
 });
 
 export default TaskScreen;

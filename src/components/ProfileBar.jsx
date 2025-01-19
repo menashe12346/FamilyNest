@@ -14,6 +14,7 @@ const ProfileBar = ({ profile, style, onPress }) => {
       ? ["#81BFDA", "#87CEFA", "#B1F0F7"]
       : ["#FB9EC6", "#FFB6C1", "#FFE2E2"];
 
+
   const profileImage = profile.imageID
     ? avatarImages[profile.imageID]
     : { uri: profile.avatarURI };
