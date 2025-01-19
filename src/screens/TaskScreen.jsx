@@ -542,6 +542,7 @@ const TaskScreen = ({ navigation, route }) => {
             </ScrollView>
           </View>
           <View style={styles.chatContainer}>
+            <Text style={styles.chatTitle}>Task Chat:</Text>
             <FlatList
               data={chat}
               keyExtractor={(item) => item.id.toString()}
@@ -751,7 +752,11 @@ const styles = StyleSheet.create({
     marginTop: -85,
     marginHorizontal: 80,
     zIndex: -1,
-  },
+  },chatTitle:{
+    fontFamily:'Fredoka-Bold',
+    fontSize:calculateFontSize(20),
+    alignSelf:'center'
+  }
 });
 
 export default TaskScreen;
