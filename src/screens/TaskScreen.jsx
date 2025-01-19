@@ -543,6 +543,7 @@ const TaskScreen = ({ navigation, route }) => {
           </View>
           <View style={styles.chatContainer}>
             <Text style={styles.chatTitle}>Task Chat:</Text>
+            <View style={styles.lineSeparator} />
             <FlatList
               data={chat}
               keyExtractor={(item) => item.id.toString()}
@@ -756,6 +757,10 @@ const styles = StyleSheet.create({
     fontFamily:'Fredoka-Bold',
     fontSize:calculateFontSize(20),
     alignSelf:'center'
+  },lineSeparator:{
+    height: 1, // Thickness of the line
+    backgroundColor: '#999', // Color of the line
+    marginVertical: 3, // Space above and below the line
   }
 });
 
