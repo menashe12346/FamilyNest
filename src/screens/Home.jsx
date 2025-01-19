@@ -42,7 +42,7 @@ const Home = ({ navigation }) => {
   const taskTypes = [
     ...new Set(tasks.map((task) => task.type || "Uncategorized")),
   ];
-  const taskStatusOptions = ["Active","Expired","Waiting"];
+  const taskStatusOptions = ["Active","Expired","Waiting","Completed"];
   const childrenId = [
     ...new Set(tasks.map((task) => task.assignedTo || "Unknown")),
   ];
@@ -92,6 +92,8 @@ const Home = ({ navigation }) => {
         filtered = filtered.filter((task) => task.status==='EXPIRED');
       }else if(filterStatus ==='Waiting'){
         filtered = filtered.filter((task) => task.status==='WAITING_COMPLETE');
+      }else if(filterStatus ==='Complete'){
+        filtered = filtered.filter((task) => task.status==='COMPLETED');
       }
     }
     if(!parental){
