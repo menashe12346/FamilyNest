@@ -1,12 +1,22 @@
-import { View, Text, Modal, StyleSheet } from "react-native";
+import { View, Text, Modal, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 
-const CreateRewardSet = ({ show }) => {
+const CreateRewardSet = ({ show,setShowModal }) => {
+    
+    const handleSubmit = async ()=>{
+        setShowModal(false)
+    }
+
     return (
         <Modal visible={show} transparent={true} animationType="slide">
             <View style={styles.container}>
                 <View style={styles.modalContent}>
                     <Text style={styles.text}>CreateRewardSet</Text>
+                    <TouchableOpacity onPress={handleSubmit}>
+                        <View>
+                            <Text>Start competition</Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
             </View>
         </Modal>

@@ -56,7 +56,7 @@ const RewardsScreen = () => {
   const profile = getProfileById(user, selectedUser);
   const parental = profile ? profile.role === "parent" : true;
 
-  const [show,setShowModal]= useState(false)
+  const [show,setShowModal]= useState(true)
 
   const animationRef = useRef(null);
 
@@ -100,7 +100,7 @@ const RewardsScreen = () => {
           <Text style={styles.createText}>Add targets and rewards</Text>
         </View>
       </TouchableOpacity>
-      <CreateRewardSet show={show}/>
+      <CreateRewardSet show={show} setShowModal={setShowModal} />
     </ImageBackground>
   );
 };
