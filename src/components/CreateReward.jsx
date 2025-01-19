@@ -68,7 +68,7 @@ const CreateReward = ({ show, setShowModal }) => {
               )}
             />
           </View>
-          <View style={{ height: 10 }} />
+          <View style={{ marginTop:30 }} />
           <View>
             <Text style={[styles.semiBoldText, { textAlign: "center" }]}>
               Set price and quantity:
