@@ -8,7 +8,9 @@ const ListDropdown = ({ profiles, style ,value , onChange }) => {
   const [dropdownPosition, setDropdownPosition] = useState({ top: 145, left: 0 });
   profiles = profiles.profiles;
 
-  const [selectedProfile,setSelected]= useState(profiles[0])
+  const childProfiles = profiles.filter(profile => profile.role === 'child');
+  
+  const [selectedProfile,setSelected]= useState(childProfiles[0])
 
   // Toggle the visibility of the dropdown list
   const toggleDropdown = () => {
@@ -54,7 +56,7 @@ const renderItem = ({ item }) => {
               ]}
             >
               <FlatList
-                data={profiles}  // List of profiles
+                data={childProfiles}  // List of profiles
                 keyExtractor={(item) => item.id.toString()}  // Ensure the id is converted to string
                 renderItem={renderItem}  // Render each item using ProfileBar
                 contentContainerStyle={styles.flatListContainer} // Add container style

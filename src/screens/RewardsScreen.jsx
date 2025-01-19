@@ -10,6 +10,9 @@ import React from "react";
 import { getProfileById } from "../utils/ProfileUtils";
 import LottieView from "lottie-react-native";
 import ProfileBar from "../components/ProfileBar";
+import { calculateFontSize } from "../utils/FontUtils";
+import { useState,useEffect,useRef } from "react";
+
 
 /**
  * TODO
@@ -49,6 +52,21 @@ const RewardsScreen = () => {
   const profile = getProfileById(user, selectedUser);
   const parental = profile ? profile.role === "parent" : true;
 
+
+  const animationRef = useRef(null);
+
+  // Play animation when the screen is loaded
+  useEffect(() => {
+    if (animationRef.current) {
+      animationRef.current.play();
+    }
+  }, []);
+
+  const handlePress = () => {
+    if (animationRef.current) {
+      animationRef.current.play(); // Play the animation on press
+    }
+  };
   return (
     <ImageBackground
       style={styles.container}
@@ -58,13 +76,19 @@ const RewardsScreen = () => {
       <View style={{ marginTop: "5%", width: "90%", height: "10%" }}>
         <ProfileBar profile={profile} />
       </View>
-      <View>
-        <TouchableOpacity>
-          <Text>CLICK</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity onPress={handlePress}>
+        <View style={styles.createCompetition}>
+          <LottieView
+            ref={animationRef}
+            source={require('../assets/animations/competition.json')}
+            style={{ width: 70, height: 70 }}
+            autoPlay={false}
+            loop={false}
+          />
+          <Text style={styles.createText}>Add targets and rewards</Text>
+        </View>
+      </TouchableOpacity>
     </ImageBackground>
-    
   );
 };
 
@@ -79,6 +103,20 @@ const styles = StyleSheet.create({
     height: "50%",
     width: "50%",
   },
+  createCompetition: {
+    marginTop:10,
+    padding:2,
+    backgroundColor: "rgba(253, 253, 253, 0.93)", // Adjust the color and transparency
+    flexDirection:'row',
+    alignItems:'center',
+    borderRadius:10,
+    elevation:10,
+    shadowColor:"rgba(0, 0, 0, 0.93)",
+    shadowRadius:4
+  },createText:{
+    fontSize:calculateFontSize(20),
+    fontFamily:'Fredoka-Bold'
+  }
 });
 
 export default RewardsScreen;
