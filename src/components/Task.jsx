@@ -153,12 +153,12 @@ const Task = ({ task }) => {
           }}
         >
           <Animatable.Text
-            style={[styles.detailText, { fontSize:14,color: "#333333" }]}
+            style={[styles.detailText, { fontSize:10,color: "#333333" }]}
             animation="pulse"
             iterationCount="infinite" // Set to infinite to keep pulsing
             duration={1000} // Adjust the speed of the pulse
           >
-            Verify
+            Pending {"\n"}verification
           </Animatable.Text>
           <LottieView
             source={require("../assets/animations/notification.json")}
