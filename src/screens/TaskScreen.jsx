@@ -535,6 +535,7 @@ const TaskScreen = ({ navigation, route }) => {
                       left: '50%', // Position horizontally in the center
                       transform: [{ translateX: -250 }, { translateY: -250 }], // Offset by half the width/height to truly center it
                     }}
+                    speed={0.5}
                      autoPlay={false}
                      loop={false}
                     />
