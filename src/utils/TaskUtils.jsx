@@ -33,7 +33,8 @@ export const getBackgroundImage = ({type}) => {
         3: require('../assets/images/laundry-pattern.jpg'),
         4: require('../assets/images/pet-pattern.jpg'),
         5: require('../assets/images/study.jpg'),
-        6: require('../assets/images/dish-wash.jpg')
+        6: require('../assets/images/dish-wash.jpg'),
+        7: require('../assets/images/room-cleaning.jpg'),
       }
 
     switch (type) {
@@ -47,8 +48,12 @@ export const getBackgroundImage = ({type}) => {
         return backgroundImages[4]
       case '5':
         return backgroundImages[5]
+      case '6':
+        return backgroundImages[6]
+      case '7':
+        return backgroundImages[7]
       default:
-        return
+        return backgroundImages[7]
     }
   };
 

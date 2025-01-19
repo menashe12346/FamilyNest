@@ -253,7 +253,7 @@ const AvatarSelectModal = ({
                 style={styles.cameraImage}
               />
             ) : (
-              <View style={{alignItems:'center',borderRadius:50,borderWidth:1}}>
+              <View style={{alignItems:'center',borderRadius:50}}>
                 <LottieView
                 source={item.uri}
                 style={{ width: 70, height: 70 }}
@@ -287,7 +287,13 @@ const AvatarSelectModal = ({
     >
       <View style={styles.overlay}>
         <View style={styles.modalContent}>
-          <Image style={styles.chosenAvatarImage} source={imageURI} />
+          {imageURI? <Image style={styles.chosenAvatarImage} source={imageURI} /> :
+          <LottieView
+          source={require('../assets/animations/avatar-placeholder.json')}
+          style={{ width: 140, height: 140 }}
+          autoPlay={true}
+          loop={true}
+          />}
           <Text style={styles.modalTitle}>Select Avatar</Text>
 
           <FlatList
