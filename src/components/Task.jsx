@@ -73,7 +73,7 @@ const Task = ({ task }) => {
       ]}
     >
       <View style={styles.overlay}>
-        {isNew && (
+        {isNew && task.status==='NEW_TASK' && (
           <Animatable.View
             animation="pulse"
             easing="ease-out"

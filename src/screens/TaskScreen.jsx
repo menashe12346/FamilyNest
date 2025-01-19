@@ -459,6 +459,20 @@ const TaskScreen = ({ navigation, route }) => {
               { height: "35%", marginTop: "3%", flexDirection: "column" },
             ]}
           >
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+              <Text style={styles.chatTitle}>Task Details:</Text>
+              <LottieView
+                source={require("../assets/animations/task.json")}
+                style={{
+                  width: 35,
+                  height: 35,
+                  alignSelf: "center",
+                }}
+                autoPlay={true}
+                loop={true}
+              />
+            </View>
+            <View style={styles.lineSeparator} />
             <ScrollView>
               <View style={{ alignItems: "center", flexDirection: "row" }}>
                 <Text style={styles.detailText}>Assigned to:</Text>
@@ -506,7 +520,7 @@ const TaskScreen = ({ navigation, route }) => {
                 <Text style={styles.detailText}>
                   Reward points: {task.reward}
                 </Text>
-                {!parental && task.status!=='EXPIRED' && (
+                {!parental && task.status !== "EXPIRED" && (
                   <View style={{ marginTop: "2%" }}>
                     <TouchableOpacity
                       style={styles.completeButton}
@@ -544,18 +558,18 @@ const TaskScreen = ({ navigation, route }) => {
             </ScrollView>
           </View>
           <View style={styles.chatContainer}>
-            <View style={{flexDirection:'row', justifyContent:'center'}}>
-            <Text style={styles.chatTitle}>Task Chat:</Text>
-            <LottieView
-              source={require("../assets/animations/chat.json")}
-              style={{
-                width: 35,
-                height: 35,
-                alignSelf:'center'
-              }}
-              autoPlay={true}
-              loop={true}
-            />
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+              <Text style={styles.chatTitle}>Task Chat:</Text>
+              <LottieView
+                source={require("../assets/animations/chat.json")}
+                style={{
+                  width: 35,
+                  height: 35,
+                  alignSelf: "center",
+                }}
+                autoPlay={true}
+                loop={true}
+              />
             </View>
             <View style={styles.lineSeparator} />
             <FlatList
