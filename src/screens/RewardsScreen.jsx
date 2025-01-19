@@ -60,18 +60,15 @@ const RewardsScreen = () => {
 
   const animationRef = useRef(null);
 
-  // Play animation when the screen is loaded
-  useEffect(() => {
-    if (animationRef.current) {
-      animationRef.current.play();
-    }
-  }, []);
+  const handleAnimationFinish = () => {
+    // Open the modal once the animation finishes
+    setShowModal(true);
+  };
 
   const handlePress = () => {
     if (animationRef.current) {
       animationRef.current.play(); // Play the animation on press
     }
-    setShowModal(true)
   };
   return (
     <ImageBackground
@@ -92,10 +89,11 @@ const RewardsScreen = () => {
         <View style={styles.createCompetition}>
           <LottieView
             ref={animationRef}
-            source={require('../assets/animations/competition.json')}
+            source={require('../assets/animations/rewards/present.json')}
             style={{ width: 70, height: 70 }}
             autoPlay={false}
             loop={false}
+            onAnimationFinish={handleAnimationFinish} // Trigger on finish
           />
           <Text style={styles.createText}>Add targets and rewards</Text>
         </View>

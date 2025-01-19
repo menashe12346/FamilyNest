@@ -140,29 +140,6 @@ const Home = ({ navigation }) => {
           setNewTask={setNewTask}
         />
       )}
-      {parental && (
-        <TouchableOpacity
-          onPress={() => setShowModal(true)}
-          style={{ padding: 10 }}
-        >
-          <LinearGradient
-            style={styles.createTaskButton}
-            colors={["#76E2F4", "#615DEC", "#301781"]}
-          >
-            <Text
-              style={{
-                fontFamily: "Fredoka-Bold",
-                fontSize: 20,
-                padding: 10,
-                textAlign: "center",
-              }}
-            >
-              Create new task
-            </Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      )}
-
       {true && (
         <View style={styles.filtersView}>
           <FlatList
@@ -228,6 +205,28 @@ const Home = ({ navigation }) => {
           ItemSeparatorComponent={() => <View style={styles.separator} />}
         />
       </View>
+      {parental && (
+        <TouchableOpacity
+          onPress={() => setShowModal(true)}
+          style={{ padding: 10 }}
+        >
+          <LinearGradient
+            style={styles.createTaskButton}
+            colors={['#4CAF00', '#4CAF50', '#2E8B57']}
+          >
+            <Text
+              style={{
+                fontFamily: "Fredoka-SemiBold",
+                fontSize: 20,
+                padding: 10,
+                textAlign: "center",
+              }}
+            >
+              Create new task
+            </Text>
+          </LinearGradient>
+        </TouchableOpacity>
+      )}
     </ImageBackground>
   );
 };
