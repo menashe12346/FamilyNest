@@ -63,17 +63,19 @@ const ProfileBar = ({ profile, style, onPress }) => {
           >
             <View style={styles.rewardView}>
               <LottieView
-                source={require("../assets/animations/reward.json")}
-                style={{ width: 100, height: 100, alignSelf: "center" }}
+                source={require("../assets/animations/coins.json")}
+                style={{width: 90, height: 90, alignSelf: "center" }}
                 autoPlay={true}
-                loop={false}
+                loop={true}
+                speed={0.5}
               />
+                      {profile.role === "child" && (
+          <Text style={styles.roleText}>{profile.points}</Text>
+        )}
             </View>
           </View>
         )}
-        {profile.role === "child" && (
-          <Text style={styles.roleText}>{profile.points}</Text>
-        )}
+
       </LinearGradient>
     </Pressable>
   );
@@ -129,9 +131,13 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   rewardView: {
-    justifyContent: "center",
+    flexDirection:'row',
+    alignItems:'center',
     height: 100,
     width: 50,
+    position:'absolute',
+    top:-50,
+    left:-60
   },
   rewardImage: {
     height: 40,

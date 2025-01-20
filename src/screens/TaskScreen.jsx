@@ -291,7 +291,7 @@ const TaskScreen = ({ navigation, route }) => {
         const taskIndex = tasks.findIndex((t) => t.id === task.id);
         if (taskIndex !== -1) {
           const assignedTo = tasks[taskIndex].assignedTo;
-          const rewardPoints = tasks[taskIndex].points;
+          const rewardPoints = tasks[taskIndex].reward;
 
           tasks[taskIndex].status = "COMPLETED"; // שינוי ל-"Completed"
             tasks[taskIndex].endTime = new Date().toISOString();
@@ -337,6 +337,10 @@ const TaskScreen = ({ navigation, route }) => {
     if (taskStatus === "WAITING_COMPLETE") {
       if (animationRef.current) {
         animationRef.current.play();
+        animationRef.current.onAnimationFinish = () => {
+          // Navigate back once the animation ends
+          navigation.goBack();
+        };
       }
     }
     updateTaskStatus({ user, task, status: taskStatus, dispatch });
