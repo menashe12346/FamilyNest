@@ -33,6 +33,7 @@ const Task = ({ task }) => {
 
   const [profile, setProfile] = useState(getProfileById(null, task.assignedTo));
   const [remaining, setRemaining] = useState(true);
+  const [secondsRemaining, setSecondsRemaining] = useState(getSecondsRemaining(task.endTime));
   const [isNew, setIsNew] = useState(isNewTask(task.startTime, 3));
 
   const profileImage = profile.imageID
@@ -40,15 +41,16 @@ const Task = ({ task }) => {
     : { uri: profile.avatarURI };
 
   useEffect(() => {
-    const currentTime = new Date();
-    const taskEndTime = new Date(task.endTime);
+    const interval = setInterval(() => {
+      if (secondsRemaining > 0 && task.status === "EXPIRED") {
+        handleStatus("ACTIVE");
+      } else if (secondsRemaining <= 0 && task.status!=='WAITING_COMPLETE') {
+        handleStatus("EXPIRED");
+      }
+    }, 120000); // Update every second
 
-    if (taskEndTime > currentTime && task.status === "EXPIRED") {
-      handleStatus("ACTIVE");
-    } else if (taskEndTime < currentTime && task.status === "ACTIVE") {
-      handleStatus("EXPIRED");
-    }
-  }, [task]);
+    return () => clearInterval(interval); // Cleanup interval on unmount
+  }, [secondsRemaining, task.status]); // Watch `remaining` and `task.status`
 
   const handleStatus = async (taskStatus) => {
     console.log("Changing status...", taskStatus);
@@ -62,7 +64,7 @@ const Task = ({ task }) => {
       style={[
         styles.modalBackground,
         {
-          height: remaining ? 130 : 130,
+          height: remaining ? 150 : 150,
           borderColor:
             remaining || task.status === "COMPLETED"
               ? task.status === "COMPLETED"
@@ -80,7 +82,7 @@ const Task = ({ task }) => {
             iterationCount="infinite"
             style={{
               position: "absolute",
-              top: 100,
+              top: 120,
               right: 0,
               height: 40,
               width: 80,
@@ -93,6 +95,9 @@ const Task = ({ task }) => {
                 minWidth: 30, // Ensure enough space for text
                 paddingHorizontal: 10, // Add padding for text
                 borderRadius: 15, // Ensure rounded corners
+                position: "absolute",
+                bottom: -30,
+                right: 5,
               }}
               status="primary"
               value={"NEW TASK!"}
@@ -120,18 +125,20 @@ const Task = ({ task }) => {
           </View>
           <Text style={styles.nameText}> {assignedTo.name} </Text>
           {task.status !== "COMPLETED" && (
-            <CountdownTimer
-              remaining={remaining}
-              setRemaining={setRemaining}
-              initialSeconds={getSecondsRemaining(task.endTime)}
-            />
+            <View style={styles.countdownTimerStyle}>
+              <CountdownTimer
+                remaining={remaining}
+                setRemaining={setRemaining}
+                initialSeconds={getSecondsRemaining(task.endTime)}
+              />
+            </View>
           )}
           {task.status === "COMPLETED" && (
             <Badge
               status="primary"
               value={"Completed"}
               badgeStyle={{
-                backgroundColor:'#4CC9FE',
+                backgroundColor: "#4CC9FE",
                 height: 30,
                 minWidth: 30, // Ensure enough space for text
                 paddingHorizontal: 2, // Add padding for text
@@ -148,7 +155,7 @@ const Task = ({ task }) => {
         </View>
         <View style={styles.container}>
           <View style={{ alignContent: "center", flexDirection: "row" }}>
-            <Text style={styles.lightText}>{task.title}</Text>
+            <Text style={styles.semiBoldText}>{task.title}</Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text style={styles.detailText}>Type: </Text>
@@ -294,7 +301,7 @@ const styles = StyleSheet.create({
   },
   nameText: {
     fontFamily: "Fredoka-SemiBold",
-    fontSize: calculateFontSize(16),
+    fontSize: calculateFontSize(14),
   },
   typeText: {
     fontSize: calculateFontSize(16),
@@ -304,6 +311,14 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject, // Covers the entire ImageBackground
     backgroundColor: "rgba(255, 255, 255, 0.7)", // Adjust the color and transparency
     padding: "2%",
+  },
+  semiBoldText: {
+    fontFamily: "Fredoka-SemiBold",
+  },
+  countdownTimerStyle: {
+    position: "absolute",
+    top: 0,
+    right: 2,
   },
 });
 

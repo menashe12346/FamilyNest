@@ -19,7 +19,8 @@ export const CreateNewProfile = ({id,role,gender,name,birth_day,avatarURI,passke
         avatarURI:avatarURI,
         gender:gender,
         passkey:passkey,
-        reward:0
+        points:0,
+        rewards:[],
     }
 }
 

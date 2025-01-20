@@ -1,21 +1,40 @@
 import { View, Text, Modal, StyleSheet, TouchableOpacity } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { FlatList, TextInput } from "react-native-gesture-handler";
 import { rewardsOptions } from "../utils/RewardUtils";
 import LottieView from "lottie-react-native";
 import { calculateFontSize } from "../utils/FontUtils";
 import ValuePicker from "./ValuePicker";
 
-const CreateReward = ({ show, setShowModal }) => {
+const CreateReward = ({ show, setShowModal,reward,setReward }) => {
   const [selectedReward, setSelectedReward] = useState(
-    require("../assets/animations/rewards/present.json")
+    { id: 12, reward: 'Present', content: require('../assets/animations/rewards/present.json') }
   );
-  const [selectedRewardText, setSelectedRewardText] = useState("");
 
   const [price, setPrice] = useState();
   const [amount, setAmount] = useState(0);
 
   const handleSubmit = async () => {
+    console.log('Creating Reward');
+  
+    try {
+      const updatedReward = {
+        ...selectedReward,
+        price: price, // Add the price property
+        amount: amount, // Add the amount property
+      };
+  
+      console.log('Updated Reward (before state update):', updatedReward);
+  
+      setReward(updatedReward);
+  
+      console.log('Reward state update triggered');
+    } catch (error) {
+      console.error('Error updating reward:', error);
+    }
+    setAmount(0)
+    setPrice()
+    setSelectedReward(  { id: 12, reward: 'Present', content: '../assets/animations/rewards/present.json' })
     setShowModal(false);
   };
 
@@ -31,8 +50,7 @@ const CreateReward = ({ show, setShowModal }) => {
       <TouchableOpacity
         style={styles.rewardAnimation}
         onPress={() => {
-          setSelectedReward(item.content);
-          setSelectedRewardText(item.reward);
+          setSelectedReward(item);
         }}
       >
         <LottieView
@@ -81,12 +99,12 @@ const CreateReward = ({ show, setShowModal }) => {
           <View style={styles.selectedContainer}>
             <View>
               <LottieView
-                source={selectedReward}
+                source={selectedReward.content}
                 style={{ width: 120, height: 120 }}
                 autoPlay={true}
                 loop={true}
               />
-              <Text style={[styles.semiBoldText,{fontSize:calculateFontSize(14),textAlign:'center'}]}>{selectedRewardText}</Text>
+              <Text style={[styles.semiBoldText,{fontSize:calculateFontSize(14),textAlign:'center'}]}>{selectedReward.reward}</Text>
             </View>
             <View
               style={{

@@ -187,6 +187,8 @@ const TaskScreen = ({ navigation, route }) => {
           // עדכון Redux
           dispatch(updateReduxTask(updatedTask));
           setTask(updatedTask);
+          await setNewMessage(`Time Extended by 1 hour, new deadline is: ${updatedEndTime.toISOString()}`);
+          await handleSendMessage
 
           console.log("Task updated successfully in Firestore and Redux.");
         } else {
@@ -289,14 +291,14 @@ const TaskScreen = ({ navigation, route }) => {
         const taskIndex = tasks.findIndex((t) => t.id === task.id);
         if (taskIndex !== -1) {
           const assignedTo = tasks[taskIndex].assignedTo;
-          const rewardPoints = tasks[taskIndex].reward;
+          const rewardPoints = tasks[taskIndex].points;
 
           tasks[taskIndex].status = "COMPLETED"; // שינוי ל-"Completed"
           tasks[taskIndex].endTime = new Date().toISOString;
 
           const profileIndex = profiles.findIndex((p) => p.id === assignedTo);
           if (profileIndex !== -1) {
-            profiles[profileIndex].reward += rewardPoints;
+            profiles[profileIndex].points += rewardPoints;
 
             await userDocRef.update({ tasks, profiles });
 
@@ -307,7 +309,7 @@ const TaskScreen = ({ navigation, route }) => {
             const updatedProfiles = [...user.profiles];
             updatedProfiles[profileIndex] = {
               ...updatedProfiles[profileIndex],
-              reward: profiles[profileIndex].reward,
+              points: profiles[profileIndex].points,
             };
             dispatch(setReduxProfiles(updatedProfiles));
 

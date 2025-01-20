@@ -12,51 +12,29 @@ import { getProfileById } from "../utils/ProfileUtils";
 import LottieView from "lottie-react-native";
 import ProfileBar from "../components/ProfileBar";
 import { calculateFontSize } from "../utils/FontUtils";
-import { useState,useEffect,useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import CreateReward from "../components/CreateReward";
-
-
-/**
- * TODO
- *
- * 1.let parents set and active rewards and time period (can use our component DateTimePicker)
- * 2.show some leadboard chart for active rewards competition for example https://docs.appspace.com/wp-content/uploads/2020/10/Leaderboard-1024x575.png
- * 3.option to look on previous competitions
- *
- * competition:{
- * [
- * startTime: date
- * endTime: date
- * rewards:[...]  (optional rank 1 rank 2 rank 3)
- * groupReward  (optional)
- * participants:[{profileID, score}...]
- *
- * ***** basic things ******
- * ***** open to changes *****
- * ]}
- *
- *  * may be only 1
- * rewards:[{rank1,prize},....{rank2,prize}....]
- *
- *
- * available components from:   react-native-chart-kit, react-native-svg-charts
- * (look for bar chart horizontal)
- *
- */
+import { FlatList } from "react-native-gesture-handler";
+import { rewardsOptions } from "../utils/RewardUtils";
 
 const RewardsScreen = () => {
-
-  const {width,height} = Dimensions.get('screen')
+  const { width, height } = Dimensions.get("screen");
   const user = useSelector((state) => state.user.user);
   const selectedUser = useSelector(
     (state) => state.selectedProfile.selectedProfileId
   );
+
+  console.log("REWARDS LIST USER",user)
+
+  const [rewardsList,setRewardsList]=useState([])
+  const [reward,setReward]=useState('')
+  console.log('reward',reward)
   const dispatch = useDispatch();
 
   const profile = getProfileById(user, selectedUser);
   const parental = profile ? profile.role === "parent" : true;
 
-  const [show,setShowModal]= useState(true)
+  const [show, setShowModal] = useState(false);
 
   const animationRef = useRef(null);
 
@@ -70,6 +48,40 @@ const RewardsScreen = () => {
       animationRef.current.play(); // Play the animation on press
     }
   };
+
+  useEffect(() => {
+    if (reward) {
+      setRewardsList((prevList) => [...prevList, reward]);
+      console.log('Reward added to list:', reward);
+    }
+  }, [reward]); // Runs when `reward` changes
+
+
+   const renderReward = ({ item }) => {
+      const height = 80;
+      const width = 80;
+
+      console.log("Rendering item ",item)
+
+      return (
+        <TouchableOpacity
+          style={styles.rewardAnimation}
+          onPress={() => {
+            setSelectedReward(item.content);
+            setSelectedRewardText(item.reward);
+          }}
+        >
+          <LottieView
+            source={item.content}
+            style={{ width: width, height: height }}
+            autoPlay={true}
+            loop={false}
+          />
+          <Text style={styles.rewardText}>{item.reward}</Text>
+        </TouchableOpacity>
+      );
+    };
+
   return (
     <ImageBackground
       style={styles.container}
@@ -77,10 +89,10 @@ const RewardsScreen = () => {
       resizeMode="cover"
     >
       <LottieView
-       source={require('../assets/animations/flies.json')}
-       style={{ width: width, height: height, position:'absolute' }}
-       autoPlay={true}
-       loop={true}
+        source={require("../assets/animations/flies.json")}
+        style={{ width: width, height: height, position: "absolute" }}
+        autoPlay={true}
+        loop={true}
       />
       <View style={{ marginTop: "5%", width: "90%", height: "10%" }}>
         <ProfileBar profile={profile} />
@@ -89,7 +101,7 @@ const RewardsScreen = () => {
         <View style={styles.createCompetition}>
           <LottieView
             ref={animationRef}
-            source={require('../assets/animations/rewards/present.json')}
+            source={require("../assets/animations/rewards/present.json")}
             style={{ width: 70, height: 70 }}
             autoPlay={false}
             loop={false}
@@ -98,7 +110,23 @@ const RewardsScreen = () => {
           <Text style={styles.createText}>Add rewards</Text>
         </View>
       </TouchableOpacity>
-      <CreateReward show={show} setShowModal={setShowModal} />
+      <FlatList
+        data={rewardsList}
+        renderItem={renderReward}
+        keyExtractor={(item) => String(item.id)}
+        numColumns={4} // Three avatars per row
+        contentContainerStyle={styles.rewardList}
+        ItemSeparatorComponent={() => (
+          <View
+            style={{
+              height: 2,
+              backgroundColor: "#aaa",
+              marginHorizontal: 10,
+            }}
+          />
+        )}
+      />
+      <CreateReward show={show} setShowModal={setShowModal} reward={reward} setReward={setReward}/>
     </ImageBackground>
   );
 };
@@ -109,27 +137,30 @@ const styles = StyleSheet.create({
     backgroundColor: "#E4F1F4",
     alignItems: "center",
     padding: "2",
-    zIndex:-2
+    zIndex: -2,
   },
   button: {
     height: "50%",
     width: "50%",
   },
   createCompetition: {
-    marginTop:10,
-    paddingHorizontal:10,
+    marginTop: 10,
+    paddingHorizontal: 10,
     backgroundColor: "rgb(253, 253, 253)", // Adjust the color and transparency
-    flexDirection:'row',
-    alignItems:'center',
-    borderRadius:10,
-    elevation:10,
-    shadowColor:"rgba(0, 0, 0, 0.93)",
-    shadowRadius:4
-  },createText:{
-    fontSize:calculateFontSize(20),
-    fontFamily:'Fredoka-Medium',
-    maxWidth:90,
-    alignContent:'center'
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 10,
+    elevation: 10,
+    shadowColor: "rgba(0, 0, 0, 0.93)",
+    shadowRadius: 4,
+  },
+  createText: {
+    fontSize: calculateFontSize(20),
+    fontFamily: "Fredoka-Medium",
+    maxWidth: 90,
+    alignContent: "center",
+  },rewardList:{
+
   }
 });
 

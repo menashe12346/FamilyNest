@@ -47,6 +47,7 @@ const signUp = async ({ user, navigation, dispatch }) => {
         partnerEmail: user.partnerEmail,
         profiles: user.profiles,
         tasks: user.tasks,
+        rewards: user.rewards
       });
 
       console.log('User document created successfully in Firestore');
@@ -61,6 +62,7 @@ const signUp = async ({ user, navigation, dispatch }) => {
         partnerEmail: user.partnerEmail,
         profiles: user.profiles,
         tasks: user.tasks,
+        reward: user.rewards
       };
       dispatch(setUser(reduxUser));
 
@@ -157,6 +159,7 @@ export default function App() {
       partnerEmail:'',
       profiles: [],
       tasks: [],
+      rewards:[],
     }
   );
 

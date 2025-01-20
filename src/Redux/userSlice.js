@@ -13,6 +13,7 @@ const userSlice = createSlice({
       partnerEmail: '',
       profiles: [],
       tasks: [],
+      rewards: [],
     },
   },
   reducers: {
@@ -32,6 +33,7 @@ const userSlice = createSlice({
         partnerEmail: '',
         profiles: [],
         tasks: [],
+        rewards: [],
       };
     },
     // Action to set the profiles array separately
@@ -56,9 +58,28 @@ const userSlice = createSlice({
         console.log("Task not found. ID:", updatedTask.id);
       }
     },    
+
+    // Action to set the rewards array separately
+    setReduxRewards: (state, action) => {
+      state.user.rewards = action.payload;
+    },
+
+    // Action to update a specific reward item
+    updateReduxReward: (state, action) => {
+      const updatedReward = action.payload;
+      console.log("Updating reward with ID:", updatedReward.id);
+      
+      const rewardIndex = state.user.rewards.findIndex((r) => r.id === updatedReward.id);
+      if (rewardIndex !== -1) {
+        console.log("Reward found. Updating reward:", state.user.rewards[rewardIndex]);
+        state.user.rewards[rewardIndex] = { ...state.user.rewards[rewardIndex], ...updatedReward };
+      } else {
+        console.log("Reward not found. ID:", updatedReward.id);
+      }
+    },
   },
 });
 
 // Exporting actions
-export const { setUser, clearUser, setReduxProfiles ,addReduxTask, updateReduxTask} = userSlice.actions;
+export const { setUser, clearUser, setReduxProfiles ,addReduxTask, updateReduxTask , updateReduxReward, setReduxRewards} = userSlice.actions;
 export default userSlice.reducer;

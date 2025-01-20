@@ -23,9 +23,9 @@ const CountdownTimer = ({ initialSeconds, remaining, setRemaining }) => {
     const seconds = totalSeconds % 60;
 
     if (days) {
-      return `${days * 24 + hours}:${minutes}:${seconds}`;
+      return `${days} days`;
     } else if (hours) {
-      return `${hours}:${minutes}:${seconds}`;
+      return `${hours}h:${minutes}`;
     } else if (minutes) {
       return `${minutes}:${seconds}`;
     } else if (seconds) {
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   timer: {
-    fontSize: calculateFontSize(14),
+    fontSize: calculateFontSize(12),
     fontFamily: "Fredoka-Regular",
     color: "black",
     textAlign: "center",

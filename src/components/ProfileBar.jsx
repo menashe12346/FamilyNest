@@ -72,7 +72,7 @@ const ProfileBar = ({ profile, style, onPress }) => {
           </View>
         )}
         {profile.role === "child" && (
-          <Text style={styles.roleText}>{profile.reward}</Text>
+          <Text style={styles.roleText}>{profile.points}</Text>
         )}
       </LinearGradient>
     </Pressable>
