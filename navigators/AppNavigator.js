@@ -16,6 +16,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { useState,useEffect } from "react";
 import TaskScreen from "../src/screens/TaskScreen";
 import RewardsScreen from "../src/screens/RewardsScreen";
+import LottieIcon from "../src/components/LottieIcon";
 
 // Create a Stack Navigator
 const Stack = createNativeStackNavigator();
@@ -30,21 +31,34 @@ function TabNavigator({route}) {
       tabBarIcon: ({ focused, color, size }) => {
         let iconName;
         if (route.name === "Home") {
-          iconName = focused ? "home" : "home";
-        } else if (route.name === "NewScreen") {
-          iconName = focused ? "pluscircle" : "pluscircleo";
-        } else if (route.name === "Rewards") {
-          iconName = focused ? "star" : "staro";
+          iconName = focused ? require('../src/assets/animations/tab/home-focused.json') : require('../src/assets/animations/tab/home.json') ;
+        } else if (route.name === "RewardsScreen") {
+          iconName = focused ? require('../src/assets/animations/tab/reward-focused.json')  : require('../src/assets/animations/tab/reward.json') ;
         }
-        return <AntDesign name={iconName} size={size} color={color} />;
+        console.log(iconName)
+        return <LottieIcon source={iconName} />;
+
       },
-      tabBarActiveTintColor: "#B85455",
-      tabBarInactiveTintColor: "gray",
+      tabBarLabel: ({ focused, color }) => {
+        return (
+          <Text
+            style={{
+              fontSize: 14, // You can adjust this value for bigger text
+              fontFamily:'Fredoka-Bold', // Optional: makes the text bold
+              color: focused ? "#000" : "#777", // Change the color based on focus
+            }}
+          >
+            {route.name === "Home" ? "Home" : "Rewards"}
+          </Text>
+        );
+      },
+      tabBarActiveTintColor: "#000", // Active icon and label color
+      tabBarInactiveTintColor: "#777", // Inactive icon and label color
       headerShown: false,
     })}>
-
+      
       <Tab.Screen name="Home" component={Home} initialParams={route.params} />
-      <Tab.Screen name="NewScreen" component={NewScreen} initialParams={route.params}  />
+      {/* <Tab.Screen name="NewScreen" component={NewScreen} initialParams={route.params}  /> */}
       {/* <Tab.Screen name="SelectProfileScreen" component={SelectProfileScreen}/> */}
       <Tab.Screen name="RewardsScreen" component={RewardsScreen}
       options={{title:'Rewards'}}/>
