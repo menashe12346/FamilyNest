@@ -294,7 +294,7 @@ const TaskScreen = ({ navigation, route }) => {
           const rewardPoints = tasks[taskIndex].points;
 
           tasks[taskIndex].status = "COMPLETED"; // שינוי ל-"Completed"
-          tasks[taskIndex].endTime = new Date().toISOString;
+            tasks[taskIndex].endTime = new Date().toISOString();
 
           const profileIndex = profiles.findIndex((p) => p.id === assignedTo);
           if (profileIndex !== -1) {
