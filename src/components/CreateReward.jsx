@@ -34,7 +34,7 @@ const CreateReward = ({ show, setShowModal,reward,setReward }) => {
     }
     setAmount(0)
     setPrice()
-    setSelectedReward(  { id: 12, reward: 'Present', content: '../assets/animations/rewards/present.json' })
+    setSelectedReward(  { id: 12, reward: 'Present', content: require('../assets/animations/rewards/present.json') })
     setShowModal(false);
   };
 

@@ -16,6 +16,7 @@ import { useState, useEffect, useRef } from "react";
 import CreateReward from "../components/CreateReward";
 import { FlatList } from "react-native-gesture-handler";
 import { rewardsOptions } from "../utils/RewardUtils";
+import * as Animatable from "react-native-animatable";
 
 const RewardsScreen = () => {
   const { width, height } = Dimensions.get("screen");
@@ -54,6 +55,7 @@ const RewardsScreen = () => {
       setRewardsList((prevList) => [...prevList, reward]);
       console.log('Reward added to list:', reward);
     }
+    setReward('')
   }, [reward]); // Runs when `reward` changes
 
 
@@ -66,18 +68,25 @@ const RewardsScreen = () => {
       return (
         <TouchableOpacity
           style={styles.rewardAnimation}
-          onPress={() => {
-            setSelectedReward(item.content);
-            setSelectedRewardText(item.reward);
-          }}
         >
           <LottieView
             source={item.content}
-            style={{ width: width, height: height }}
+            style={{width: width, height: height }}
             autoPlay={true}
             loop={false}
           />
           <Text style={styles.rewardText}>{item.reward}</Text>
+          <View style={{flexDirection:'row',alignContent:'center'}}>
+           <Animatable.View
+                            animation="swing"
+                            duration={1500}
+                            iterationCount="infinite"
+                            style={styles.coinStyle}
+                          >
+          <Text style={[styles.rewardText,{alignSelf:'center'}]}>$</Text>
+          </Animatable.View>
+          <Text style={styles.rewardText}>{item.price}</Text>
+          </View> 
         </TouchableOpacity>
       );
     };
@@ -160,8 +169,25 @@ const styles = StyleSheet.create({
     maxWidth: 90,
     alignContent: "center",
   },rewardList:{
+  },rewardText:{
+    fontFamily:'Fredoka-Medium',
+    alignSelf:'flex-start'
 
-  }
+  },rewardAnimation:{
+    paddingHorizontal:5,
+    paddingVertical:3,
+  },coinStyle: {
+    backgroundColor: "#F3C623",
+    borderRadius: 50,
+    padding: 3,
+    borderColor: "black",
+    borderWidth: 2,
+    height:25,
+    width:25,
+    alignContent:'center',
+    alignItems:'center',
+    justifyContent:'center'
+  },
 });
 
 export default RewardsScreen;
