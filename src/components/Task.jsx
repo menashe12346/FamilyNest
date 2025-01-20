@@ -44,7 +44,7 @@ const Task = ({ task }) => {
     const interval = setInterval(() => {
       if (secondsRemaining > 0 && task.status === "EXPIRED") {
         handleStatus("ACTIVE");
-      } else if (secondsRemaining <= 0 && (task.status!=='WAITING_COMPLETE' || task.status!=='COMPLETED')) {
+      } else if (secondsRemaining <= 0 && (task.status!=='WAITING_COMPLETE' && task.status!=='COMPLETED')) {
         handleStatus("EXPIRED");
       }
     }, 120000); // Update every second
