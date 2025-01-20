@@ -9,8 +9,8 @@ const DateTimePickerComponent = ({
   setDate,
   setShow,
   show,
-  //minimumDate = new Date(),
-  //maximumDate = //new Date(new Date().setDate(new Date().getDate() + 7)),
+  minimumDate = new Date(),
+  maximumDate = new Date(new Date().setDate(new Date().getDate() + 7)),
 }) => {
   const [showTime, setShowTime] = useState(false);
 
