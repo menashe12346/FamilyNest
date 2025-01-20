@@ -25,11 +25,11 @@ const RewardsScreen = () => {
     (state) => state.selectedProfile.selectedProfileId
   );
 
-  console.log("REWARDS LIST USER",user)
+  console.log("REWARDS LIST USER", user);
 
-  const [rewardsList,setRewardsList]=useState([])
-  const [reward,setReward]=useState('')
-  console.log('reward',reward)
+  const [rewardsList, setRewardsList] = useState([]);
+  const [reward, setReward] = useState("");
+  console.log("reward", reward);
   const dispatch = useDispatch();
 
   const profile = getProfileById(user, selectedUser);
@@ -53,43 +53,40 @@ const RewardsScreen = () => {
   useEffect(() => {
     if (reward) {
       setRewardsList((prevList) => [...prevList, reward]);
-      console.log('Reward added to list:', reward);
+      console.log("Reward added to list:", reward);
     }
-    setReward('')
+    setReward("");
   }, [reward]); // Runs when `reward` changes
 
+  const renderReward = ({ item }) => {
+    const height = 80;
+    const width = 80;
 
-   const renderReward = ({ item }) => {
-      const height = 80;
-      const width = 80;
+    console.log("Rendering item ", item);
 
-      console.log("Rendering item ",item)
-
-      return (
-        <TouchableOpacity
-          style={styles.rewardAnimation}
-        >
-          <LottieView
-            source={item.content}
-            style={{width: width, height: height }}
-            autoPlay={true}
-            loop={false}
-          />
-          <Text style={styles.rewardText}>{item.reward}</Text>
-          <View style={{flexDirection:'row',alignContent:'center'}}>
-           <Animatable.View
-                            animation="swing"
-                            duration={1500}
-                            iterationCount="infinite"
-                            style={styles.coinStyle}
-                          >
-          <Text style={[styles.rewardText,{alignSelf:'center'}]}>$</Text>
+    return (
+      <TouchableOpacity style={styles.rewardAnimation}>
+        <LottieView
+          source={item.content}
+          style={{ width: width, height: height }}
+          autoPlay={true}
+          loop={false}
+        />
+        <Text style={styles.rewardText}>{item.reward}</Text>
+        <View style={{ flexDirection: "row", alignContent: "center" }}>
+          <Animatable.View
+            animation="swing"
+            duration={1500}
+            iterationCount="infinite"
+            style={styles.coinStyle}
+          >
+            <Text style={[styles.rewardText, { alignSelf: "center" }]}>$</Text>
           </Animatable.View>
           <Text style={styles.rewardText}>{item.price}</Text>
-          </View> 
-        </TouchableOpacity>
-      );
-    };
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <ImageBackground
@@ -106,19 +103,21 @@ const RewardsScreen = () => {
       <View style={{ marginTop: "5%", width: "90%", height: "10%" }}>
         <ProfileBar profile={profile} />
       </View>
-      <TouchableOpacity onPress={handlePress}>
-        <View style={styles.createCompetition}>
-          <LottieView
-            ref={animationRef}
-            source={require("../assets/animations/rewards/present.json")}
-            style={{ width: 70, height: 70 }}
-            autoPlay={false}
-            loop={false}
-            onAnimationFinish={handleAnimationFinish} // Trigger on finish
-          />
-          <Text style={styles.createText}>Add rewards</Text>
-        </View>
-      </TouchableOpacity>
+      {parental && (
+        <TouchableOpacity onPress={handlePress}>
+          <View style={styles.createCompetition}>
+            <LottieView
+              ref={animationRef}
+              source={require("../assets/animations/rewards/present.json")}
+              style={{ width: 70, height: 70 }}
+              autoPlay={false}
+              loop={false}
+              onAnimationFinish={handleAnimationFinish} // Trigger on finish
+            />
+            <Text style={styles.createText}>Add rewards</Text>
+          </View>
+        </TouchableOpacity>
+      )}
       <FlatList
         data={rewardsList}
         renderItem={renderReward}
@@ -135,7 +134,12 @@ const RewardsScreen = () => {
           />
         )}
       />
-      <CreateReward show={show} setShowModal={setShowModal} reward={reward} setReward={setReward}/>
+      <CreateReward
+        show={show}
+        setShowModal={setShowModal}
+        reward={reward}
+        setReward={setReward}
+      />
     </ImageBackground>
   );
 };
@@ -168,25 +172,27 @@ const styles = StyleSheet.create({
     fontFamily: "Fredoka-Medium",
     maxWidth: 90,
     alignContent: "center",
-  },rewardList:{
-  },rewardText:{
-    fontFamily:'Fredoka-Medium',
-    alignSelf:'flex-start'
-
-  },rewardAnimation:{
-    paddingHorizontal:5,
-    paddingVertical:3,
-  },coinStyle: {
+  },
+  rewardList: {},
+  rewardText: {
+    fontFamily: "Fredoka-Medium",
+    alignSelf: "flex-start",
+  },
+  rewardAnimation: {
+    paddingHorizontal: 5,
+    paddingVertical: 3,
+  },
+  coinStyle: {
     backgroundColor: "#F3C623",
     borderRadius: 50,
     padding: 3,
     borderColor: "black",
     borderWidth: 2,
-    height:25,
-    width:25,
-    alignContent:'center',
-    alignItems:'center',
-    justifyContent:'center'
+    height: 25,
+    width: 25,
+    alignContent: "center",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 
