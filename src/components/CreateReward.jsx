@@ -6,35 +6,41 @@ import LottieView from "lottie-react-native";
 import { calculateFontSize } from "../utils/FontUtils";
 import ValuePicker from "./ValuePicker";
 
-const CreateReward = ({ show, setShowModal,reward,setReward }) => {
-  const [selectedReward, setSelectedReward] = useState(
-    { id: 12, reward: 'Present', content: require('../assets/animations/rewards/present.json') }
-  );
+const CreateReward = ({ show, setShowModal, reward, setReward }) => {
+  const [selectedReward, setSelectedReward] = useState({
+    id: 12,
+    reward: "Present",
+    content: require("../assets/animations/rewards/present.json"),
+  });
 
   const [price, setPrice] = useState();
   const [amount, setAmount] = useState(0);
 
   const handleSubmit = async () => {
-    console.log('Creating Reward');
-  
+    console.log("Creating Reward");
+
     try {
       const updatedReward = {
         ...selectedReward,
         price: price, // Add the price property
         amount: amount, // Add the amount property
       };
-  
-      console.log('Updated Reward (before state update):', updatedReward);
-  
+
+      console.log("Updated Reward (before state update):", updatedReward);
+
       setReward(updatedReward);
-  
-      console.log('Reward state update triggered');
+
+      console.log("Reward state update triggered");
     } catch (error) {
-      console.error('Error updating reward:', error);
+      console.error("Error updating reward:", error);
     }
-    setAmount(0)
-    setPrice()
-    setSelectedReward(  { id: 12, reward: 'Present', content: require('../assets/animations/rewards/present.json') })
+    setAmount(0);
+    setPrice();
+    setSelectedReward({
+      id: 12,
+      reward: "Present",
+      content: require("../assets/animations/rewards/present.json"),
+    });
     setShowModal(false);
   };
 
@@ -72,6 +78,10 @@ const CreateReward = ({ show, setShowModal,reward,setReward }) => {
           <Text style={[styles.semiBoldText, { textAlign: "center" }]}>
             Choose reward:
           </Text>
+          <Text style={[styles.regularText, { textAlign: "center" }]}>
+            Set amount of points needed,{"\n"}
+            and number of times reward will be available.
+          </Text>
           <View style={styles.listContainer}>
             <FlatList
               data={rewardsOptions}
@@ -104,7 +114,14 @@ const CreateReward = ({ show, setShowModal,reward,setReward }) => {
                 autoPlay={true}
                 loop={true}
               />
-              <Text style={[styles.semiBoldText,{fontSize:calculateFontSize(14),textAlign:'center'}]}>{selectedReward.reward}</Text>
+              <Text
+                style={[
+                  styles.semiBoldText,
+                  { fontSize: calculateFontSize(14), textAlign: "center" },
+                ]}
+              >
+                {selectedReward.reward}
+              </Text>
             </View>
             <View
               style={{
@@ -207,6 +224,10 @@ const styles = StyleSheet.create({
   semiBoldText: {
     fontFamily: "Fredoka-SemiBold",
     fontSize: calculateFontSize(20),
+  },
+  regularText: {
+    fontFamily: "Fredoka-Regular",
+    fontSize: calculateFontSize(14),
   },
   selectButton: {
     backgroundColor: "#D5EEFF",

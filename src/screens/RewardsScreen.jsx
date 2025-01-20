@@ -16,6 +16,7 @@ import { useState, useEffect, useRef } from "react";
 import CreateReward from "../components/CreateReward";
 import { FlatList } from "react-native-gesture-handler";
 import { rewardsOptions } from "../utils/RewardUtils";
+import CreateTargets from "../components/CreateTargets";
 import * as Animatable from "react-native-animatable";
 
 const RewardsScreen = () => {
@@ -29,6 +30,10 @@ const RewardsScreen = () => {
 
   const [rewardsList, setRewardsList] = useState([]);
   const [reward, setReward] = useState("");
+  const [target, setTarget] = useState("")
+
+
+
   console.log("reward", reward);
   const dispatch = useDispatch();
 
@@ -36,17 +41,29 @@ const RewardsScreen = () => {
   const parental = profile ? profile.role === "parent" : true;
 
   const [show, setShowModal] = useState(false);
+  const [showTargets, setShowTargets] = useState(false);
 
-  const animationRef = useRef(null);
+  const animationRewardRef = useRef(null);
+  const animationTargetRef = useRef(null);
 
-  const handleAnimationFinish = () => {
+  const handleRewardAnimationFinish = () => {
     // Open the modal once the animation finishes
     setShowModal(true);
   };
+  const handleTargetAnimationFinish = () => {
+    // Open the modal once the animation finishes
+    setShowTargets(true);
+  };
 
-  const handlePress = () => {
-    if (animationRef.current) {
-      animationRef.current.play(); // Play the animation on press
+  const handlePressAddRewards = () => {
+    if (animationRewardRef.current) {
+      animationRewardRef.current.play(); // Play the animation on press
+    }
+  };
+
+  const handlePressSetTargets = () => {
+    if (animationTargetRef.current) {
+      animationTargetRef.current.play(); // Play the animation on press
     }
   };
 
@@ -98,27 +115,45 @@ const RewardsScreen = () => {
         source={require("../assets/animations/background-shapes.json")}
         style={{ top:-175,width: width, height: height, position: "absolute" }}
         autoPlay={true}
-        loop={true}
+        loop={false}
         speed={0.35}
       />
       <View style={{ marginTop: "5%", width: "90%", height: "10%" }}>
         <ProfileBar profile={profile} />
       </View>
+      <View style={{height:15}}/>
       {parental && (
-        <TouchableOpacity onPress={handlePress}>
+        <View style={{flexDirection:'row'}}>
+        <TouchableOpacity onPress={handlePressAddRewards}>
           <View style={styles.createCompetition}>
             <LottieView
-              ref={animationRef}
+              ref={animationRewardRef}
               source={require("../assets/animations/rewards/present.json")}
               style={{ width: 70, height: 70 }}
               autoPlay={false}
               loop={false}
-              onAnimationFinish={handleAnimationFinish} // Trigger on finish
+              onAnimationFinish={handleRewardAnimationFinish} // Trigger on finish
             />
             <Text style={styles.createText}>Add rewards</Text>
           </View>
         </TouchableOpacity>
+        <TouchableOpacity onPress={handlePressSetTargets}>
+          <View style={styles.createCompetition}>
+            <LottieView
+              ref={animationTargetRef}
+              source={require("../assets/animations/target.json")}
+              style={{ width: 70, height: 70 }}
+              autoPlay={false}
+              loop={false}
+              speed={0.7}
+              onAnimationFinish={handleTargetAnimationFinish} // Trigger on finish
+            />
+            <Text style={styles.createText}>Set targets</Text>
+          </View>
+        </TouchableOpacity>
+        </View>
       )}
+      <View style={{height:10}}/>
       <FlatList
         data={rewardsList}
         renderItem={renderReward}
@@ -140,6 +175,12 @@ const RewardsScreen = () => {
         setShowModal={setShowModal}
         reward={reward}
         setReward={setReward}
+      />
+      <CreateTargets
+        show={showTargets}
+        setShowModal={setShowTargets}
+        target={target}
+        setTarget={setTarget}
       />
     </View>
   );
@@ -167,6 +208,7 @@ const styles = StyleSheet.create({
     elevation: 10,
     shadowColor: "rgba(0, 0, 0, 0.93)",
     shadowRadius: 4,
+    marginLeft:10
   },
   createText: {
     fontSize: calculateFontSize(20),

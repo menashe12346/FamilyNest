@@ -2,36 +2,41 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker"; // Ensure this import is correct
 
-const DateTimePickerComponent = ({ date, time, setTime, setDate, setShow, show }) => {
-
-  const [showTime,setShowTime]= useState(false);
+const DateTimePickerComponent = ({
+  date,
+  time,
+  setTime,
+  setDate,
+  setShow,
+  show,
+  //minimumDate = new Date(),
+  //maximumDate = //new Date(new Date().setDate(new Date().getDate() + 7)),
+}) => {
+  const [showTime, setShowTime] = useState(false);
 
   // Initialize date as a valid Date object if undefined
   if (!(date instanceof Date)) {
     date = new Date();
   }
 
-  const formattedDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`; // DD-MM-YYYY format
-
-  const minimumDate = new Date(); // Current date
-  const maximumDate = new Date();
-  maximumDate.setDate(maximumDate.getDate() + 7); // Add 7 days to the current date
+  const formattedDate = `${date.getDate()}-${
+    date.getMonth() + 1
+  }-${date.getFullYear()}`; // DD-MM-YYYY format
 
   const handleChange = (event, selectedDate) => {
     if (selectedDate) {
-      if(show){
+      if (show) {
         setDate(selectedDate); // Update the date state
-        setShow(false)
-        setShowTime(true)
-      }else if(showTime){
-        setTime(selectedDate)
+        setShow(false);
+        setShowTime(true);
+      } else if (showTime) {
+        setTime(selectedDate);
         setShowTime(false);
       }
-    }else{
+    } else {
       setShow(false); // Hide the picker
       setShowTime(false);
     }
-
   };
 
   return (
