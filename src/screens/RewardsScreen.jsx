@@ -89,16 +89,17 @@ const RewardsScreen = () => {
   };
 
   return (
-    <ImageBackground
+    <View
       style={styles.container}
-      source={require("../assets/backgrounds/pattern_2.png")}
-      resizeMode="cover"
+      // source={require("../assets/backgrounds/pattern_2.png")}
+      // resizeMode="cover"
     >
       <LottieView
-        source={require("../assets/animations/flies.json")}
-        style={{ width: width, height: height, position: "absolute" }}
+        source={require("../assets/animations/background-shapes.json")}
+        style={{ top:-175,width: width, height: height, position: "absolute" }}
         autoPlay={true}
-        loop={true}
+        loop={false}
+        speed={0.45}
       />
       <View style={{ marginTop: "5%", width: "90%", height: "10%" }}>
         <ProfileBar profile={profile} />
@@ -140,7 +141,7 @@ const RewardsScreen = () => {
         reward={reward}
         setReward={setReward}
       />
-    </ImageBackground>
+    </View>
   );
 };
 
