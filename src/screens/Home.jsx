@@ -124,8 +124,9 @@ const Home = ({ navigation }) => {
   return (
     <ImageBackground
       style={styles.container}
-      source={require("../assets/backgrounds/pattern_2.png")}
+      source={require("../assets/backgrounds/pattern_1.png")}
       resizeMode="cover"
+      imageStyle={{ opacity: 0.3 }} // Adjust opacity here
     >
       <View style={{ marginTop: "5%", width: "90%", height: "10%" }}>
         <ProfileBar profile={profile} />

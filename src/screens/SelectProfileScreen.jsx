@@ -161,7 +161,9 @@ const SelectProfileScreen = ({navigation}) => {
   return (
     <BackgroundImage source={require('../assets/backgrounds/pattern_3.png')}
     resizeMode='cover'
-    style={styles.container}>
+    style={styles.container}
+    imageStyle={{ opacity: 0.3 }} // Adjust opacity here
+    >
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
