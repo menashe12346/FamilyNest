@@ -98,8 +98,8 @@ const RewardsScreen = () => {
         source={require("../assets/animations/background-shapes.json")}
         style={{ top:-175,width: width, height: height, position: "absolute" }}
         autoPlay={true}
-        loop={false}
-        speed={0.45}
+        loop={true}
+        speed={0.35}
       />
       <View style={{ marginTop: "5%", width: "90%", height: "10%" }}>
         <ProfileBar profile={profile} />

@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     fontSize: calculateFontSize(20),
   },
   selectButton: {
-    backgroundColor: "#aaa",
+    backgroundColor: "#D5EEFF",
     borderRadius: 10,
     elevation: 10,
     padding: 5,
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     elevation: 10,
     borderRadius: 10,
     padding: 10,
-    backgroundColor: "#aaa",
+    backgroundColor: "#D5EEFF",
   },
 });
 
