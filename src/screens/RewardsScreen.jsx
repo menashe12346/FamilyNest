@@ -30,9 +30,7 @@ const RewardsScreen = () => {
 
   const [rewardsList, setRewardsList] = useState([]);
   const [reward, setReward] = useState("");
-  const [target, setTarget] = useState("")
-
-
+  const [target, setTarget] = useState("");
 
   console.log("reward", reward);
   const dispatch = useDispatch();
@@ -75,6 +73,12 @@ const RewardsScreen = () => {
     setReward("");
   }, [reward]); // Runs when `reward` changes
 
+  useEffect(() => {
+    if (target) {
+      console.log("target added");
+    }
+  }, [target]); // Runs when `reward` changes
+
   const renderReward = ({ item }) => {
     const height = 80;
     const width = 80;
@@ -87,7 +91,7 @@ const RewardsScreen = () => {
           source={item.content}
           style={{ width: width, height: height }}
           autoPlay={true}
-          loop={false}
+          loop={true}
         />
         <Text style={styles.rewardText}>{item.reward}</Text>
         <View style={{ flexDirection: "row", alignContent: "center" }}>
@@ -113,7 +117,12 @@ const RewardsScreen = () => {
     >
       <LottieView
         source={require("../assets/animations/background-shapes.json")}
-        style={{ top:-175,width: width, height: height, position: "absolute" }}
+        style={{
+          top: -175,
+          width: width,
+          height: height,
+          position: "absolute",
+        }}
         autoPlay={true}
         loop={false}
         speed={0.35}
@@ -121,39 +130,51 @@ const RewardsScreen = () => {
       <View style={{ marginTop: "5%", width: "90%", height: "10%" }}>
         <ProfileBar profile={profile} />
       </View>
-      <View style={{height:15}}/>
+      <View style={{ height: 15 }} />
       {parental && (
-        <View style={{flexDirection:'row'}}>
-        <TouchableOpacity onPress={handlePressAddRewards}>
-          <View style={styles.createCompetition}>
-            <LottieView
-              ref={animationRewardRef}
-              source={require("../assets/animations/rewards/present.json")}
-              style={{ width: 70, height: 70 }}
-              autoPlay={false}
-              loop={false}
-              onAnimationFinish={handleRewardAnimationFinish} // Trigger on finish
-            />
-            <Text style={styles.createText}>Add rewards</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handlePressSetTargets}>
-          <View style={styles.createCompetition}>
-            <LottieView
-              ref={animationTargetRef}
-              source={require("../assets/animations/target.json")}
-              style={{ width: 70, height: 70 }}
-              autoPlay={false}
-              loop={false}
-              speed={0.7}
-              onAnimationFinish={handleTargetAnimationFinish} // Trigger on finish
-            />
-            <Text style={styles.createText}>Set targets</Text>
-          </View>
-        </TouchableOpacity>
+        <View style={{ flexDirection: "row" }}>
+          <TouchableOpacity onPress={handlePressAddRewards}>
+            <View style={styles.createCompetition}>
+              <LottieView
+                ref={animationRewardRef}
+                source={require("../assets/animations/rewards/present.json")}
+                style={{ width: 70, height: 70 }}
+                autoPlay={false}
+                loop={false}
+                onAnimationFinish={handleRewardAnimationFinish} // Trigger on finish
+              />
+              <Text style={styles.createText}>Add rewards</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handlePressSetTargets}>
+            <View style={styles.createCompetition}>
+              <LottieView
+                ref={animationTargetRef}
+                source={require("../assets/animations/target.json")}
+                style={{ width: 70, height: 70 }}
+                autoPlay={false}
+                loop={false}
+                speed={0.7}
+                onAnimationFinish={handleTargetAnimationFinish} // Trigger on finish
+              />
+              <Text style={styles.createText}>Set targets</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       )}
-      <View style={{height:10}}/>
+      <View style={{ height: 10 }} />
+      <View style={[styles.rewardContainer,{alignItems:'center'}]}>
+      <Text style={[styles.rewardText,{alignSelf:'center'}]}>Collective reward</Text>
+        <LottieView
+          source={require("../assets/animations/trophy.json")}
+          style={{ alignSelf: "center", width: 100, height: 100 }}
+          autoPlay={true}
+          loop={true}
+        />
+        <Text style={[styles.rewardText,{alignSelf:'center'}]}>{target.reward}</Text>
+        <Text style={[styles.rewardText,{alignSelf:'center'}]}>{target.target} tasks</Text>
+      </View>
+      <View style={{ height: 10 }} />
       <FlatList
         data={rewardsList}
         renderItem={renderReward}
@@ -208,7 +229,7 @@ const styles = StyleSheet.create({
     elevation: 10,
     shadowColor: "rgba(0, 0, 0, 0.93)",
     shadowRadius: 4,
-    marginLeft:10
+    marginLeft: 10,
   },
   createText: {
     fontSize: calculateFontSize(20),
@@ -216,14 +237,20 @@ const styles = StyleSheet.create({
     maxWidth: 90,
     alignContent: "center",
   },
-  rewardList: {},
+  rewardList: {
+    
+  },
   rewardText: {
     fontFamily: "Fredoka-Medium",
     alignSelf: "flex-start",
   },
   rewardAnimation: {
-    paddingHorizontal: 5,
-    paddingVertical: 3,
+    backgroundColor:'white',
+    padding:5,
+    marginRight:4,
+    marginLeft:4,
+    elevation:8,
+    borderRadius:12,
   },
   coinStyle: {
     backgroundColor: "#F3C623",
@@ -236,7 +263,12 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignItems: "center",
     justifyContent: "center",
-  },
+  },rewardContainer:{
+    backgroundColor:'white',
+    padding:10,
+    elevation:8,
+    borderRadius:12,
+  }
 });
 
 export default RewardsScreen;
