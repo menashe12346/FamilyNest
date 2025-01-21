@@ -12,12 +12,26 @@ const CreateTargets = ({ show, setShowModal, target, setTarget }) => {
   const [taskTarget, setTaskTarget] = useState("");
   const [targetReward, setTargetReward] = useState("");
 
+
+  const minimumDate = new Date(new Date().setDate(new Date().getDate() + 7))
+  const maximumDate = new Date(new Date().setDate(new Date().getDate() + 31))
+
   const handleSubmit =()=>{
-    console.log('submit target')
+    console.log('Set target...')
+    setTarget({
+      target:taskTarget,
+      reward:targetReward,
+      deadline:date.toISOString
+    })
+    console.log("Target:",target)
+    setShowModal(false)
   }
 
   const handleCancel =()=>{
-    console.log('cancel target')
+    console.log('Cancel target')
+    setDate(new Date())
+    setTaskTarget("")
+    setTargetReward("")
     setShowModal(false)
   }
 
@@ -80,6 +94,7 @@ const CreateTargets = ({ show, setShowModal, target, setTarget }) => {
                 marginLeft: 10,
                 alignItems: "center",
                 alignSelf: "center",
+                marginTop:5,
               }}
             >
               <Text style={styles.regularText}>Deadline: </Text>
@@ -87,7 +102,7 @@ const CreateTargets = ({ show, setShowModal, target, setTarget }) => {
                 style={styles.DateTimePicker}
                 onPress={() => setShowDate(true)}
               >
-                <Text>
+                <Text style={[styles.regularText,{fontSize:16}]}>
                   {" "}
                   {date ? date.toLocaleDateString() : "Select date"}{" "}
                 </Text>
@@ -95,7 +110,7 @@ const CreateTargets = ({ show, setShowModal, target, setTarget }) => {
               <TouchableOpacity
                 style={[styles.DateTimePicker, { marginLeft: 8 }]}
               >
-                <Text>
+                <Text style={[styles.regularText,{fontSize:16}]}>
                   {" "}
                   {date ? date.toLocaleTimeString() : "Select time"}{" "}
                 </Text>
@@ -110,7 +125,7 @@ const CreateTargets = ({ show, setShowModal, target, setTarget }) => {
               onPress={handleSubmit}
             >
               <Text style={[styles.semiBoldText, { textAlign: "center" }]}>
-                Add Reward
+                Set target
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -131,6 +146,8 @@ const CreateTargets = ({ show, setShowModal, target, setTarget }) => {
         setTime={setDate}
         show={showDate}
         setShow={setShowDate}
+        minimumDate={minimumDate}
+        maximumDate={maximumDate}
       />
     </Modal>
   );
