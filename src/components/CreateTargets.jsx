@@ -12,28 +12,47 @@ const CreateTargets = ({ show, setShowModal, target, setTarget }) => {
   const [taskTarget, setTaskTarget] = useState("");
   const [targetReward, setTargetReward] = useState("");
 
+  const validateInputs = () => {
+    if (!taskTarget || isNaN(taskTarget) || taskTarget <= 0) {
+      alert("Please enter a valid target number.");
+      return false;
+    }
+    if (!targetReward) {
+      alert("Please enter a target reward.");
+      return false;
+    }
+    return true;
+  };
 
-  const minimumDate = new Date(new Date().setDate(new Date().getDate() + 7))
-  const maximumDate = new Date(new Date().setDate(new Date().getDate() + 31))
+  const minimumDate = new Date(new Date().setDate(new Date().getDate() + 7));
+  const maximumDate = new Date(new Date().setDate(new Date().getDate() + 31));
 
-  const handleSubmit =()=>{
-    console.log('Set target...')
-    setTarget({
-      target:taskTarget,
-      reward:targetReward,
-      deadline:date.toISOString
-    })
-    console.log("Target:",target)
-    setShowModal(false)
-  }
+  const handleSubmit = () => {
+    if (validateInputs()) {
+      try {
+        console.log("Set target...");
+        setTarget({
+          target: taskTarget,
+          reward: targetReward,
+          active: true,
+          deadline: date.toISOString(),
+        });
+        console.log("Target:", target);
+        setShowModal(false);
+      } catch (error) {
+        console.error("Error setting target:", error);
+        alert("An error occurred while setting the target. Please try again.");
+      }
+    }
+  };
 
-  const handleCancel =()=>{
-    console.log('Cancel target')
-    setDate(new Date())
-    setTaskTarget("")
-    setTargetReward("")
-    setShowModal(false)
-  }
+  const handleCancel = () => {
+    console.log("Cancel target");
+    setDate(new Date());
+    setTaskTarget("");
+    setTargetReward("");
+    setShowModal(false);
+  };
 
   return (
     <Modal visible={show} transparent={true} animationType="slide">
@@ -94,7 +113,7 @@ const CreateTargets = ({ show, setShowModal, target, setTarget }) => {
                 marginLeft: 10,
                 alignItems: "center",
                 alignSelf: "center",
-                marginTop:5,
+                marginTop: 5,
               }}
             >
               <Text style={styles.regularText}>Deadline: </Text>
@@ -102,7 +121,7 @@ const CreateTargets = ({ show, setShowModal, target, setTarget }) => {
                 style={styles.DateTimePicker}
                 onPress={() => setShowDate(true)}
               >
-                <Text style={[styles.regularText,{fontSize:16}]}>
+                <Text style={[styles.regularText, { fontSize: 16 }]}>
                   {" "}
                   {date ? date.toLocaleDateString() : "Select date"}{" "}
                 </Text>
@@ -110,7 +129,7 @@ const CreateTargets = ({ show, setShowModal, target, setTarget }) => {
               <TouchableOpacity
                 style={[styles.DateTimePicker, { marginLeft: 8 }]}
               >
-                <Text style={[styles.regularText,{fontSize:16}]}>
+                <Text style={[styles.regularText, { fontSize: 16 }]}>
                   {" "}
                   {date ? date.toLocaleTimeString() : "Select time"}{" "}
                 </Text>
@@ -185,7 +204,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     backgroundColor: "#D5EEFF",
-  },selectButton: {
+  },
+  selectButton: {
     backgroundColor: "#D5EEFF",
     borderRadius: 10,
     elevation: 10,

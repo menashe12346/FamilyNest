@@ -30,7 +30,7 @@ const RewardsScreen = () => {
 
   const [rewardsList, setRewardsList] = useState([]);
   const [reward, setReward] = useState("");
-  const [target, setTarget] = useState("");
+  const [target, setTarget] = useState();
 
   console.log("reward", reward);
   const dispatch = useDispatch();
@@ -93,7 +93,9 @@ const RewardsScreen = () => {
           autoPlay={true}
           loop={true}
         />
-        <Text style={[styles.rewardText,{alignSelf:'center'}]}>{item.reward}</Text>
+        <Text style={[styles.rewardText, { alignSelf: "center" }]}>
+          {item.reward}
+        </Text>
         <View style={{ flexDirection: "row", alignSelf: "center" }}>
           <Animatable.View
             animation="swing"
@@ -103,7 +105,10 @@ const RewardsScreen = () => {
           >
             <Text style={[styles.rewardText, { alignSelf: "center" }]}>$</Text>
           </Animatable.View>
-          <Text style={[styles.rewardText,{marginTop:4}]}>{" "}{item.price}</Text>
+          <Text style={[styles.rewardText, { marginTop: 4 }]}>
+            {" "}
+            {item.price}
+          </Text>
         </View>
       </TouchableOpacity>
     );
@@ -163,17 +168,23 @@ const RewardsScreen = () => {
         </View>
       )}
       <View style={{ height: 10 }} />
-      <View style={[styles.rewardContainer,{alignItems:'center'}]}>
-      <Text style={[styles.rewardText,{alignSelf:'center'}]}>Collective reward</Text>
+      {target && <View style={[styles.rewardContainer, { alignItems: "center" }]}>
+        <Text style={[styles.rewardText, { alignSelf: "center" }]}>
+          Collective reward
+        </Text>
         <LottieView
           source={require("../assets/animations/trophy.json")}
           style={{ alignSelf: "center", width: 100, height: 100 }}
           autoPlay={true}
           loop={true}
         />
-        <Text style={[styles.rewardText,{alignSelf:'center'}]}>{target.reward}</Text>
-        <Text style={[styles.rewardText,{alignSelf:'center'}]}>{target.target} tasks</Text>
-      </View>
+        <Text style={[styles.rewardText, { alignSelf: "center" }]}>
+          {target.reward}
+        </Text>
+        <Text style={[styles.rewardText, { alignSelf: "center" }]}>
+          {target.target} tasks
+        </Text>
+      </View>}
       <View style={{ height: 10 }} />
       <FlatList
         data={rewardsList}
@@ -237,20 +248,18 @@ const styles = StyleSheet.create({
     maxWidth: 90,
     alignContent: "center",
   },
-  rewardList: {
-    
-  },
+  rewardList: {},
   rewardText: {
     fontFamily: "Fredoka-Medium",
     alignSelf: "flex-start",
   },
   rewardAnimation: {
-    backgroundColor:'white',
-    padding:5,
-    marginRight:4,
-    marginLeft:4,
-    elevation:8,
-    borderRadius:12,
+    backgroundColor: "white",
+    padding: 5,
+    marginRight: 4,
+    marginLeft: 4,
+    elevation: 8,
+    borderRadius: 12,
   },
   coinStyle: {
     backgroundColor: "#F3C623",
@@ -263,12 +272,13 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignItems: "center",
     justifyContent: "center",
-  },rewardContainer:{
-    backgroundColor:'white',
-    padding:10,
-    elevation:8,
-    borderRadius:12,
-  }
+  },
+  rewardContainer: {
+    backgroundColor: "white",
+    padding: 10,
+    elevation: 8,
+    borderRadius: 12,
+  },
 });
 
 export default RewardsScreen;
