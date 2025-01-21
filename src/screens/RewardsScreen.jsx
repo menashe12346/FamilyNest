@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
+  Modal,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import React from "react";
@@ -44,7 +45,7 @@ const RewardsScreen = () => {
   const dispatch = useDispatch();
 
   const profile = getProfileById(user, selectedUser);
-  const parental = profile ? profile.role === "parent" : true;
+  const parental = profile.role === "parent" ? true : false;
 
   const [show, setShowModal] = useState(false);
   const [showTargets, setShowTargets] = useState(false);
@@ -72,10 +73,28 @@ const RewardsScreen = () => {
       if (animationTargetRef.current) {
         animationTargetRef.current.play(); // Play the animation on press
       }
-    }else{
+    } else {
       alert("Target is already active");
     }
   };
+
+  const [selectedReward, setSelectedReward] = useState();
+  const [purchaseModal, setPurchaseModal] = useState(false);
+
+  const handleBuyReward = (reward) => {
+    console.log("buying reward...");
+    setSelectedReward(reward);
+    setPurchaseModal(true);
+  };
+
+  const handleCancelPurchase =()=>{
+    setPurchaseModal(false)
+  }
+
+  const handlePurchase =()=>{
+    console.log("Purchasing...")
+    setPurchaseModal(false)
+  }
 
   useEffect(() => {
     if (reward) {
@@ -123,7 +142,11 @@ const RewardsScreen = () => {
     const width = 80;
 
     return (
-      <TouchableOpacity style={styles.rewardAnimation}>
+      <TouchableOpacity
+        style={styles.rewardAnimation}
+        disabled={parental}
+        onPress={() => handleBuyReward(item)}
+      >
         <LottieView
           source={getContentByReward(item.reward)}
           style={{ width: width, height: height }}
@@ -253,6 +276,53 @@ const RewardsScreen = () => {
         target={target}
         setTarget={setTarget}
       />
+      {purchaseModal && (
+        <Modal visible={purchaseModal} transparent={true} animationType="slide">
+          <View style={styles.purchaseContainer}>
+            <View style={styles.purchaseContent}>
+              <TouchableOpacity style={{ alignSelf: "center" }}>
+                <LottieView
+                  source={getContentByReward(selectedReward.reward)}
+                  style={{ width: 80, height: 80 }}
+                  autoPlay={true}
+                  loop={true}
+                />
+              </TouchableOpacity>
+              <Text style={[styles.rewardText, { alignSelf: "center" }]}>
+                {selectedReward.reward}
+              </Text>
+              <View style={{flexDirection:'row',justifyContent:'center'}}>
+                <TouchableOpacity style={styles.purchaseButtons}
+                onPress={handlePurchase}>
+                  <Text style={[styles.rewardText, { marginTop: 4 }]}>
+                    Purchase{" "}
+                  </Text>
+                  <Animatable.View
+                    animation="swing"
+                    duration={1500}
+                    iterationCount="infinite"
+                    style={styles.coinStyle}
+                  >
+                    <Text style={[styles.rewardText, { alignSelf: "center" }]}>
+                      $
+                    </Text>
+                  </Animatable.View>
+                  <Text style={[styles.rewardText, { marginTop: 4 }]}>
+                    {" "}
+                    {selectedReward.price}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.purchaseButtons}
+                onPress={handleCancelPurchase}>
+                  <Text style={[styles.rewardText, { marginTop: 4 }]}>
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
     </View>
   );
 };
@@ -317,6 +387,28 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 8,
     borderRadius: 12,
+  },
+  purchaseContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  purchaseContent: {
+    width: 250,
+    padding: 10,
+    backgroundColor: "white",
+    borderRadius: 10,
+  },
+  purchaseButtons: {
+    marginTop: 5,
+    alignSelf: "center",
+    flexDirection: "row",
+    backgroundColor: "#D5EEFF",
+    borderRadius: 10,
+    elevation: 10,
+    padding: 5,
+    marginHorizontal: 10,
   },
 });
 
