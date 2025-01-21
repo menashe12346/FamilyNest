@@ -9,7 +9,9 @@ export const rewardsOptions = [
     { id: 8, reward: 'Movie night', content: require('../assets/animations/rewards/movie.json') },
     { id: 9, reward: 'Pizza', content: require('../assets/animations/rewards/pizza.json') },
     { id: 10, reward: 'Video game', content: require('../assets/animations/rewards/video-games.json') },
-    { id: 11, reward: 'Mystery box', content: require('../assets/animations/rewards/box.json') }
+    { id: 11, reward: 'Mystery box', content: require('../assets/animations/rewards/box.json') },
+    { id: 13, reward: 'Zoo', content: require('../assets/animations/rewards/tiger.json') },
+    { id: 14, reward: 'New Shoes', content: require('../assets/animations/rewards/shoes.json') },
 ];
 
 export const getContentByReward = (rewardName) => {

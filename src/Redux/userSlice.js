@@ -54,6 +54,17 @@ const userSlice = createSlice({
         console.log("Profile not found. ID:", updatedProfile.id);
       }
     },
+    updateProfilePoints: (state, action) => {
+      const { profileId, points } = action.payload;
+      
+      const profileIndex = state.user.user.profiles.findIndex((p) => p.id === profileId);
+      if (profileIndex !== -1) {
+        state.user.profiles[profileIndex] = { 
+          ...state.user.profiles[profileIndex], 
+          points: points 
+        };
+      }
+    },
 
     addReduxTask: (state, action) => {
       console.log('redux task update')
@@ -80,6 +91,7 @@ const userSlice = createSlice({
 
     // Action to update a specific reward item
     updateReduxReward: (state, action) => {
+      console.log("DISPATCHEDDDD")
       const updatedReward = action.payload;
       console.log("Updating reward with ID:", updatedReward.reward_id);
       
@@ -115,5 +127,5 @@ const userSlice = createSlice({
 });
 
 // Exporting actions
-export const { getReduxRewards,getReduxProfiles,setUser, clearUser, setReduxProfiles ,addReduxTask, updateReduxTask , updateReduxReward, setReduxRewards,setReduxTarget,updateReduxTarget ,updateProfile} = userSlice.actions;
+export const { updateProfilePoints,getReduxRewards,getReduxProfiles,setUser, clearUser, setReduxProfiles ,addReduxTask, updateReduxTask , updateReduxReward, setReduxRewards,setReduxTarget,updateReduxTarget ,updateProfile} = userSlice.actions;
 export default userSlice.reducer;

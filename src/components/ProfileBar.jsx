@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Pressable, Image } from "react-native";
-import React from "react";
+import React, {useEffect,useState} from "react";
 import { calculateFontSize } from "../utils/FontUtils";
 import avatarImages from "../utils/AvatarsUtils";
 import { isMomDadSonDaughter, getProfileAge } from "../utils/ProfileUtils";
@@ -7,19 +7,24 @@ import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome } from "@expo/vector-icons";
 import { Badge } from "react-native-elements";
 import LottieView from "lottie-react-native";
+import { useDispatch, useSelector } from "react-redux";
+
 
 const ProfileBar = ({ profile, style, onPress }) => {
+  const [profilePoints, setProfilePoints] = useState(profile.points);
+
   const colors =
     profile.gender === "male"
       ? ["#81BFDA", "#87CEFA", "#B1F0F7"]
       : ["#FB9EC6", "#FFB6C1", "#FFE2E2"];
-
 
   const profileImage = profile.imageID
     ? avatarImages[profile.imageID]
     : { uri: profile.avatarURI };
 
   console.log("the profile image", profileImage);
+
+
 
   return (
     <Pressable
@@ -64,18 +69,17 @@ const ProfileBar = ({ profile, style, onPress }) => {
             <View style={styles.rewardView}>
               <LottieView
                 source={require("../assets/animations/coins.json")}
-                style={{width: 90, height: 90, alignSelf: "center" }}
+                style={{ width: 90, height: 90, alignSelf: "center" }}
                 autoPlay={true}
                 loop={true}
                 speed={0.5}
               />
-                      {profile.role === "child" && (
-          <Text style={styles.roleText}>{profile.points}</Text>
-        )}
+              {profile.role === "child" && (
+                <Text style={styles.roleText}>{profilePoints}</Text>
+              )}
             </View>
           </View>
         )}
-
       </LinearGradient>
     </Pressable>
   );
@@ -131,13 +135,13 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   rewardView: {
-    flexDirection:'row',
-    alignItems:'center',
+    flexDirection: "row",
+    alignItems: "center",
     height: 100,
     width: 50,
-    position:'absolute',
-    top:-50,
-    left:-60
+    position: "absolute",
+    top: -50,
+    left: -60,
   },
   rewardImage: {
     height: 40,

@@ -26,6 +26,8 @@ import {
   updateReduxTarget,
   getReduxRewards,
   getReduxProfiles,
+  updateProfilePoints,
+  setUser,
 } from "../Redux/userSlice";
 import { uploadUserData } from "../utils/UploadData";
 import { updateProfile } from "firebase/auth";
@@ -39,13 +41,15 @@ const RewardsScreen = () => {
     (state) => state.selectedProfile.selectedProfileId
   );
 
-  console.log("REWARDS LIST USER", user);
-
   const [rewardsList, setRewardsList] = useState(
     user.rewards.length > 0 ? user.rewards : []
   );
   const [reward, setReward] = useState("");
   const [target, setTarget] = useState(user.target);
+
+  const [filteredRewards, setFilteredRewards] = useState(
+    rewardsList.filter((item) => item.status === "ACTIVE")
+  );
 
   const dispatch = useDispatch();
 
@@ -57,6 +61,9 @@ const RewardsScreen = () => {
 
   const animationRewardRef = useRef(null);
   const animationTargetRef = useRef(null);
+  const animationPurchaseRef = useRef(null);
+
+  const [purchasedAnimation, setPurchasedAnimation] = useState(false);
 
   const handleRewardAnimationFinish = () => {
     // Open the modal once the animation finishes
@@ -83,6 +90,10 @@ const RewardsScreen = () => {
     }
   };
 
+  useEffect(() => {
+    setFilteredRewards(rewardsList.filter((item) => item.status === "ACTIVE"));
+  }, [rewardsList]);
+
   const [selectedReward, setSelectedReward] = useState();
   const [purchaseModal, setPurchaseModal] = useState(false);
 
@@ -96,26 +107,38 @@ const RewardsScreen = () => {
     setPurchaseModal(false);
   };
 
+  const handlePurchaseAnimationFinish = () => {
+    // Close the purchase modal
+    setPurchasedAnimation(false);
+  };
+
   const handlePurchase = async () => {
     if (profile.points >= selectedReward.price) {
       console.log("Purchasing...");
-  
+      const newAmount = selectedReward.amount - 1; // Decrementing the amount properly
+
       // Update the amount of the selected reward
       const updatedReward = {
         ...selectedReward,
-        amount: selectedReward.amount - 1,
+        amount: newAmount,
+        status: newAmount > 0 ? "ACTIVE" : "SOLD_OUT", // Update the status based on new amount
       };
-  
+
+
+      const rewardIndex = rewardsList.findIndex((r) => r.reward_id === updatedReward.reward_id);
+      setRewardsList(rewardsList[rewardIndex]=updatedReward)
+
       // Create a new reward object for the profile's rewards list
       const newReward = {
         ...selectedReward,
         amount: 1,
+        pid: profile.rewards.length + 1,
         date: new Date().toDateString(), // Correct the date method call
       };
-  
+
       // Add the new reward to the profile's rewards
       const updatedProfileRewards = [...profile.rewards, newReward];
-  
+
       // Update the profile with the new reward and points deduction
       const updatedProfile = {
         ...profile,
@@ -123,26 +146,30 @@ const RewardsScreen = () => {
         points: profile.points - selectedReward.price, // Fix reward price reference
       };
 
-      console.log("updatedPointsNan",updateProfile.points)
-  
       try {
         // Pass the updated profile and reward to update function
-        const updatedData = await updateProfileAndRewards(user.uid, updatedProfile, updatedReward);
-  
-        if (updatedData) {
-          // Update Redux state manually after Firebase update
-          dispatch(updateProfile(updatedProfile)); // Ensure you dispatch the correct updatedProfile
-          dispatch(updateReduxReward(updatedReward)); // Ensure the reward is correctly dispatched
-        }
+        const updatedData = await updateProfileAndRewards(
+          user.uid,
+          updatedProfile,
+          updatedReward
+        );
+        // Update Redux state manually after Firebase update
+        dispatch(updateProfile(updatedProfile)); // Ensure you dispatch the correct updatedProfile
+        dispatch(updateReduxReward(updatedReward)); // Ensure the reward is correctly dispatched
       } catch (error) {
         console.error("Error updating profile and rewards:", error);
+      } finally {
+        setPurchaseModal(false);
+        setPurchasedAnimation(true);
+        if (animationPurchaseRef.current) {
+          animationPurchaseRef.current.play();
+        }
       }
     } else {
       alert("Not enough points yet.");
+      // Close the purchase modal
+      setPurchaseModal(false);
     }
-  
-    // Close the purchase modal
-    setPurchaseModal(false);
   };
 
   useEffect(() => {
@@ -186,6 +213,7 @@ const RewardsScreen = () => {
     uploadTarget();
   }, [target]); // Runs when `reward` changes
 
+  console.log(rewardsList);
   const renderReward = ({ item }) => {
     const height = 80;
     const width = 80;
@@ -298,7 +326,7 @@ const RewardsScreen = () => {
       )}
       <View style={{ height: 10 }} />
       <FlatList
-        data={rewardsList.filter((item) => item.amount > 0)}
+        data={filteredRewards}
         renderItem={renderReward}
         keyExtractor={(item) => String(item.id)}
         numColumns={4} // Three avatars per row
@@ -324,6 +352,25 @@ const RewardsScreen = () => {
         target={target}
         setTarget={setTarget}
       />
+      {purchasedAnimation && (
+        <View style={styles.lottieContainer} pointerEvents="box-none">
+          <LottieView
+            source={require("../assets/animations/confetti-purchase.json")}
+            style={{
+              top: -175,
+              width: width,
+              height: height,
+              position: "absolute",
+            }}
+            ref={animationPurchaseRef}
+            autoPlay={true}
+            loop={false}
+            speed={0.7}
+            pointerEvents="none" // Ensures it doesn't block touches
+            onAnimationFinish={handlePurchaseAnimationFinish} // Trigger on finish
+          />
+        </View>
+      )}
       {purchaseModal && (
         <Modal visible={purchaseModal} transparent={true} animationType="slide">
           <View style={styles.purchaseContainer}>
@@ -461,6 +508,12 @@ const styles = StyleSheet.create({
     elevation: 10,
     padding: 5,
     marginHorizontal: 10,
+  },
+  lottieContainer: {
+    ...StyleSheet.absoluteFillObject, // Covers the entire screen
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1, // Ensure it's behind the TouchableOpacity
   },
 });
 

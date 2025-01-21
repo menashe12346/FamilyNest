@@ -39,6 +39,17 @@ const Home = ({ navigation }) => {
   const [filterStatus, setFilterStatus] = useState(null);
   const [filterChild, setFilterChild] = useState(null);
 
+   // Reset filters whenever selectedUser changes
+   useEffect(() => {
+    // Reset filters
+    setFilterType(null);
+    setFilterStatus(null);
+    setFilterChild(parental? null: profile.name);
+
+    // Optionally reset tasks here if needed
+    setFilteredTasks(sortedTasks);
+  }, [selectedUser]); // Dependency array to trigger effect when selectedUser changes
+
   const taskTypes = [
     ...new Set(tasks.map((task) => task.type || "Uncategorized")),
   ];

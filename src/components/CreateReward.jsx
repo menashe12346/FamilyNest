@@ -41,6 +41,7 @@ const CreateReward = ({ show, setShowModal, reward, setReward }) => {
           id: selectedReward.id,
           price: price, // Add the price property
           amount: amount, // Add the amount property
+          status:"ACTIVE",
         };
 
         setReward(updatedReward);
