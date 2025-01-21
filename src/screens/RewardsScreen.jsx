@@ -124,9 +124,16 @@ const RewardsScreen = () => {
         status: newAmount > 0 ? "ACTIVE" : "SOLD_OUT", // Update the status based on new amount
       };
 
+      const rewardIndex = rewardsList.findIndex(
+        (r) => r.reward_id === updatedReward.reward_id
+      );
 
-      const rewardIndex = rewardsList.findIndex((r) => r.reward_id === updatedReward.reward_id);
-      setRewardsList(rewardsList[rewardIndex]=updatedReward)
+      // If the reward exists in the list, update it immutably
+      if (rewardIndex !== -1) {
+        const updatedList = [...rewardsList]; // Create a copy of the current list
+        updatedList[rewardIndex] = updatedReward; // Update the reward at the found index
+        setRewardsList(updatedList); // Set the new array to the state
+      }
 
       // Create a new reward object for the profile's rewards list
       const newReward = {
