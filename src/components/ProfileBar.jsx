@@ -10,8 +10,7 @@ import LottieView from "lottie-react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 
-const ProfileBar = ({ profile, style, onPress }) => {
-  const [profilePoints, setProfilePoints] = useState(profile.points);
+const ProfileBar = ({ profile, style, onPress, points }) => {
 
   const colors =
     profile.gender === "male"
@@ -75,7 +74,7 @@ const ProfileBar = ({ profile, style, onPress }) => {
                 speed={0.5}
               />
               {profile.role === "child" && (
-                <Text style={styles.roleText}>{profilePoints}</Text>
+                <Text style={styles.roleText}>{points}</Text>
               )}
             </View>
           </View>

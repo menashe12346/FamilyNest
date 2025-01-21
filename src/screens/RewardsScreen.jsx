@@ -277,7 +277,7 @@ const RewardsScreen = () => {
         speed={0.35}
       />
       <View style={{ marginTop: "5%", width: "90%", height: "10%" }}>
-        <ProfileBar profile={profile} />
+        <ProfileBar profile={profile} points={profile.points} />
       </View>
       <View style={{ height: 15 }} />
       {parental && (

@@ -1,0 +1,232 @@
+import {
+  ImageBackground,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getProfileById, isMomDadSonDaughter } from "../utils/ProfileUtils";
+import avatarImages from "../utils/AvatarsUtils";
+import { calculateFontSize } from "../utils/FontUtils";
+import * as Animatable from "react-native-animatable";
+import LottieView from "lottie-react-native";
+import { getContentByReward } from "../utils/RewardUtils";
+
+const ProfileScreen = () => {
+  const user = useSelector((state) => state.user.user);
+  const selectedUser = useSelector(
+    (state) => state.selectedProfile.selectedProfileId
+  );
+  const dispatch = useDispatch();
+  const profile = getProfileById(user, selectedUser);
+  const parental = profile.role === "child" ? false : true;
+  const familyRole = isMomDadSonDaughter({ profile });
+
+  const profileImage = profile.imageID
+    ? avatarImages[profile.imageID]
+    : { uri: profile.avatarURI };
+
+  const formatDate = (dateString) => {
+    // Split the date string into components
+    const [year, month, day] = dateString.split("-");
+
+    // Return the reformatted date
+    return `${day}/${month}/${year}`;
+  };
+
+  const renderReward = ({ item }) => {
+    const height = 80;
+    const width = 80;
+
+    return (
+      <View style={styles.rewardAnimation}>
+        <LottieView
+          source={getContentByReward(item.reward)}
+          style={{ width: width, height: height }}
+          autoPlay={true}
+          loop={false}
+        />
+        <Text style={[styles.rewardText, { alignSelf: "center" }]}>
+          {item.reward}
+        </Text>
+        <View style={{ flexDirection: "row", alignSelf: "center" }}>
+          <Text style={[styles.rewardText, { alignSelf: "center" }]}>
+            Price: {item.price}{" "}
+          </Text>
+          <Animatable.View
+            animation="swing"
+            duration={1500}
+            iterationCount="infinite"
+            style={[styles.coinStyle, { height: 20, width: 20 }]}
+          >
+            <Text style={[styles.rewardText, { alignSelf: "center" }]}>$</Text>
+          </Animatable.View>
+        </View>
+      </View>
+    );
+  };
+
+  return (
+    <ImageBackground
+      style={styles.container}
+      source={require("../assets/backgrounds/pattern_2.png")}
+      resizeMode="cover"
+      imageStyle={{ width: "100%", opacity: 0.2 }} // Adjust opacity here
+    >
+      <Text style={styles.boldText}>My Profile:</Text>
+      <ImageBackground
+        source={require("../assets/backgrounds/pattern_1.png")}
+        resizeMode="stretch"
+        imageStyle={{ width: "115%", opacity: 0.3 }} // Adjust opacity here
+        style={[
+          styles.profileContainer,
+          {
+            backgroundColor:
+              profile.gender === "female" ? "#FFE5E1" : "#9EF4E6",
+          },
+        ]}
+      >
+        <Image source={profileImage} style={styles.avatarImage} />
+        <View style={styles.detailsContainer}>
+          <Text style={styles.semiBoldText}>{profile.name}</Text>
+          <Text style={styles.semiBoldText}>{familyRole}</Text>
+          <Text style={styles.semiBoldText}>
+            {formatDate(profile.birth_day)}
+          </Text>
+          {!parental && (
+            <View style={{ flexDirection: "row" }}>
+              <Text style={styles.semiBoldText}>Points: </Text>
+              <Animatable.View
+                animation="swing"
+                duration={1500}
+                iterationCount="infinite"
+              >
+                <View style={styles.coinStyle}>
+                  <Text style={styles.semiBoldText}>{profile.points}</Text>
+                </View>
+              </Animatable.View>
+            </View>
+          )}
+        </View>
+      </ImageBackground>
+      <View style={{ height: 8 }} />
+      {!parental && (
+        <View style={styles.achievementsContainer}>
+          <Text style={[styles.boldText, { fontSize: calculateFontSize(25) }]}>
+            My Achievements:
+          </Text>
+          <View
+            style={{ height: 2, backgroundColor: "#555", marginBottom: 20 }}
+          />
+          <FlatList
+            data={profile.rewards}
+            renderItem={renderReward}
+            keyExtractor={(item) => String(item.id)}
+            numColumns={4} // Three avatars per row
+            contentContainerStyle={styles.rewardList}
+            ItemSeparatorComponent={() => (
+              <View
+                style={{
+                  height: 14,
+                  marginHorizontal: 10,
+                }}
+              />
+            )}
+          />
+        </View>
+      )}
+      {!parental && (
+        <TouchableOpacity style={styles.dailyButton}>
+          <Text style={styles.boldText}>Daily Login!</Text>
+        </TouchableOpacity>
+      )}
+    </ImageBackground>
+  );
+};
+
+export default ProfileScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#E4F1F4",
+    padding: "2",
+  },
+  profileContainer: {
+    flexDirection: "row",
+    padding: 20,
+    elevation: 10,
+    width: "90%",
+    alignSelf: "center",
+    marginTop: 10,
+    borderRadius: 10,
+  },
+  avatarImage: {
+    height: 145,
+    width: 145,
+    alignSelf: "flex-start",
+    borderWidth: 2,
+    marginTop: 3,
+  },
+  detailsContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  semiBoldText: {
+    fontFamily: "Fredoka-Medium",
+    fontSize: calculateFontSize(20),
+    marginTop: 3,
+  },
+  coinStyle: {
+    backgroundColor: "#F3C623",
+    borderRadius: 50,
+    borderColor: "black",
+    borderWidth: 2,
+    width: 35,
+    height: 35,
+    alignContent: "center",
+    alignItems: "center",
+  },
+  boldText: {
+    fontFamily: "Fredoka-Bold",
+    fontSize: calculateFontSize(30),
+    textAlign: "center",
+    color: "#333",
+  },
+  rewardList: {},
+  rewardText: {
+    fontFamily: "Fredoka-SemiBold",
+    fontSize: calculateFontSize(14),
+  },
+  rewardAnimation: {
+    backgroundColor: "white",
+    padding: 5,
+    marginRight: 4,
+    marginLeft: 4,
+    elevation: 8,
+    borderRadius: 12,
+  },
+  achievementsContainer: {
+    marginTop: 20,
+    alignSelf: "center",
+    maxHeight: 400,
+    backgroundColor: "rgba(255, 255, 255, 0.57)", // Adjust the color and transparency
+    padding: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+  },
+  dailyButton: {
+    marginTop: 20,
+    backgroundColor: "rgba(164, 220, 116, 0.88)", // Adjust the color and transparency
+    padding: 20,
+    width: "70%",
+    alignSelf: "center",
+    borderRadius: 30,
+    borderWidth: 3,
+    elevation: 10,
+  },
+});

@@ -9,6 +9,7 @@ import LoginScreen from "../src/screens/LoginScreen";
 import SignUpScreen from "../src/screens/SignUpScreen";
 import Home from "../src/screens/Home";
 import SelectProfileScreen from "../src/screens/SelectProfileScreen";
+import ProfileScreen from "../src/screens/ProfileScreen"
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AntDesign } from "@expo/vector-icons";
@@ -33,6 +34,8 @@ function TabNavigator({route}) {
           iconName = focused ? require('../src/assets/animations/tab/home-focused.json') : require('../src/assets/animations/tab/home.json') ;
         } else if (route.name === "RewardsScreen") {
           iconName = focused ? require('../src/assets/animations/tab/reward-focused.json')  : require('../src/assets/animations/tab/reward.json') ;
+        }else if(route.name==='ProfileScreen'){
+          iconName = focused ? require('../src/assets/animations/tab/profile-focused.json')  : require('../src/assets/animations/tab/profile.json') ;
         }
         console.log(iconName)
         return <LottieIcon source={iconName} />;
@@ -47,7 +50,7 @@ function TabNavigator({route}) {
               color: focused ? "#000" : "#777", // Change the color based on focus
             }}
           >
-            {route.name === "Home" ? "Home" : "Rewards"}
+            {route.name === "Home" ? "Home" : route.name==="ProfileScreen"? "Profile" : "Rewards"}
           </Text>
         );
       },
@@ -55,7 +58,7 @@ function TabNavigator({route}) {
       tabBarInactiveTintColor: "#777", // Inactive icon and label color
       headerShown: false,
     })}>
-      
+      <Tab.Screen name="ProfileScreen" component={ProfileScreen}/>
       <Tab.Screen name="Home" component={Home} initialParams={route.params} />
       {/* <Tab.Screen name="NewScreen" component={NewScreen} initialParams={route.params}  /> */}
       {/* <Tab.Screen name="SelectProfileScreen" component={SelectProfileScreen}/> */}

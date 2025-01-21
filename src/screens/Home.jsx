@@ -140,7 +140,7 @@ const Home = ({ navigation }) => {
       imageStyle={{ opacity: 0.2 }} // Adjust opacity here
     >
       <View style={{ marginTop: "5%", width: "90%", height: "10%" }}>
-        <ProfileBar profile={profile} />
+        <ProfileBar profile={profile} points={profile.points} />
       </View>
       {showModal && parental && (
         <CreateTask
