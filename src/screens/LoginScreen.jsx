@@ -75,6 +75,7 @@ const LoginScreen = () => {
               profiles: userData.profiles || [],
               tasks: userData.tasks || [],
               rewards: userData.rewards || [],
+              target: userData.target || {},
             })
           );
 

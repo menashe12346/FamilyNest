@@ -37,12 +37,11 @@ const CreateReward = ({ show, setShowModal, reward, setReward }) => {
     if (validateInputs()) {
       try {
         const updatedReward = {
-          ...selectedReward,
+          reward: selectedReward.reward,
+          id: selectedReward.id,
           price: price, // Add the price property
           amount: amount, // Add the amount property
         };
-
-        console.log("Updated Reward (before state update):", updatedReward);
 
         setReward(updatedReward);
 

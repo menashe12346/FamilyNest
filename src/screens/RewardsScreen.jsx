@@ -15,9 +15,16 @@ import { calculateFontSize } from "../utils/FontUtils";
 import { useState, useEffect, useRef } from "react";
 import CreateReward from "../components/CreateReward";
 import { FlatList } from "react-native-gesture-handler";
-import { rewardsOptions } from "../utils/RewardUtils";
+import { rewardsOptions, getContentByReward } from "../utils/RewardUtils";
 import CreateTargets from "../components/CreateTargets";
 import * as Animatable from "react-native-animatable";
+import {
+  setReduxRewards,
+  updateReduxReward,
+  setReduxTarget,
+  updateReduxTarget,
+} from "../Redux/userSlice";
+import { uploadUserData } from "../utils/UploadData";
 
 const RewardsScreen = () => {
   const { width, height } = Dimensions.get("screen");
@@ -28,11 +35,12 @@ const RewardsScreen = () => {
 
   console.log("REWARDS LIST USER", user);
 
-  const [rewardsList, setRewardsList] = useState([]);
+  const [rewardsList, setRewardsList] = useState(
+    user.rewards.length > 0 ? user.rewards : []
+  );
   const [reward, setReward] = useState("");
-  const [target, setTarget] = useState();
+  const [target, setTarget] = useState(user.target);
 
-  console.log("reward", reward);
   const dispatch = useDispatch();
 
   const profile = getProfileById(user, selectedUser);
@@ -60,35 +68,64 @@ const RewardsScreen = () => {
   };
 
   const handlePressSetTargets = () => {
-    if (animationTargetRef.current) {
-      animationTargetRef.current.play(); // Play the animation on press
+    if (Object.keys(target).length === 0) {
+      if (animationTargetRef.current) {
+        animationTargetRef.current.play(); // Play the animation on press
+      }
+    }else{
+      alert("Target is already active");
     }
   };
 
   useEffect(() => {
     if (reward) {
-      setRewardsList((prevList) => [...prevList, reward]);
-      console.log("Reward added to list:", reward);
+      const updatedReward = {
+        ...reward,
+        reward_id: rewardsList.length + 1,
+      };
+      const newRewardsList = [...rewardsList, updatedReward];
+      setRewardsList(newRewardsList);
+
+      const uploadRewards = async () => {
+        try {
+          await uploadUserData(user.uid, { rewards: newRewardsList });
+          dispatch(setReduxRewards(newRewardsList));
+        } catch (error) {
+          console.error("Failed to upload rewards:", error);
+        }
+      };
+
+      uploadRewards();
+      setReward("");
     }
-    setReward("");
   }, [reward]); // Runs when `reward` changes
 
   useEffect(() => {
     if (target) {
       console.log("target added");
     }
+    const newTarget = target;
+
+    const uploadTarget = async () => {
+      try {
+        await uploadUserData(user.uid, { target: newTarget });
+        dispatch(setReduxTarget(newTarget));
+      } catch (error) {
+        console.error("Failed to upload rewards:", error);
+      }
+    };
+
+    uploadTarget();
   }, [target]); // Runs when `reward` changes
 
   const renderReward = ({ item }) => {
     const height = 80;
     const width = 80;
 
-    console.log("Rendering item ", item);
-
     return (
       <TouchableOpacity style={styles.rewardAnimation}>
         <LottieView
-          source={item.content}
+          source={getContentByReward(item.reward)}
           style={{ width: width, height: height }}
           autoPlay={true}
           loop={true}
@@ -168,26 +205,28 @@ const RewardsScreen = () => {
         </View>
       )}
       <View style={{ height: 10 }} />
-      {target && <View style={[styles.rewardContainer, { alignItems: "center" }]}>
-        <Text style={[styles.rewardText, { alignSelf: "center" }]}>
-          Collective reward
-        </Text>
-        <LottieView
-          source={require("../assets/animations/trophy.json")}
-          style={{ alignSelf: "center", width: 100, height: 100 }}
-          autoPlay={true}
-          loop={true}
-        />
-        <Text style={[styles.rewardText, { alignSelf: "center" }]}>
-          {target.reward}
-        </Text>
-        <Text style={[styles.rewardText, { alignSelf: "center" }]}>
-          {target.target} tasks
-        </Text>
-      </View>}
+      {Object.keys(target).length !== 0 && (
+        <View style={[styles.rewardContainer, { alignItems: "center" }]}>
+          <Text style={[styles.rewardText, { alignSelf: "center" }]}>
+            Collective reward
+          </Text>
+          <LottieView
+            source={require("../assets/animations/trophy.json")}
+            style={{ alignSelf: "center", width: 100, height: 100 }}
+            autoPlay={true}
+            loop={true}
+          />
+          <Text style={[styles.rewardText, { alignSelf: "center" }]}>
+            {target.reward}
+          </Text>
+          <Text style={[styles.rewardText, { alignSelf: "center" }]}>
+            {target.target} tasks
+          </Text>
+        </View>
+      )}
       <View style={{ height: 10 }} />
       <FlatList
-        data={rewardsList}
+        data={rewardsList.filter((item) => item.amount > 0)}
         renderItem={renderReward}
         keyExtractor={(item) => String(item.id)}
         numColumns={4} // Three avatars per row

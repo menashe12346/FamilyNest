@@ -9,7 +9,6 @@ import LoginScreen from "../src/screens/LoginScreen";
 import SignUpScreen from "../src/screens/SignUpScreen";
 import Home from "../src/screens/Home";
 import SelectProfileScreen from "../src/screens/SelectProfileScreen";
-import NewScreen from "../src/screens/NewScreen";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AntDesign } from "@expo/vector-icons";

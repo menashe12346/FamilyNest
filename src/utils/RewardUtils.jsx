@@ -11,3 +11,8 @@ export const rewardsOptions = [
     { id: 10, reward: 'Video game', content: require('../assets/animations/rewards/video-games.json') },
     { id: 11, reward: 'Mystery box', content: require('../assets/animations/rewards/box.json') }
 ];
+
+export const getContentByReward = (rewardName) => {
+    const rewardItem = rewardsOptions.find(item => item.reward === rewardName);
+    return rewardItem ? rewardItem.content : null; // Return content or null if not found
+  };
