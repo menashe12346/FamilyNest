@@ -16,3 +16,5 @@ export const getContentByReward = (rewardName) => {
     const rewardItem = rewardsOptions.find(item => item.reward === rewardName);
     return rewardItem ? rewardItem.content : null; // Return content or null if not found
   };
+
+  

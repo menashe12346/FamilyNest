@@ -24,8 +24,13 @@ import {
   updateReduxReward,
   setReduxTarget,
   updateReduxTarget,
+  getReduxRewards,
+  getReduxProfiles,
 } from "../Redux/userSlice";
 import { uploadUserData } from "../utils/UploadData";
+import { updateProfile } from "firebase/auth";
+import { selectRewards, selectProfiles } from "../Redux/userSelectors";
+import { updateProfileAndRewards } from "../utils/UploadData";
 
 const RewardsScreen = () => {
   const { width, height } = Dimensions.get("screen");
@@ -87,14 +92,58 @@ const RewardsScreen = () => {
     setPurchaseModal(true);
   };
 
-  const handleCancelPurchase =()=>{
-    setPurchaseModal(false)
-  }
+  const handleCancelPurchase = () => {
+    setPurchaseModal(false);
+  };
 
-  const handlePurchase =()=>{
-    console.log("Purchasing...")
-    setPurchaseModal(false)
-  }
+  const handlePurchase = async () => {
+    if (profile.points >= selectedReward.price) {
+      console.log("Purchasing...");
+  
+      // Update the amount of the selected reward
+      const updatedReward = {
+        ...selectedReward,
+        amount: selectedReward.amount - 1,
+      };
+  
+      // Create a new reward object for the profile's rewards list
+      const newReward = {
+        ...selectedReward,
+        amount: 1,
+        date: new Date().toDateString(), // Correct the date method call
+      };
+  
+      // Add the new reward to the profile's rewards
+      const updatedProfileRewards = [...profile.rewards, newReward];
+  
+      // Update the profile with the new reward and points deduction
+      const updatedProfile = {
+        ...profile,
+        rewards: updatedProfileRewards,
+        points: profile.points - selectedReward.price, // Fix reward price reference
+      };
+
+      console.log("updatedPointsNan",updateProfile.points)
+  
+      try {
+        // Pass the updated profile and reward to update function
+        const updatedData = await updateProfileAndRewards(user.uid, updatedProfile, updatedReward);
+  
+        if (updatedData) {
+          // Update Redux state manually after Firebase update
+          dispatch(updateProfile(updatedProfile)); // Ensure you dispatch the correct updatedProfile
+          dispatch(updateReduxReward(updatedReward)); // Ensure the reward is correctly dispatched
+        }
+      } catch (error) {
+        console.error("Error updating profile and rewards:", error);
+      }
+    } else {
+      alert("Not enough points yet.");
+    }
+  
+    // Close the purchase modal
+    setPurchaseModal(false);
+  };
 
   useEffect(() => {
     if (reward) {
@@ -257,8 +306,7 @@ const RewardsScreen = () => {
         ItemSeparatorComponent={() => (
           <View
             style={{
-              height: 2,
-              backgroundColor: "#aaa",
+              height: 14,
               marginHorizontal: 10,
             }}
           />
@@ -291,9 +339,11 @@ const RewardsScreen = () => {
               <Text style={[styles.rewardText, { alignSelf: "center" }]}>
                 {selectedReward.reward}
               </Text>
-              <View style={{flexDirection:'row',justifyContent:'center'}}>
-                <TouchableOpacity style={styles.purchaseButtons}
-                onPress={handlePurchase}>
+              <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <TouchableOpacity
+                  style={styles.purchaseButtons}
+                  onPress={handlePurchase}
+                >
                   <Text style={[styles.rewardText, { marginTop: 4 }]}>
                     Purchase{" "}
                   </Text>
@@ -312,8 +362,10 @@ const RewardsScreen = () => {
                     {selectedReward.price}
                   </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.purchaseButtons}
-                onPress={handleCancelPurchase}>
+                <TouchableOpacity
+                  style={styles.purchaseButtons}
+                  onPress={handleCancelPurchase}
+                >
                   <Text style={[styles.rewardText, { marginTop: 4 }]}>
                     Cancel
                   </Text>

@@ -300,9 +300,9 @@ const TaskScreen = ({ navigation, route }) => {
           if (profileIndex !== -1) {
             profiles[profileIndex].points += rewardPoints;
 
-            await userDocRef.update({ tasks, profiles });
-
             const updatedTask = { ...task, status: "COMPLETED", endTime: null };
+
+            await userDocRef.update({ tasks, profiles });
             dispatch(updateReduxTask(updatedTask));
             setTask(updatedTask);
 
