@@ -16,32 +16,49 @@ const CreateReward = ({ show, setShowModal, reward, setReward }) => {
   const [price, setPrice] = useState();
   const [amount, setAmount] = useState(0);
 
+  const validateInputs = () => {
+    if (!selectedReward || selectedReward.id === 12) {
+      alert("Please select reward");
+      return false;
+    }
+    if (!price || isNaN(price) || price <= 0) {
+      alert("Please enter a valid price.");
+      return false;
+    }
+    if (!amount || isNaN(amount) || amount <= 0) {
+      alert("Please enter a valid amount.");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async () => {
     console.log("Creating Reward");
+    if (validateInputs()) {
+      try {
+        const updatedReward = {
+          ...selectedReward,
+          price: price, // Add the price property
+          amount: amount, // Add the amount property
+        };
 
-    try {
-      const updatedReward = {
-        ...selectedReward,
-        price: price, // Add the price property
-        amount: amount, // Add the amount property
-      };
+        console.log("Updated Reward (before state update):", updatedReward);
 
-      console.log("Updated Reward (before state update):", updatedReward);
+        setReward(updatedReward);
 
-      setReward(updatedReward);
-
-      console.log("Reward state update triggered");
-    } catch (error) {
-      console.error("Error updating reward:", error);
+        console.log("Reward state update triggered");
+      } catch (error) {
+        console.error("Error updating reward:", error);
+      }
+      setAmount(0);
+      setPrice();
+      setSelectedReward({
+        id: 12,
+        reward: "Present",
+        content: require("../assets/animations/rewards/present.json"),
+      });
+      setShowModal(false);
     }
-    setAmount(0);
-    setPrice();
-    setSelectedReward({
-      id: 12,
-      reward: "Present",
-      content: require("../assets/animations/rewards/present.json"),
-    });
-    setShowModal(false);
   };
 
   const handleCancel = async () => {

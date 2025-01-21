@@ -93,8 +93,8 @@ const RewardsScreen = () => {
           autoPlay={true}
           loop={true}
         />
-        <Text style={styles.rewardText}>{item.reward}</Text>
-        <View style={{ flexDirection: "row", alignContent: "center" }}>
+        <Text style={[styles.rewardText,{alignSelf:'center'}]}>{item.reward}</Text>
+        <View style={{ flexDirection: "row", alignSelf: "center" }}>
           <Animatable.View
             animation="swing"
             duration={1500}
@@ -103,7 +103,7 @@ const RewardsScreen = () => {
           >
             <Text style={[styles.rewardText, { alignSelf: "center" }]}>$</Text>
           </Animatable.View>
-          <Text style={styles.rewardText}>{item.price}</Text>
+          <Text style={[styles.rewardText,{marginTop:4}]}>{" "}{item.price}</Text>
         </View>
       </TouchableOpacity>
     );
