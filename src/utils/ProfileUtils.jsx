@@ -21,6 +21,9 @@ export const CreateNewProfile = ({id,role,gender,name,birth_day,avatarURI,passke
         passkey:passkey,
         points:0,
         rewards:[],
+        streak:0,
+        latest_daily_login:'',
+        tasks_completed:[],
     }
 }
 
