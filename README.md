@@ -7,8 +7,6 @@
 ## Features
 
 - **Task Management:** Assign and manage family tasks seamlessly.
-- **Shared Calendar:** Stay on top of important events with a shared family calendar.
-- **Reminders & Notifications:** Get reminders for tasks and events to ensure nothing is missed.
 - **User-Friendly Interface:** Intuitive design for all family members.
 - **Cross-Platform:** Works on both iOS and Android devices.
 
