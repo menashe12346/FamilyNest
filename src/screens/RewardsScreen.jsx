@@ -90,6 +90,7 @@ const RewardsScreen = () => {
     }
   };
 
+  //Filter to render only Active tasks
   useEffect(() => {
     setFilteredRewards(rewardsList.filter((item) => item.status === "ACTIVE"));
   }, [rewardsList]);
@@ -112,6 +113,7 @@ const RewardsScreen = () => {
     setPurchasedAnimation(false);
   };
 
+  //Purchase function
   const handlePurchase = async () => {
     if (profile.points >= selectedReward.price) {
       console.log("Purchasing...");
@@ -179,6 +181,7 @@ const RewardsScreen = () => {
     }
   };
 
+  //after creation reward added to the list
   useEffect(() => {
     if (reward) {
       const updatedReward = {
@@ -273,7 +276,7 @@ const RewardsScreen = () => {
           position: "absolute",
         }}
         autoPlay={true}
-        loop={false}
+        loop={true}
         speed={0.35}
       />
       <View style={{ marginTop: "5%", width: "90%", height: "10%" }}>
