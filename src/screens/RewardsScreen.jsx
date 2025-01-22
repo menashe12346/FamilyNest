@@ -33,6 +33,7 @@ import { uploadUserData } from "../utils/UploadData";
 import { updateProfile } from "firebase/auth";
 import { selectRewards, selectProfiles } from "../Redux/userSelectors";
 import { updateProfileAndRewards } from "../utils/UploadData";
+import * as Progress from 'react-native-progress';
 
 const RewardsScreen = () => {
   const { width, height } = Dimensions.get("screen");
@@ -332,6 +333,7 @@ const RewardsScreen = () => {
           <Text style={[styles.rewardText, { alignSelf: "center" }]}>
             {target.target} tasks
           </Text>
+          <Progress.Bar progress={0.3} width={200} height={12}/>
         </View>
       )}
       <View style={{ height: 10 }} />
