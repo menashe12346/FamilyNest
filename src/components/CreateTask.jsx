@@ -123,7 +123,7 @@ const CreateTask = ({ showModal, setShowModal, user, profile ,task,setNewTask })
             }
             multiline={true} // Allows the input to be multiline
             numberOfLines={5} // Set the number of lines that should be visible
-            maxLength={195} // Limit the number of characters that can be entered
+            maxLength={200} // Limit the number of characters that can be entered
             onChangeText={setDescription} // Handle text input
             value={description} // Bind the text state value
           />
@@ -135,7 +135,7 @@ const CreateTask = ({ showModal, setShowModal, user, profile ,task,setNewTask })
             textAlign: "right",
           }}
         >
-          {Math.ceil(description.length / 39)}/5 lines
+          {description.length}/200
         </Text>
         <View
           style={{

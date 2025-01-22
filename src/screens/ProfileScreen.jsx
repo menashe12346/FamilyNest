@@ -6,6 +6,7 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,8 +19,14 @@ import { getContentByReward } from "../utils/RewardUtils";
 import { setReduxProfiles } from "../Redux/userSlice";
 import { firebase } from "../../firebase";
 import { fetchUserData } from "../utils/FetchData";
+import { BarChart } from "react-native-chart-kit";
+import { chartConfig } from "../utils/ChartUtils";
+import { Dimensions } from "react-native";
+import { getStartAndEndOfWeek } from "../utils/TimeUtils";
 
 const ProfileScreen = () => {
+  const screenWidth = Dimensions.get("window").width;
+
   const user = useSelector((state) => state.user.user);
   const selectedUser = useSelector(
     (state) => state.selectedProfile.selectedProfileId
@@ -50,6 +57,27 @@ const ProfileScreen = () => {
     updated_profile.latest_daily_login !== formattedToday
   );
 
+
+  const [childProfiles,setChildProfiles]= useState(user.profiles.filter((profile)=> profile.role==='child'))
+  const { startOfWeek, endOfWeek } = getStartAndEndOfWeek();
+  const filteredData = childProfiles.map((profile) => ({
+    name: profile.name,
+    tasksThisWeek: profile.tasks_completed.filter((task) => {
+      const taskDate = new Date(task.completed_at);
+      return taskDate >= startOfWeek && taskDate <= endOfWeek;
+    }).length,
+  }));
+
+  const data = {
+    labels: filteredData.map((profile) => profile.name),
+    datasets: [
+      {
+        data: filteredData.map((profile) => profile.tasksThisWeek),
+      },
+    ],
+  };
+
+
   const confettiAnimationRef = useRef(null);
   const [confettiPlay, setConfettiPlay] = useState(false);
 
@@ -58,7 +86,7 @@ const ProfileScreen = () => {
     const interval = setInterval(() => {
       fetchUserData(user.uid, dispatch);
       updated_profile = getProfileById(user, selectedUser);
-      setDailyAvailable(updated_profile.latest_daily_login !== formattedToday)
+      setDailyAvailable(updated_profile.latest_daily_login !== formattedToday);
     }, 15000); // 0.5 minute
 
     // Cleanup the interval when the component unmounts
@@ -140,6 +168,11 @@ const ProfileScreen = () => {
     }
   };
 
+
+  const formatStartEndDate = (date) => {
+    return new Intl.DateTimeFormat("en-GB").format(date); // en-GB formats to DD/MM/YYYY
+  };
+
   const renderReward = ({ item }) => {
     const height = 80;
     const width = 80;
@@ -179,109 +212,138 @@ const ProfileScreen = () => {
       resizeMode="cover"
       imageStyle={{ width: "100%", opacity: 0.2 }} // Adjust opacity here
     >
-      <Text style={styles.boldText}>My Profile:</Text>
-      <ImageBackground
-        source={require("../assets/backgrounds/pattern_1.png")}
-        resizeMode="stretch"
-        imageStyle={{ width: "115%", opacity: 0.3 }} // Adjust opacity here
-        style={[
-          styles.profileContainer,
-          {
-            backgroundColor:
-              profile.gender === "female" ? "#FFE5E1" : "#9EF4E6",
-          },
-        ]}
-      >
-        <Image source={profileImage} style={styles.avatarImage} />
-        <View style={styles.detailsContainer}>
-          <Text style={styles.semiBoldText}>{profile.name}</Text>
-          <Text style={styles.semiBoldText}>{familyRole}</Text>
-          <Text style={styles.semiBoldText}>
-            {formatDate(profile.birth_day)}
-          </Text>
-          {!parental && (
-            <View style={{ flexDirection: "row" }}>
-              <Text style={styles.semiBoldText}>Points: </Text>
-              <Animatable.View
-                animation="swing"
-                duration={1500}
-                iterationCount="infinite"
-              >
-                <View style={styles.coinStyle}>
-                  <Text style={styles.semiBoldText}>{profile.points}</Text>
-                </View>
-              </Animatable.View>
-            </View>
-          )}
-        </View>
-      </ImageBackground>
-      <View style={{ height: 8 }} />
-      {!parental && (
-        <View style={styles.achievementsContainer}>
-          <Text style={[styles.boldText, { fontSize: calculateFontSize(25) }]}>
-            My Achievements:
-          </Text>
-          <Text
-            style={[styles.regularText, { fontSize: calculateFontSize(14) }]}
-          >
-            Tasks completed: {profile.tasks_completed.length} , Login streak:{" "}
-            {profile.streak}
-          </Text>
-          <View
-            style={{ height: 2, backgroundColor: "#555", marginBottom: 20 }}
-          />
-          <FlatList
-            data={profile.rewards}
-            renderItem={renderReward}
-            keyExtractor={(item) => String(item.id)}
-            numColumns={4} // Three avatars per row
-            contentContainerStyle={styles.rewardList}
-            ItemSeparatorComponent={() => (
-              <View
-                style={{
-                  height: 14,
-                  marginHorizontal: 10,
-                }}
-              />
-            )}
-          />
-        </View>
-      )}
-      {!parental && (
-        <TouchableOpacity
+      <ScrollView>
+        <Text style={styles.boldText}>My Profile:</Text>
+        <ImageBackground
+          source={require("../assets/backgrounds/pattern_1.png")}
+          resizeMode="stretch"
+          imageStyle={{ width: "115%", opacity: 0.3 }} // Adjust opacity here
           style={[
-            styles.dailyButton,
+            styles.profileContainer,
             {
-              backgroundColor: dailyAvailable
-                ? "rgba(164, 220, 116, 0.88)"
-                : "rgba(179, 179, 179, 0.88)",
+              backgroundColor:
+                profile.gender === "female" ? "#FFE5E1" : "#9EF4E6",
             },
           ]}
-          onPress={handleDailyLogin}
         >
-          <Text style={styles.boldText}>Daily Login!</Text>
-        </TouchableOpacity>
-      )}
-      {confettiPlay && (
-        <View style={styles.lottieContainer} pointerEvents="box-none">
-          <LottieView
-            source={require("../assets/animations/confetti-shoot.json")}
+          <Image source={profileImage} style={styles.avatarImage} />
+          <View style={styles.detailsContainer}>
+            <Text style={styles.semiBoldText}>{profile.name}</Text>
+            <Text style={styles.semiBoldText}>{familyRole}</Text>
+            <Text style={styles.semiBoldText}>
+              {formatDate(profile.birth_day)}
+            </Text>
+            {!parental && (
+              <View style={{ flexDirection: "row" }}>
+                <Text style={styles.semiBoldText}>Points: </Text>
+                <Animatable.View
+                  animation="swing"
+                  duration={1500}
+                  iterationCount="infinite"
+                >
+                  <View style={styles.coinStyle}>
+                    <Text style={styles.semiBoldText}>{profile.points}</Text>
+                  </View>
+                </Animatable.View>
+              </View>
+            )}
+          </View>
+        </ImageBackground>
+        <View style={{ height: 8 }} />
+        {!parental && (
+          <View style={styles.achievementsContainer}>
+            <Text
+              style={[styles.boldText, { fontSize: calculateFontSize(25) }]}
+            >
+              My Achievements:
+            </Text>
+            <Text
+              style={[styles.regularText, { fontSize: calculateFontSize(14) }]}
+            >
+              Tasks completed: {profile.tasks_completed.length} , Login streak:{" "}
+              {profile.streak}
+            </Text>
+            <View
+              style={{ height: 2, backgroundColor: "#555", marginBottom: 20 }}
+            />
+            <FlatList
+              data={profile.rewards}
+              renderItem={renderReward}
+              keyExtractor={(item) => String(item.id)}
+              numColumns={4} // Three avatars per row
+              contentContainerStyle={styles.rewardList}
+              ItemSeparatorComponent={() => (
+                <View
+                  style={{
+                    height: 14,
+                    marginHorizontal: 10,
+                  }}
+                />
+              )}
+            />
+          </View>
+        )}
+        {!parental && (
+          <TouchableOpacity
+            style={[
+              styles.dailyButton,
+              {
+                backgroundColor: dailyAvailable
+                  ? "rgba(164, 220, 116, 0.88)"
+                  : "rgba(179, 179, 179, 0.88)",
+              },
+            ]}
+            onPress={handleDailyLogin}
+          >
+            <Text style={styles.boldText}>Daily Login!</Text>
+          </TouchableOpacity>
+        )}
+        {confettiPlay && (
+          <View style={styles.lottieContainer} pointerEvents="box-none">
+            <LottieView
+              source={require("../assets/animations/confetti-shoot.json")}
+              style={{
+                position: "absolute",
+                top: 420,
+                left: 40,
+                width: 350,
+                height: 350,
+              }}
+              autoPlay={true}
+              loop={false}
+              speed={1}
+              pointerEvents="none" // Ensures it doesn't block touches
+              ref={confettiAnimationRef}
+              onAnimationFinish={handleConfettiShootFinish}
+            />
+          </View>
+        )}
+        <View style={{alignSelf:'center'}}>
+          <View style={{height:10}}/>
+          <Text style={[styles.semiBoldText,{textAlign:'center'}]}>Tasks completed this week{"\n"}{formatStartEndDate(startOfWeek)}-{formatStartEndDate(endOfWeek)}</Text>
+          <BarChart
             style={{
-              position: "absolute",
-              top: 420,
-              left: 40,
-              width: 350,
-              height: 350,
+              marginVertical: 8,
+              borderRadius: 16,
             }}
-            autoPlay={true}
-            loop={false}
-            speed={1}
-            pointerEvents="none" // Ensures it doesn't block touches
-            ref={confettiAnimationRef}
-            onAnimationFinish={handleConfettiShootFinish}
+            data={data}
+            width={screenWidth*0.9}
+            fromZero={true} // Ensures the y-axis starts from 0
+            yAxisLabel=""
+            yAxisSuffix=""
+            yAxisInterval={1} // Forces y-axis to use steps of 1
+            height={220}
+            chartConfig={{
+              ...chartConfig,
+              propsForBackgroundLines: {
+                strokeDasharray: "", // Optional: to make solid lines
+                strokeWidth: 1,
+              },
+            }}
+            verticalLabelRotation={0}
           />
         </View>
-      )}
+      </ScrollView>
     </ImageBackground>
   );
 };
@@ -372,7 +434,8 @@ const styles = StyleSheet.create({
     fontSize: calculateFontSize(30),
     textAlign: "center",
     color: "#333",
-  },lottieContainer: {
+  },
+  lottieContainer: {
     ...StyleSheet.absoluteFillObject, // Covers the entire screen
     justifyContent: "center",
     alignItems: "center",
