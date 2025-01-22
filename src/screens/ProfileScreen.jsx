@@ -261,7 +261,7 @@ const ProfileScreen = () => {
               style={[styles.regularText, { fontSize: calculateFontSize(14) }]}
             >
               Tasks completed: {profile.tasks_completed.length} , Login streak:{" "}
-              {profile.streak}
+              {updated_profile.streak}
             </Text>
             <View
               style={{ height: 2, backgroundColor: "#555", marginBottom: 20 }}
