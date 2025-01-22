@@ -17,6 +17,7 @@ import LottieView from "lottie-react-native";
 import { getContentByReward } from "../utils/RewardUtils";
 import { setReduxProfiles } from "../Redux/userSlice";
 import { firebase } from "../../firebase";
+import { fetchUserData } from "../utils/FetchData";
 
 const ProfileScreen = () => {
   const user = useSelector((state) => state.user.user);
