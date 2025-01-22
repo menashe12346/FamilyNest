@@ -168,7 +168,8 @@ const SelectProfileScreen = ({navigation}) => {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <Text style={styles.title}>Welcome back {user.familyName}!</Text>
+      <Text style={[styles.title,{marginTop:20}]}>Hello {user.familyName} family!</Text>
+      <Text style={[styles.regularText,{marginTop:10}]}>Login to your profile:</Text>
       <FlatList
         numColumns={2}
         data={profiles}
@@ -300,15 +301,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 40,
     color: '#542F2F',
-    marginBottom: 20, 
     fontFamily: 'Fredoka-Bold'
+  },regularText:{
+    fontSize: 22,
+    color: '#542F2F',
+    fontFamily: 'Fredoka-Regular'
   },
   flatListContainer: {
     paddingHorizontal: 16,
     marginBottom: 20,
+    marginTop:45,
+    alignContent:'center'
   },
   profileContainer: {
     alignItems: 'center',

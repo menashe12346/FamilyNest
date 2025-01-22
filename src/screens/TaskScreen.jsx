@@ -187,8 +187,10 @@ const TaskScreen = ({ navigation, route }) => {
           // עדכון Redux
           dispatch(updateReduxTask(updatedTask));
           setTask(updatedTask);
-          await setNewMessage(`Time Extended by 1 hour, new deadline is: ${updatedEndTime.toISOString()}`);
-          await handleSendMessage
+          await setNewMessage(
+            `Time Extended by 1 hour, new deadline is: ${updatedEndTime.toISOString()}`
+          );
+          await handleSendMessage;
 
           console.log("Task updated successfully in Firestore and Redux.");
         } else {
@@ -294,11 +296,17 @@ const TaskScreen = ({ navigation, route }) => {
           const rewardPoints = tasks[taskIndex].reward;
 
           tasks[taskIndex].status = "COMPLETED"; // שינוי ל-"Completed"
-            tasks[taskIndex].endTime = new Date().toISOString();
+          tasks[taskIndex].endTime = new Date().toISOString();
+
+          const completedTask={
+            id:tasks[taskIndex].id,
+            task:tasks[taskIndex].endTime
+          }
 
           const profileIndex = profiles.findIndex((p) => p.id === assignedTo);
           if (profileIndex !== -1) {
             profiles[profileIndex].points += rewardPoints;
+            profiles[profileIndex].tasks_completed.push(completedTask);
 
             const updatedTask = { ...task, status: "COMPLETED", endTime: null };
 
@@ -482,7 +490,7 @@ const TaskScreen = ({ navigation, route }) => {
             <View style={styles.lineSeparator} />
             <ScrollView>
               <View style={{ alignItems: "center", flexDirection: "row" }}>
-                <Text style={styles.semiBoldText}>Assigned to:{" "}</Text>
+                <Text style={styles.semiBoldText}>Assigned to: </Text>
                 <View style={styles.roundedImage}>
                   <Image
                     style={{ resizeMode: "cover", height: 30, width: 30 }}
@@ -503,13 +511,13 @@ const TaskScreen = ({ navigation, route }) => {
                 )}
                 {task.status === "COMPLETED" && (
                   <Badge
-                  badgeStyle={{
-                    backgroundColor: '#98D8EF',
-                    height: 30,
-                    minWidth: 30, // Ensure enough space for text
-                    paddingHorizontal: 10, // Add padding for text
-                    borderRadius: 15, // Ensure rounded corners
-                  }}
+                    badgeStyle={{
+                      backgroundColor: "#98D8EF",
+                      height: 30,
+                      minWidth: 30, // Ensure enough space for text
+                      paddingHorizontal: 10, // Add padding for text
+                      borderRadius: 15, // Ensure rounded corners
+                    }}
                     status="primary"
                     value={"Completed"}
                     textStyle={{
@@ -517,12 +525,12 @@ const TaskScreen = ({ navigation, route }) => {
                       fontFamily: "Fredoka-Bold",
                       color: "#000000",
                     }}
-                    containerStyle={{marginStart: 30 }}
+                    containerStyle={{ marginStart: 30 }}
                   />
                 )}
               </View>
               <View style={styles.separator} />
-              <View style={{alignItems:'center',flexDirection:'row'}}>
+              <View style={{ alignItems: "center", flexDirection: "row" }}>
                 <Text style={styles.semiBoldText}>Type: </Text>
                 <Text style={styles.lightText}>{taskTypes[task.type]}</Text>
               </View>
@@ -616,9 +624,7 @@ const TaskScreen = ({ navigation, route }) => {
                       },
                     ]}
                   >
-                    <Text style={[styles.messageText]}>
-                      {name}:{" "}
-                    </Text>
+                    <Text style={[styles.messageText]}>{name}: </Text>
                     <View style={{ flexDirection: "column" }}>
                       <Text style={styles.messageContext}>{item.text}</Text>
                       <Text style={styles.timestampText}>
@@ -745,11 +751,13 @@ const styles = StyleSheet.create({
     fontSize: calculateFontSize(14),
     fontFamily: "Fredoka-SemiBold",
     color: "#000",
-  },messageContext:{
+  },
+  messageContext: {
     fontSize: calculateFontSize(14),
     fontFamily: "Fredoka-Regular",
     color: "#000",
-  },timestampText: {
+  },
+  timestampText: {
     fontSize: 12,
     color: "#555",
     textAlign: "right",

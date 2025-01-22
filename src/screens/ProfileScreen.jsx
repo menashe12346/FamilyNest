@@ -15,6 +15,8 @@ import { calculateFontSize } from "../utils/FontUtils";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
 import { getContentByReward } from "../utils/RewardUtils";
+import { setReduxProfiles } from "../Redux/userSlice";
+import { firebase } from "../../firebase";
 
 const ProfileScreen = () => {
   const user = useSelector((state) => state.user.user);
@@ -36,6 +38,60 @@ const ProfileScreen = () => {
 
     // Return the reformatted date
     return `${day}/${month}/${year}`;
+  };
+
+  const handleDailyLogin = async () => {
+    console.log("Daily login clicked");
+
+    try {
+      const userDocRef = firebase.firestore().collection("users").doc(user.uid);
+
+      const doc = await userDocRef.get();
+      if (doc.exists) {
+        const data = doc.data();
+        const tasks = data.tasks;
+        const profiles = data.profiles;
+
+        const profileIndex = profiles.findIndex((p) => p.id === profile.id);
+        if (profileIndex !== -1) {
+          const today = new Date();
+          // Format the date to YYYY-MM-DD
+          const formattedToday = today.toISOString().slice(0, 10);
+
+          const yesterday = new Date(today);
+          yesterday.setDate(today.getDate() - 1);
+
+          // Format yesterday's date to YYYY-MM-DD
+          const formattedYesterday = yesterday.toISOString().slice(0, 10);
+
+          const onStreak = profiles[profileIndex].latest_daily_login === formattedYesterday? true:false
+
+          profiles[profileIndex].streak= onStreak? profiles[profileIndex].streak+1:1
+          profiles[profileIndex].latest_daily_login = formattedToday;
+          profiles[profileIndex].points += 10
+
+          await userDocRef.update({ profiles });
+
+          const updatedProfiles = [...user.profiles];
+
+          updatedProfiles[profileIndex] = {
+            ...updatedProfiles[profileIndex],
+            points: profiles[profileIndex].points,
+          };
+          dispatch(setReduxProfiles(updatedProfiles));
+
+          console.log(
+            `Daily login collected streak is now ${profiles[profileIndex].streak} and latest date collected is ${profiles[profileIndex].latest_daily_login}.`
+          );
+        } else {
+          console.error("Assigned profile not found.");
+        }
+      } else {
+        console.error("User document not found.");
+      }
+    } catch (error) {
+      console.error("Error approving task:", error);
+    }
   };
 
   const renderReward = ({ item }) => {
@@ -119,6 +175,11 @@ const ProfileScreen = () => {
           <Text style={[styles.boldText, { fontSize: calculateFontSize(25) }]}>
             My Achievements:
           </Text>
+          <Text
+            style={[styles.regularText, { fontSize: calculateFontSize(14) }]}
+          >
+            Tasks completed: {profile.tasks_completed.length}
+          </Text>
           <View
             style={{ height: 2, backgroundColor: "#555", marginBottom: 20 }}
           />
@@ -140,7 +201,7 @@ const ProfileScreen = () => {
         </View>
       )}
       {!parental && (
-        <TouchableOpacity style={styles.dailyButton}>
+        <TouchableOpacity style={styles.dailyButton} onPress={handleDailyLogin}>
           <Text style={styles.boldText}>Daily Login!</Text>
         </TouchableOpacity>
       )}
@@ -228,5 +289,11 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderWidth: 3,
     elevation: 10,
+  },
+  regularText: {
+    fontFamily: "Fredoka-Regular",
+    fontSize: calculateFontSize(30),
+    textAlign: "center",
+    color: "#333",
   },
 });
