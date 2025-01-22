@@ -40,7 +40,6 @@ const SelectProfileScreen = ({navigation}) => {
     getProfileById(user,selectedUser).role === 'parent' : true);
 
   const [profiles,setProfiles] = useState(user.profiles)
-  console.log("Available profiles",profiles)
   const [newProfileName, setNewProfileName] = useState('');
   const [birthDate, setBirthDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);

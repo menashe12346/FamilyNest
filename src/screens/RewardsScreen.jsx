@@ -118,11 +118,11 @@ const RewardsScreen = () => {
 
   const formatDate = (dateString) => {
     // Extract only the date portion (YYYY-MM-DD)
-    const dateOnly = dateString.split('T')[0]; // Get the part before the 'T'
-  
+    const dateOnly = dateString.split("T")[0]; // Get the part before the 'T'
+
     // Split the date string into components (year, month, day)
     const [year, month, day] = dateOnly.split("-");
-  
+
     // Return the reformatted date
     return `${day}/${month}/${year}`;
   };
@@ -158,10 +158,6 @@ const RewardsScreen = () => {
             );
           });
 
-          console.log(
-            "Completed tasks for this profile:",
-            completedTasks.length
-          );
           count += completedTasks.length; // Increment count by the number of completed tasks
         }
       });
@@ -282,7 +278,6 @@ const RewardsScreen = () => {
     uploadTarget();
   }, [target]); // Runs when `reward` changes
 
-  console.log(rewardsList);
   const renderReward = ({ item }) => {
     const height = 80;
     const width = 80;
@@ -377,8 +372,13 @@ const RewardsScreen = () => {
       {Object.keys(target).length !== 0 && (
         <View style={[styles.rewardContainer, { alignItems: "center" }]}>
           <Text style={[styles.rewardText, { alignSelf: "center" }]}>
-            Collective reward
+            {parental ? "Suggested reward:" : "Complete tasks as a family"}
           </Text>
+          {!parental && (
+            <Text style={[styles.rewardText, { alignSelf: "center" }]}>
+              to get:
+            </Text>
+          )}
           <LottieView
             source={require("../assets/animations/trophy.json")}
             style={{ alignSelf: "center", width: 100, height: 100 }}
@@ -386,18 +386,15 @@ const RewardsScreen = () => {
             loop={true}
           />
           <Text style={[styles.rewardText, { alignSelf: "center" }]}>
-            {target.reward}
+            Reward: {target.reward}
           </Text>
           <Text style={[styles.rewardText, { alignSelf: "center" }]}>
-            {target.target} tasks
+            Completed: {totalTasks}/{target.target} tasks
           </Text>
           <Text style={[styles.rewardText, { alignSelf: "center" }]}>
-            Available until:
+            Available until: {formatDate(target.deadline)}
           </Text>
-          <Text style={[styles.rewardText, { alignSelf: "center" }]}>
-            {formatDate(target.deadline)}
-          </Text>
-          <View style={{marginTop:5}}>
+          <View style={{ marginTop: 5 }}>
             <Progress.Bar
               progress={totalTasks / Number(target.target)}
               width={200}
@@ -543,7 +540,7 @@ const styles = StyleSheet.create({
   rewardText: {
     fontFamily: "Fredoka-Medium",
     alignSelf: "flex-start",
-    fontSize:calculateFontSize(14)
+    fontSize: calculateFontSize(14),
   },
   rewardAnimation: {
     backgroundColor: "white",
