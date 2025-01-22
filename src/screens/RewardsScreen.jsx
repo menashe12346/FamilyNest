@@ -34,6 +34,8 @@ import { updateProfile } from "firebase/auth";
 import { selectRewards, selectProfiles } from "../Redux/userSelectors";
 import { updateProfileAndRewards } from "../utils/UploadData";
 import * as Progress from "react-native-progress";
+import CountdownTimer from "../components/CountdownTimer";
+import { getSecondsRemaining } from "../utils/TimeUtils";
 
 const RewardsScreen = () => {
   const { width, height } = Dimensions.get("screen");
@@ -114,40 +116,61 @@ const RewardsScreen = () => {
     setPurchasedAnimation(false);
   };
 
-
+  const formatDate = (dateString) => {
+    // Extract only the date portion (YYYY-MM-DD)
+    const dateOnly = dateString.split('T')[0]; // Get the part before the 'T'
+  
+    // Split the date string into components (year, month, day)
+    const [year, month, day] = dateOnly.split("-");
+  
+    // Return the reformatted date
+    return `${day}/${month}/${year}`;
+  };
 
   const [totalTasks, setTotalTasks] = useState(0);
 
-useEffect(() => {
+  useEffect(() => {
+    // Ensure user.profiles exists and is an array
     if (user?.profiles && Array.isArray(user.profiles)) {
+      // Parse dates from user.target
       const deadlineDate = new Date(user.target?.deadline);
+      const startedDate = new Date(user.target?.started);
 
-      if (isNaN(deadlineDate)) {
-        console.error("Invalid deadline date");
+      // Check for invalid dates or inactive target
+      if (isNaN(deadlineDate) || isNaN(startedDate) || !user.target?.active) {
+        console.warn("Invalid target data or inactive target.");
         return;
       }
 
       let count = 0;
 
+      // Iterate over profiles
       user.profiles.forEach((profile) => {
         if (profile.tasks_completed && Array.isArray(profile.tasks_completed)) {
-          // Filter tasks completed before or on the deadline
+          // Filter tasks completed between startedDate and deadlineDate
           const completedTasks = profile.tasks_completed.filter((task) => {
-            console.log("Task date:", task.task); // Log task.task
-            const taskCompletionDate = new Date(task.task); // Parse the date
-            console.log("Parsed date:", taskCompletionDate); // Log parsed date
-            return taskCompletionDate <= deadlineDate;
+            const taskCompletionDate = new Date(task.completed_at); // Parse the task's completion date
+
+            // Check if the task was completed between startedDate and deadlineDate
+            return (
+              startedDate <= taskCompletionDate &&
+              taskCompletionDate <= deadlineDate
+            );
           });
-          // Increment the count by the length of filtered tasks
-          count += completedTasks.length;
+
+          console.log(
+            "Completed tasks for this profile:",
+            completedTasks.length
+          );
+          count += completedTasks.length; // Increment count by the number of completed tasks
         }
       });
 
-      console.log("Total completed tasks:", count);
-      setTotalTasks(count); // Update state
+      setTotalTasks(count); // Update state with the total task count
+    } else {
+      console.warn("User profiles not available or not an array.");
     }
-  }, [user]); // Add dependencies to ensure re-calculation if they change
-
+  }, [user]); // Recalculate when user changes
 
   //Purchase function
   const handlePurchase = async () => {
@@ -368,11 +391,20 @@ useEffect(() => {
           <Text style={[styles.rewardText, { alignSelf: "center" }]}>
             {target.target} tasks
           </Text>
-          <Progress.Bar
-            progress={totalTasks / Number(target.target)}
-            width={200}
-            height={12}
-          />
+          <Text style={[styles.rewardText, { alignSelf: "center" }]}>
+            Available until:
+          </Text>
+          <Text style={[styles.rewardText, { alignSelf: "center" }]}>
+            {formatDate(target.deadline)}
+          </Text>
+          <View style={{marginTop:5}}>
+            <Progress.Bar
+              progress={totalTasks / Number(target.target)}
+              width={200}
+              height={12}
+              color="#6200ee"
+            />
+          </View>
         </View>
       )}
       <View style={{ height: 10 }} />
@@ -511,6 +543,7 @@ const styles = StyleSheet.create({
   rewardText: {
     fontFamily: "Fredoka-Medium",
     alignSelf: "flex-start",
+    fontSize:calculateFontSize(14)
   },
   rewardAnimation: {
     backgroundColor: "white",

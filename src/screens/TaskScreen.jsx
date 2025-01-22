@@ -300,7 +300,7 @@ const TaskScreen = ({ navigation, route }) => {
 
           const completedTask={
             id:tasks[taskIndex].id,
-            task:tasks[taskIndex].endTime
+            completed_at:tasks[taskIndex].endTime
           }
 
           const profileIndex = profiles.findIndex((p) => p.id === assignedTo);
@@ -464,7 +464,7 @@ const TaskScreen = ({ navigation, route }) => {
               </View>
             </Modal>
           )}
-          <View style={{ marginTop: "2%", width: "100%", height: "8%" }}>
+          <View style={{ alignSelf:'center',marginTop: "2%",width:385}}>
             <ProfileBar profile={profile} />
           </View>
 

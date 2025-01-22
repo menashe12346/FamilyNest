@@ -31,10 +31,12 @@ const CreateTargets = ({ show, setShowModal, target, setTarget }) => {
     if (validateInputs()) {
       try {
         console.log("Set target...");
+        const startedDate= new Date().toISOString()
         setTarget({
           target: taskTarget,
           reward: targetReward,
           active: true,
+          started: startedDate,
           deadline: date.toISOString(),
         });
         console.log("Target:", target);
