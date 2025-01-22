@@ -37,6 +37,19 @@ import * as Progress from "react-native-progress";
 import CountdownTimer from "../components/CountdownTimer";
 import { getSecondsRemaining } from "../utils/TimeUtils";
 
+
+
+
+/**
+ * 
+ * @returns 
+ * 
+ * 
+ * !!! TODO TARGET COMPLETE HANDLE
+ * 
+ * 
+ */
+
 const RewardsScreen = () => {
   const { width, height } = Dimensions.get("screen");
   const user = useSelector((state) => state.user.user);
@@ -84,7 +97,8 @@ const RewardsScreen = () => {
   };
 
   const handlePressSetTargets = () => {
-    if (Object.keys(target).length === 0) {
+    console.log("TTT",target)
+    if (Object.keys(target).length === 0 || !target.active) {
       if (animationTargetRef.current) {
         animationTargetRef.current.play(); // Play the animation on press
       }
@@ -139,6 +153,10 @@ const RewardsScreen = () => {
       // Check for invalid dates or inactive target
       if (isNaN(deadlineDate) || isNaN(startedDate) || !user.target?.active) {
         console.warn("Invalid target data or inactive target.");
+        return;
+      }
+
+      if(!target.active){
         return;
       }
 
