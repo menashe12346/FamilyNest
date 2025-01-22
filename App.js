@@ -6,6 +6,7 @@ import store from './src/Redux/store';
 import * as SplashScreen from "expo-splash-screen"; // Optional for handling splash screen
 import { useFonts } from "expo-font";
 import { useDispatch, useSelector } from 'react-redux'; // Import hooks
+import Toast from "react-native-toast-message";
 
 export default function App() {
   // Load fonts
@@ -55,6 +56,7 @@ export default function App() {
     <Provider store={store}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <AppNavigator />
+        <Toast />
       </GestureHandlerRootView>
     </Provider>
   );

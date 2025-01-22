@@ -32,6 +32,7 @@ import { uploadUserData } from "../utils/UploadData";
 import { setUser } from "../Redux/userSlice";
 import { BackgroundImage } from "@rneui/base";
 import supabase, { uploadImage, getImageUrl } from "../../supabaseCleint";
+import Toast from "react-native-toast-message";
 
 const avatars = [require("../assets/avatars/avatar_1.png")];
 
@@ -185,6 +186,13 @@ const SelectProfileScreen = ({ navigation }) => {
       navigation.navigate("TabNavigator", { screen: "Home" });
     } else {
       alert("Wrong passkey!");
+      Toast.show({
+        type: "success",
+        text1: "Wrong passkey",
+        style: {
+          backgroundColor: "#dc3545", // Custom background color
+        },
+      });
     }
   };
 
@@ -388,11 +396,23 @@ const SelectProfileScreen = ({ navigation }) => {
                   secureTextEntry={true}
                   style={styles.input}
                 />
-                <View style={{padding:10,flexDirection:'row'}}>
-                  <TouchableOpacity style={[styles.buttonVerify,{backgroundColor: "#8BC34A" }]} onPress={handleVerifyPasskey}>
+                <View style={{ padding: 10, flexDirection: "row" }}>
+                  <TouchableOpacity
+                    style={[
+                      styles.buttonVerify,
+                      { backgroundColor: "#8BC34A" },
+                    ]}
+                    onPress={handleVerifyPasskey}
+                  >
                     <Text>Sign</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={[styles.buttonVerify,{backgroundColor: "#FFCDD2" }]} onPress={handleCancelPasskey}>
+                  <TouchableOpacity
+                    style={[
+                      styles.buttonVerify,
+                      { backgroundColor: "#FFCDD2" },
+                    ]}
+                    onPress={handleCancelPasskey}
+                  >
                     <Text>Cancel</Text>
                   </TouchableOpacity>
                 </View>
@@ -716,8 +736,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   passkeyModal: {
-    padding:30,
-    flex:1,
+    padding: 30,
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
@@ -731,15 +751,16 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth:3
-  },buttonVerify:{
+    borderWidth: 3,
+  },
+  buttonVerify: {
     color: "white",
     borderRadius: 7,
     height: 30,
     width: 50,
     borderColor: "black",
     borderWidth: 2,
-    alignItems:'center',
-    marginRight:10
-  }
+    alignItems: "center",
+    marginRight: 10,
+  },
 });

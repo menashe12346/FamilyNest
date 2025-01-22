@@ -22,6 +22,7 @@ import { fetchUserData } from "../utils/FetchData";
 import { useSelector } from "react-redux";
 import { setUser } from "../Redux/userSlice";
 import LottieView from "lottie-react-native";
+import Toast from 'react-native-toast-message';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -107,6 +108,14 @@ const LoginScreen = () => {
   const handleSignIn = async () => {
     // Navigate to the NewScreen when login is pressed
     console.log("Signed User data:", user);
+
+    Toast.show({
+            type: 'success',
+            text1: 'Logged in successfully',
+            style: {
+              backgroundColor: '#28a745', // Custom background color
+            },
+          });
 
     navigation.navigate("Drawer", { userData: user });
   };

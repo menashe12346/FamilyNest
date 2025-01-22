@@ -36,16 +36,7 @@ import { updateProfileAndRewards } from "../utils/UploadData";
 import * as Progress from "react-native-progress";
 import CountdownTimer from "../components/CountdownTimer";
 import { getSecondsRemaining } from "../utils/TimeUtils";
-
-/**
- *
- * @returns
- *
- *
- * !!! TODO TARGET COMPLETE HANDLE
- *
- *
- */
+import Toast from "react-native-toast-message";
 
 const RewardsScreen = () => {
   const { width, height } = Dimensions.get("screen");
@@ -94,7 +85,7 @@ const RewardsScreen = () => {
   };
 
   const handlePressSetTargets = () => {
-    if (Object.keys(target).length === 0 || !target.active ||completedTarget) {
+    if (Object.keys(target).length === 0 || !target.active || completedTarget) {
       if (animationTargetRef.current) {
         animationTargetRef.current.play(); // Play the animation on press
       }
@@ -138,7 +129,9 @@ const RewardsScreen = () => {
   };
 
   const [totalTasks, setTotalTasks] = useState(0);
-  const [completedTarget,setCompletedTarget]= useState(totalTasks/Number(target.target)===1)
+  const [completedTarget, setCompletedTarget] = useState(
+    totalTasks / Number(target.target) === 1
+  );
 
   useEffect(() => {
     // Ensure user.profiles exists and is an array
@@ -178,7 +171,7 @@ const RewardsScreen = () => {
       });
 
       setTotalTasks(count); // Update state with the total task count
-      setCompletedTarget(totalTasks/Number(target.target)===1)
+      setCompletedTarget(totalTasks / Number(target.target) === 1);
     } else {
       console.warn("User profiles not available or not an array.");
     }
@@ -241,6 +234,10 @@ const RewardsScreen = () => {
       } finally {
         setPurchaseModal(false);
         setPurchasedAnimation(true);
+        Toast.show({
+          type: "success",
+          text1: "Purchase completed! 🥳",
+        });
         if (animationPurchaseRef.current) {
           animationPurchaseRef.current.play();
         }
@@ -268,6 +265,21 @@ const RewardsScreen = () => {
           dispatch(setReduxRewards(newRewardsList));
         } catch (error) {
           console.error("Failed to upload rewards:", error);
+          Toast.show({
+            type: "success",
+            text1: "Reward failed...",
+            style: {
+              backgroundColor: "#dc3545", // Custom background color
+            },
+          });
+        }finally{
+          Toast.show({
+            type: "success",
+            text1: "Reward created!!",
+            style: {
+              backgroundColor: "#dc3545", // Custom background color
+            },
+          });
         }
       };
 
@@ -288,6 +300,14 @@ const RewardsScreen = () => {
         dispatch(setReduxTarget(newTarget));
       } catch (error) {
         console.error("Failed to upload rewards:", error);
+      }finally{
+        Toast.show({
+          type: "success",
+          text1: "Target set!!!",
+          style: {
+            backgroundColor: "#dc3545", // Custom background color
+          },
+        });
       }
     };
 
@@ -401,7 +421,11 @@ const RewardsScreen = () => {
             </Text>
           )}
           <LottieView
-            source={completedTarget? require('../assets/animations/fireworks.json'):require("../assets/animations/trophy.json")}
+            source={
+              completedTarget
+                ? require("../assets/animations/fireworks.json")
+                : require("../assets/animations/trophy.json")
+            }
             style={{ alignSelf: "center", width: 100, height: 100 }}
             autoPlay={true}
             loop={true}
@@ -428,7 +452,7 @@ const RewardsScreen = () => {
       <View style={{ height: 10 }} />
       <Text style={styles.SemiBoldText}>Reward Catalogue:</Text>
       <View style={{ height: 10 }} />
-      <View style={{maxHeight:340}}>
+      <View style={{ maxHeight: 340 }}>
         <FlatList
           data={filteredRewards}
           renderItem={renderReward}

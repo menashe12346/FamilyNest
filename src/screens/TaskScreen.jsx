@@ -37,6 +37,7 @@ import { generateColor } from "../utils/ChatColors";
 import { uploadUserData } from "../utils/UploadData";
 import LottieView from "lottie-react-native";
 import * as Animatable from "react-native-animatable";
+import Toast from 'react-native-toast-message';
 
 const TaskScreen = ({ navigation, route }) => {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -335,6 +336,14 @@ const TaskScreen = ({ navigation, route }) => {
       }
     } catch (error) {
       console.error("Error approving task:", error);
+    }finally{
+      Toast.show({
+        type: 'success',
+        text1: 'Task completed! 🥳',
+        style: {
+          backgroundColor: '#28a745', // Custom background color
+        },
+      });
     }
 
     closeMenu();
