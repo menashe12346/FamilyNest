@@ -58,7 +58,8 @@ const ProfileScreen = () => {
     const interval = setInterval(() => {
       fetchUserData(user.uid, dispatch);
       updated_profile = getProfileById(user, selectedUser);
-    }, 30000); // 0.5 minute
+      setDailyAvailable(updated_profile.latest_daily_login !== formattedToday)
+    }, 15000); // 0.5 minute
 
     // Cleanup the interval when the component unmounts
     return () => clearInterval(interval);
