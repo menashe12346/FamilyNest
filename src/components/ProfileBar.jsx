@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Pressable, Image } from "react-native";
-import React, {useEffect,useState} from "react";
+import React, { useEffect, useState } from "react";
 import { calculateFontSize } from "../utils/FontUtils";
 import avatarImages from "../utils/AvatarsUtils";
 import { isMomDadSonDaughter, getProfileAge } from "../utils/ProfileUtils";
@@ -8,9 +8,28 @@ import { FontAwesome } from "@expo/vector-icons";
 import { Badge } from "react-native-elements";
 import LottieView from "lottie-react-native";
 import { useDispatch, useSelector } from "react-redux";
+import { getProfileById } from "../utils/ProfileUtils";
+import { fetchUserData } from "../utils/FetchData";
 
+const ProfileBar = ({profile,style, onPress, points }) => {
+  const user = useSelector((state) => state.user.user);
+  const selectedUser = useSelector(
+    (state) => state.selectedProfile.selectedProfileId
+  );
+  const dispatch = useDispatch();
 
-const ProfileBar = ({ profile, style, onPress, points }) => {
+  let updated_profile = getProfileById(user, selectedUser);
+
+  useEffect(() => {
+    // Function to execute every minute
+    const interval = setInterval(() => {
+      fetchUserData(user.uid,dispatch)
+      updated_profile = getProfileById(user, selectedUser);
+    }, 30000); // 0.5 minute
+
+    // Cleanup the interval when the component unmounts
+    return () => clearInterval(interval);
+  }, [updated_profile]); // Empty dependency array to run only once
 
   const colors =
     profile.gender === "male"
@@ -22,8 +41,6 @@ const ProfileBar = ({ profile, style, onPress, points }) => {
     : { uri: profile.avatarURI };
 
   console.log("the profile image", profileImage);
-
-
 
   return (
     <Pressable
@@ -74,7 +91,7 @@ const ProfileBar = ({ profile, style, onPress, points }) => {
                 speed={0.5}
               />
               {profile.role === "child" && (
-                <Text style={styles.roleText}>{points}</Text>
+                <Text style={styles.roleText}>{updated_profile.points}</Text>
               )}
             </View>
           </View>

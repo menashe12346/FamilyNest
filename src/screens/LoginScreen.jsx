@@ -90,6 +90,7 @@ const LoginScreen = () => {
 
         if (error.code === "auth/invalid-email") {
           console.log("That email address is invalid!");
+          
         } else if (error.code === "auth/user-not-found") {
           console.log("No user found with this email.");
         } else if (error.code === "auth/wrong-password") {
