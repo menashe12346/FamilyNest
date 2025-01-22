@@ -10,8 +10,9 @@ import LottieView from "lottie-react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { getProfileById } from "../utils/ProfileUtils";
 import { fetchUserData } from "../utils/FetchData";
+import Toast from "react-native-toast-message";
 
-const ProfileBar = ({ profile, style, onPress, showDetails=true, }) => {
+const ProfileBar = ({ profile, style, onPress, showDetails = true }) => {
   const user = useSelector((state) => state.user.user);
   const selectedUser = useSelector(
     (state) => state.selectedProfile.selectedProfileId
@@ -24,7 +25,7 @@ const ProfileBar = ({ profile, style, onPress, showDetails=true, }) => {
   // Format the date to YYYY-MM-DD
   const formattedToday = today.toISOString().slice(0, 10);
 
-  const onStreak =
+  let onStreak =
     updated_profile.latest_daily_login === formattedToday ? true : false;
 
   useEffect(() => {
@@ -32,6 +33,8 @@ const ProfileBar = ({ profile, style, onPress, showDetails=true, }) => {
     const interval = setInterval(() => {
       fetchUserData(user.uid, dispatch);
       updated_profile = getProfileById(user, selectedUser);
+      onStreak =
+        updated_profile.latest_daily_login === formattedToday ? true : false;
     }, 30000); // 0.5 minute
 
     // Cleanup the interval when the component unmounts
@@ -50,7 +53,8 @@ const ProfileBar = ({ profile, style, onPress, showDetails=true, }) => {
   return (
     <Pressable
       style={[
-        styles.pressable,style,
+        styles.pressable,
+        style,
         { borderColor: profile.gender === "male" ? "#81BFDA" : "#FB9EC6" },
       ]}
       onLongPress={() => console.warn("ProfileBar pressed")}
@@ -58,7 +62,10 @@ const ProfileBar = ({ profile, style, onPress, showDetails=true, }) => {
     >
       <LinearGradient
         colors={colors}
-        style={[styles.linearStyle, style? {marginTop:10,height:80,width:350}:{}]}
+        style={[
+          styles.linearStyle,
+          style ? { marginTop: 10, height: 80, width: 350 } : {},
+        ]}
         start={{ x: 0.5, y: 0.5 }} // Start at top-left
         end={{ x: 1, y: 1 }}
       >
@@ -126,7 +133,7 @@ const ProfileBar = ({ profile, style, onPress, showDetails=true, }) => {
                     {onStreak
                       ? updated_profile.streak
                       : "Daily login available"}
-                      {onStreak? " Days":""}
+                    {onStreak ? " Days" : ""}
                   </Text>
                 )}
               </View>

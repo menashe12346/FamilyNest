@@ -49,7 +49,7 @@ const RewardsScreen = () => {
     user.rewards.length > 0 ? user.rewards : []
   );
   const [reward, setReward] = useState("");
-  const [target, setTarget] = useState(user.target);
+  const [target, setTarget] = useState(user.target? user.target:'');
 
   const [filteredRewards, setFilteredRewards] = useState(
     rewardsList.filter((item) => item.status === "ACTIVE")
@@ -452,7 +452,7 @@ const RewardsScreen = () => {
       <View style={{ height: 10 }} />
       <Text style={styles.SemiBoldText}>Reward Catalogue:</Text>
       <View style={{ height: 10 }} />
-      <View style={{ maxHeight: 340 }}>
+      <View style={{ maxHeight: 310 }}>
         <FlatList
           data={filteredRewards}
           renderItem={renderReward}

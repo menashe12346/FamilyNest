@@ -212,7 +212,7 @@ const ProfileScreen = () => {
       resizeMode="cover"
       imageStyle={{ width: "100%", opacity: 0.2 }} // Adjust opacity here
     >
-      <ScrollView>
+<View>
         <Text style={styles.boldText}>My Profile:</Text>
         <ImageBackground
           source={require("../assets/backgrounds/pattern_1.png")}
@@ -318,7 +318,7 @@ const ProfileScreen = () => {
             />
           </View>
         )}
-        <View style={{alignSelf:'center'}}>
+        {parental && <View style={{alignSelf:'center'}}>
           <View style={{height:10}}/>
           <Text style={[styles.semiBoldText,{textAlign:'center'}]}>Tasks completed this week{"\n"}{formatStartEndDate(startOfWeek)}-{formatStartEndDate(endOfWeek)}</Text>
           <BarChart
@@ -342,8 +342,8 @@ const ProfileScreen = () => {
             }}
             verticalLabelRotation={0}
           />
-        </View>
-      </ScrollView>
+        </View>}
+      </View>
     </ImageBackground>
   );
 };

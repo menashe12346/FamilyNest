@@ -443,7 +443,7 @@ const TaskScreen = ({ navigation, route }) => {
                   >
                     <Text style={styles.menuText}>Extend Time</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     style={styles.menuItem}
                     onPress={handleTransferProfile}
                   >
@@ -454,7 +454,7 @@ const TaskScreen = ({ navigation, route }) => {
                     onPress={handleEditTask}
                   >
                     <Text style={styles.menuText}>Edit task</Text>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                   <TouchableOpacity
                     style={styles.menuItem}
                     onPress={handleDeleteTask}

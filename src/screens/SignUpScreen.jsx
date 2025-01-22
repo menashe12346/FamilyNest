@@ -194,8 +194,6 @@ const data = [
   { id: '7', type: 'profile-picture'},
   { id: '8', type: 'creator-profile'},
   { id: '9', type: 'gender-name-bday-profile-picture'},
-  { id: '10', type: 'partner-step'},
-  ...(sendPartnerInvitation ? [{ id: '11', type: 'partner-invite'}]:[]),
   { id: '12', type: 'sign-up-button'},
 ];
 
