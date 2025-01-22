@@ -7,7 +7,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import React, { useState,useEffect,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProfileById, isMomDadSonDaughter } from "../utils/ProfileUtils";
 import avatarImages from "../utils/AvatarsUtils";
@@ -50,18 +50,24 @@ const ProfileScreen = () => {
     updated_profile.latest_daily_login !== formattedToday
   );
 
-
+  const confettiAnimationRef = useRef(null);
+  const [confettiPlay, setConfettiPlay] = useState(false);
 
   useEffect(() => {
-      // Function to execute every minute
-      const interval = setInterval(() => {
-        fetchUserData(user.uid, dispatch);
-        updatedProfile = getProfileById(user, selectedUser);
-      }, 30000); // 0.5 minute
-  
-      // Cleanup the interval when the component unmounts
-      return () => clearInterval(interval);
-    }, [updated_profile]); // Empty dependency array to run only once
+    // Function to execute every minute
+    const interval = setInterval(() => {
+      fetchUserData(user.uid, dispatch);
+      updated_profile = getProfileById(user, selectedUser);
+    }, 30000); // 0.5 minute
+
+    // Cleanup the interval when the component unmounts
+    return () => clearInterval(interval);
+  }, [updated_profile]); // Empty dependency array to run only once
+
+  const handleConfettiShootFinish = () => {
+    setConfettiPlay(false);
+    setDailyAvailable(false);
+  };
 
   const handleDailyLogin = async () => {
     console.log("Daily login clicked");
@@ -111,8 +117,10 @@ const ProfileScreen = () => {
               points: profiles[profileIndex].points,
             };
             dispatch(setReduxProfiles(updatedProfiles));
-
-            setDailyAvailable(false)
+            setConfettiPlay(true);
+            if (confettiAnimationRef.current) {
+              confettiAnimationRef.current.play(); // Play the animation on press
+            }
 
             console.log(
               `Daily login collected streak is now ${profiles[profileIndex].streak} and latest date collected is ${profiles[profileIndex].latest_daily_login}.`
@@ -126,8 +134,8 @@ const ProfileScreen = () => {
       } catch (error) {
         console.error("Error approving task:", error);
       }
-    }else{
-      console.log("Already collected today...")
+    } else {
+      console.log("Already collected today...");
     }
   };
 
@@ -253,6 +261,26 @@ const ProfileScreen = () => {
           <Text style={styles.boldText}>Daily Login!</Text>
         </TouchableOpacity>
       )}
+      {confettiPlay && (
+        <View style={styles.lottieContainer} pointerEvents="box-none">
+          <LottieView
+            source={require("../assets/animations/confetti-shoot.json")}
+            style={{
+              position: "absolute",
+              top: 420,
+              left: 40,
+              width: 350,
+              height: 350,
+            }}
+            autoPlay={true}
+            loop={false}
+            speed={1}
+            pointerEvents="none" // Ensures it doesn't block touches
+            ref={confettiAnimationRef}
+            onAnimationFinish={handleConfettiShootFinish}
+          />
+        </View>
+      )}
     </ImageBackground>
   );
 };
@@ -343,5 +371,10 @@ const styles = StyleSheet.create({
     fontSize: calculateFontSize(30),
     textAlign: "center",
     color: "#333",
+  },lottieContainer: {
+    ...StyleSheet.absoluteFillObject, // Covers the entire screen
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1, // Ensure it's behind the TouchableOpacity
   },
 });

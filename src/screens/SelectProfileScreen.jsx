@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 8,
     alignSelf: 'center',
-    marginTop: '5%',
+    marginTop: '0%',
     marginBottom:'5%'
   },
   addProfileButtonText: {
