@@ -33,7 +33,7 @@ import { uploadUserData } from "../utils/UploadData";
 import { updateProfile } from "firebase/auth";
 import { selectRewards, selectProfiles } from "../Redux/userSelectors";
 import { updateProfileAndRewards } from "../utils/UploadData";
-import * as Progress from 'react-native-progress';
+import * as Progress from "react-native-progress";
 
 const RewardsScreen = () => {
   const { width, height } = Dimensions.get("screen");
@@ -113,6 +113,41 @@ const RewardsScreen = () => {
     // Close the purchase modal
     setPurchasedAnimation(false);
   };
+
+
+
+  const [totalTasks, setTotalTasks] = useState(0);
+
+useEffect(() => {
+    if (user?.profiles && Array.isArray(user.profiles)) {
+      const deadlineDate = new Date(user.target?.deadline);
+
+      if (isNaN(deadlineDate)) {
+        console.error("Invalid deadline date");
+        return;
+      }
+
+      let count = 0;
+
+      user.profiles.forEach((profile) => {
+        if (profile.tasks_completed && Array.isArray(profile.tasks_completed)) {
+          // Filter tasks completed before or on the deadline
+          const completedTasks = profile.tasks_completed.filter((task) => {
+            console.log("Task date:", task.task); // Log task.task
+            const taskCompletionDate = new Date(task.task); // Parse the date
+            console.log("Parsed date:", taskCompletionDate); // Log parsed date
+            return taskCompletionDate <= deadlineDate;
+          });
+          // Increment the count by the length of filtered tasks
+          count += completedTasks.length;
+        }
+      });
+
+      console.log("Total completed tasks:", count);
+      setTotalTasks(count); // Update state
+    }
+  }, [user]); // Add dependencies to ensure re-calculation if they change
+
 
   //Purchase function
   const handlePurchase = async () => {
@@ -280,7 +315,7 @@ const RewardsScreen = () => {
         loop={true}
         speed={0.35}
       />
-      <View style={{ marginTop: "5%",}}>
+      <View style={{ marginTop: "5%" }}>
         <ProfileBar profile={profile} points={profile.points} />
       </View>
       <View style={{ height: 15 }} />
@@ -333,7 +368,11 @@ const RewardsScreen = () => {
           <Text style={[styles.rewardText, { alignSelf: "center" }]}>
             {target.target} tasks
           </Text>
-          <Progress.Bar progress={0.3} width={200} height={12}/>
+          <Progress.Bar
+            progress={totalTasks / Number(target.target)}
+            width={200}
+            height={12}
+          />
         </View>
       )}
       <View style={{ height: 10 }} />
