@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getProfileById } from "../utils/ProfileUtils";
 import { fetchUserData } from "../utils/FetchData";
 
-const ProfileBar = ({ profile, style, onPress, points }) => {
+const ProfileBar = ({ profile, style, onPress, showDetails=true, }) => {
   const user = useSelector((state) => state.user.user);
   const selectedUser = useSelector(
     (state) => state.selectedProfile.selectedProfileId
@@ -50,8 +50,7 @@ const ProfileBar = ({ profile, style, onPress, points }) => {
   return (
     <Pressable
       style={[
-        styles.pressable,
-        style,
+        styles.pressable,style,
         { borderColor: profile.gender === "male" ? "#81BFDA" : "#FB9EC6" },
       ]}
       onLongPress={() => console.warn("ProfileBar pressed")}
@@ -59,7 +58,7 @@ const ProfileBar = ({ profile, style, onPress, points }) => {
     >
       <LinearGradient
         colors={colors}
-        style={styles.linearStyle}
+        style={[styles.linearStyle, style? {marginTop:10,height:80,width:350}:{}]}
         start={{ x: 0.5, y: 0.5 }} // Start at top-left
         end={{ x: 1, y: 1 }}
       >
@@ -79,7 +78,7 @@ const ProfileBar = ({ profile, style, onPress, points }) => {
         </FontAwesome>
       </View> */}
         <Text style={styles.nameStyle}></Text>
-        {profile.role === "child" && (
+        {profile.role === "child" && showDetails && (
           <View
             style={{
               marginStart: "20%",
@@ -112,7 +111,7 @@ const ProfileBar = ({ profile, style, onPress, points }) => {
                   loop={true}
                   speed={0.5}
                 />
-                {profile.role === "child" && (
+                {profile.role === "child" && showDetails && (
                   <Text
                     style={[
                       styles.roleText,

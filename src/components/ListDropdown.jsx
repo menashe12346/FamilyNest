@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 const ListDropdown = ({ profiles, style ,value , onChange }) => {
   const [showDropdown,setShowDropdown]= useState(false);
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 145, left: 0 });
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 155, left: 0 });
   profiles = profiles.profiles;
 
   const childProfiles = profiles.filter(profile => profile.role === 'child');
@@ -31,7 +31,10 @@ const renderItem = ({ item }) => {
       setSelected(item)
       onChange(item.id)
       setShowDropdown(false)
-    }}/>
+      
+    }}
+    showDetails={false}
+    />
   </View>
 };
 
@@ -39,7 +42,7 @@ const renderItem = ({ item }) => {
     <View style={{}}>
       {/* ProfileBar that triggers the dropdown */}
       <ProfileBar style={style} profile={selectedProfile} onPress={toggleDropdown}
-              onLayout={onProfileBarLayout} // Measure the ProfileBar position
+              onLayout={onProfileBarLayout} showDetails={false} // Measure the ProfileBar position
       />
 
       {/* Modal for the dropdown list */}
