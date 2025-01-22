@@ -118,7 +118,7 @@ const ProfileBar = ({ profile, style, onPress, showDetails=true, }) => {
                       {
                         top: 8,
                         fontSize: onStreak
-                          ? calculateFontSize(18)
+                          ? calculateFontSize(12)
                           : calculateFontSize(9),
                       },
                     ]}
@@ -126,6 +126,7 @@ const ProfileBar = ({ profile, style, onPress, showDetails=true, }) => {
                     {onStreak
                       ? updated_profile.streak
                       : "Daily login available"}
+                      {onStreak? " Days":""}
                   </Text>
                 )}
               </View>

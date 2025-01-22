@@ -37,17 +37,14 @@ import * as Progress from "react-native-progress";
 import CountdownTimer from "../components/CountdownTimer";
 import { getSecondsRemaining } from "../utils/TimeUtils";
 
-
-
-
 /**
- * 
- * @returns 
- * 
- * 
+ *
+ * @returns
+ *
+ *
  * !!! TODO TARGET COMPLETE HANDLE
- * 
- * 
+ *
+ *
  */
 
 const RewardsScreen = () => {
@@ -97,8 +94,7 @@ const RewardsScreen = () => {
   };
 
   const handlePressSetTargets = () => {
-    console.log("TTT",target)
-    if (Object.keys(target).length === 0 || !target.active) {
+    if (Object.keys(target).length === 0 || !target.active ||completedTarget) {
       if (animationTargetRef.current) {
         animationTargetRef.current.play(); // Play the animation on press
       }
@@ -142,6 +138,7 @@ const RewardsScreen = () => {
   };
 
   const [totalTasks, setTotalTasks] = useState(0);
+  const [completedTarget,setCompletedTarget]= useState(totalTasks/Number(target.target)===1)
 
   useEffect(() => {
     // Ensure user.profiles exists and is an array
@@ -156,7 +153,7 @@ const RewardsScreen = () => {
         return;
       }
 
-      if(!target.active){
+      if (!target.active) {
         return;
       }
 
@@ -181,6 +178,7 @@ const RewardsScreen = () => {
       });
 
       setTotalTasks(count); // Update state with the total task count
+      setCompletedTarget(totalTasks/Number(target.target)===1)
     } else {
       console.warn("User profiles not available or not an array.");
     }
@@ -312,7 +310,12 @@ const RewardsScreen = () => {
           autoPlay={true}
           loop={true}
         />
-        <Text style={[styles.rewardText, { alignSelf: "center" }]}>
+        <Text
+          style={[
+            styles.rewardText,
+            { alignSelf: "center", textAlign: "center" },
+          ]}
+        >
           {item.reward}
         </Text>
         <View style={{ flexDirection: "row", alignSelf: "center" }}>
@@ -398,7 +401,7 @@ const RewardsScreen = () => {
             </Text>
           )}
           <LottieView
-            source={require("../assets/animations/trophy.json")}
+            source={completedTarget? require('../assets/animations/fireworks.json'):require("../assets/animations/trophy.json")}
             style={{ alignSelf: "center", width: 100, height: 100 }}
             autoPlay={true}
             loop={true}
@@ -423,21 +426,25 @@ const RewardsScreen = () => {
         </View>
       )}
       <View style={{ height: 10 }} />
-      <FlatList
-        data={filteredRewards}
-        renderItem={renderReward}
-        keyExtractor={(item) => String(item.id)}
-        numColumns={4} // Three avatars per row
-        contentContainerStyle={styles.rewardList}
-        ItemSeparatorComponent={() => (
-          <View
-            style={{
-              height: 14,
-              marginHorizontal: 10,
-            }}
-          />
-        )}
-      />
+      <Text style={styles.SemiBoldText}>Reward Catalogue:</Text>
+      <View style={{ height: 10 }} />
+      <View style={{maxHeight:340}}>
+        <FlatList
+          data={filteredRewards}
+          renderItem={renderReward}
+          keyExtractor={(item) => String(item.id)}
+          numColumns={4} // Three avatars per row
+          contentContainerStyle={styles.rewardList}
+          ItemSeparatorComponent={() => (
+            <View
+              style={{
+                height: 14,
+                marginHorizontal: 10,
+              }}
+            />
+          )}
+        />
+      </View>
       <CreateReward
         show={show}
         setShowModal={setShowModal}
@@ -567,6 +574,7 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     elevation: 8,
     borderRadius: 12,
+    maxWidth: 120,
   },
   coinStyle: {
     backgroundColor: "#F3C623",
@@ -613,6 +621,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     zIndex: 1, // Ensure it's behind the TouchableOpacity
+  },
+  SemiBoldText: {
+    fontFamily: "Fredoka-Regular",
+    fontSize: calculateFontSize(28),
   },
 });
 
