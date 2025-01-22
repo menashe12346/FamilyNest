@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getProfileById } from "../utils/ProfileUtils";
 import { fetchUserData } from "../utils/FetchData";
 
-const ProfileBar = ({profile,style, onPress, points }) => {
+const ProfileBar = ({ profile, style, onPress, points }) => {
   const user = useSelector((state) => state.user.user);
   const selectedUser = useSelector(
     (state) => state.selectedProfile.selectedProfileId
@@ -20,10 +20,17 @@ const ProfileBar = ({profile,style, onPress, points }) => {
 
   let updated_profile = getProfileById(user, selectedUser);
 
+  const today = new Date();
+  // Format the date to YYYY-MM-DD
+  const formattedToday = today.toISOString().slice(0, 10);
+
+  const onStreak =
+    updated_profile.latest_daily_login === formattedToday ? true : false;
+
   useEffect(() => {
     // Function to execute every minute
     const interval = setInterval(() => {
-      fetchUserData(user.uid,dispatch)
+      fetchUserData(user.uid, dispatch);
       updated_profile = getProfileById(user, selectedUser);
     }, 30000); // 0.5 minute
 
@@ -39,8 +46,6 @@ const ProfileBar = ({profile,style, onPress, points }) => {
   const profileImage = profile.imageID
     ? avatarImages[profile.imageID]
     : { uri: profile.avatarURI };
-
-  console.log("the profile image", profileImage);
 
   return (
     <Pressable
@@ -82,17 +87,49 @@ const ProfileBar = ({profile,style, onPress, points }) => {
               justifyContent: "center",
             }}
           >
-            <View style={styles.rewardView}>
-              <LottieView
-                source={require("../assets/animations/coins.json")}
-                style={{ width: 90, height: 90, alignSelf: "center" }}
-                autoPlay={true}
-                loop={true}
-                speed={0.5}
-              />
-              {profile.role === "child" && (
-                <Text style={styles.roleText}>{updated_profile.points}</Text>
-              )}
+            <View>
+              <View style={styles.rewardView}>
+                <LottieView
+                  source={require("../assets/animations/coins.json")}
+                  style={{ width: 45, height: 45, alignSelf: "center" }}
+                  autoPlay={true}
+                  loop={true}
+                  speed={0.5}
+                />
+                {profile.role === "child" && (
+                  <Text style={styles.roleText}>{updated_profile.points}</Text>
+                )}
+              </View>
+              <View style={styles.streakView}>
+                <LottieView
+                  source={
+                    onStreak
+                      ? require("../assets/animations/on-streak.json")
+                      : require("../assets/animations/on-cold.json")
+                  }
+                  style={{ width: 45, height: 45, alignSelf: "center" }}
+                  autoPlay={true}
+                  loop={true}
+                  speed={0.5}
+                />
+                {profile.role === "child" && (
+                  <Text
+                    style={[
+                      styles.roleText,
+                      {
+                        top: 8,
+                        fontSize: onStreak
+                          ? calculateFontSize(18)
+                          : calculateFontSize(9),
+                      },
+                    ]}
+                  >
+                    {onStreak
+                      ? updated_profile.streak
+                      : "Daily login available"}
+                  </Text>
+                )}
+              </View>
             </View>
           </View>
         )}
@@ -103,8 +140,6 @@ const ProfileBar = ({profile,style, onPress, points }) => {
 
 const styles = StyleSheet.create({
   pressable: {
-    width: "100%",
-    height: "100%",
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
@@ -143,8 +178,8 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   linearStyle: {
-    width: "100%",
-    height: "100%",
+    width: 375,
+    height: 90,
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
@@ -156,8 +191,17 @@ const styles = StyleSheet.create({
     height: 100,
     width: 50,
     position: "absolute",
-    top: -50,
-    left: -60,
+    top: -72,
+    left: 15,
+  },
+  streakView: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 100,
+    width: 50,
+    position: "absolute",
+    top: -35,
+    left: 15,
   },
   rewardImage: {
     height: 40,

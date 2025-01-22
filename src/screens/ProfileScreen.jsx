@@ -7,7 +7,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useState,useEffect,useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProfileById, isMomDadSonDaughter } from "../utils/ProfileUtils";
 import avatarImages from "../utils/AvatarsUtils";
@@ -40,57 +40,93 @@ const ProfileScreen = () => {
     return `${day}/${month}/${year}`;
   };
 
+  const today = new Date();
+  const formattedToday = today.toISOString().slice(0, 10);
+
+  let updated_profile = getProfileById(user, selectedUser);
+
+  const [dailyAvailable, setDailyAvailable] = useState(
+    updated_profile.latest_daily_login !== formattedToday
+  );
+
+
+
+  useEffect(() => {
+      // Function to execute every minute
+      const interval = setInterval(() => {
+        fetchUserData(user.uid, dispatch);
+        updatedProfile = getProfileById(user, selectedUser);
+      }, 30000); // 0.5 minute
+  
+      // Cleanup the interval when the component unmounts
+      return () => clearInterval(interval);
+    }, [updated_profile]); // Empty dependency array to run only once
+
   const handleDailyLogin = async () => {
     console.log("Daily login clicked");
 
-    try {
-      const userDocRef = firebase.firestore().collection("users").doc(user.uid);
+    if (dailyAvailable) {
+      try {
+        const userDocRef = firebase
+          .firestore()
+          .collection("users")
+          .doc(user.uid);
 
-      const doc = await userDocRef.get();
-      if (doc.exists) {
-        const data = doc.data();
-        const tasks = data.tasks;
-        const profiles = data.profiles;
+        const doc = await userDocRef.get();
+        if (doc.exists) {
+          const data = doc.data();
+          const tasks = data.tasks;
+          const profiles = data.profiles;
 
-        const profileIndex = profiles.findIndex((p) => p.id === profile.id);
-        if (profileIndex !== -1) {
-          const today = new Date();
-          // Format the date to YYYY-MM-DD
-          const formattedToday = today.toISOString().slice(0, 10);
+          const profileIndex = profiles.findIndex((p) => p.id === profile.id);
+          if (profileIndex !== -1) {
+            const today = new Date();
+            // Format the date to YYYY-MM-DD
+            const formattedToday = today.toISOString().slice(0, 10);
 
-          const yesterday = new Date(today);
-          yesterday.setDate(today.getDate() - 1);
+            const yesterday = new Date(today);
+            yesterday.setDate(today.getDate() - 1);
 
-          // Format yesterday's date to YYYY-MM-DD
-          const formattedYesterday = yesterday.toISOString().slice(0, 10);
+            // Format yesterday's date to YYYY-MM-DD
+            const formattedYesterday = yesterday.toISOString().slice(0, 10);
 
-          const onStreak = profiles[profileIndex].latest_daily_login === formattedYesterday? true:false
+            const onStreak =
+              profiles[profileIndex].latest_daily_login === formattedYesterday
+                ? true
+                : false;
 
-          profiles[profileIndex].streak= onStreak? profiles[profileIndex].streak+1:1
-          profiles[profileIndex].latest_daily_login = formattedToday;
-          profiles[profileIndex].points += 10
+            profiles[profileIndex].streak = onStreak
+              ? profiles[profileIndex].streak + 1
+              : 1;
+            profiles[profileIndex].latest_daily_login = formattedToday;
+            profiles[profileIndex].points += 10;
 
-          await userDocRef.update({ profiles });
+            await userDocRef.update({ profiles });
 
-          const updatedProfiles = [...user.profiles];
+            const updatedProfiles = [...user.profiles];
 
-          updatedProfiles[profileIndex] = {
-            ...updatedProfiles[profileIndex],
-            points: profiles[profileIndex].points,
-          };
-          dispatch(setReduxProfiles(updatedProfiles));
+            updatedProfiles[profileIndex] = {
+              ...updatedProfiles[profileIndex],
+              points: profiles[profileIndex].points,
+            };
+            dispatch(setReduxProfiles(updatedProfiles));
 
-          console.log(
-            `Daily login collected streak is now ${profiles[profileIndex].streak} and latest date collected is ${profiles[profileIndex].latest_daily_login}.`
-          );
+            setDailyAvailable(false)
+
+            console.log(
+              `Daily login collected streak is now ${profiles[profileIndex].streak} and latest date collected is ${profiles[profileIndex].latest_daily_login}.`
+            );
+          } else {
+            console.error("Assigned profile not found.");
+          }
         } else {
-          console.error("Assigned profile not found.");
+          console.error("User document not found.");
         }
-      } else {
-        console.error("User document not found.");
+      } catch (error) {
+        console.error("Error approving task:", error);
       }
-    } catch (error) {
-      console.error("Error approving task:", error);
+    }else{
+      console.log("Already collected today...")
     }
   };
 
@@ -178,7 +214,8 @@ const ProfileScreen = () => {
           <Text
             style={[styles.regularText, { fontSize: calculateFontSize(14) }]}
           >
-            Tasks completed: {profile.tasks_completed.length}
+            Tasks completed: {profile.tasks_completed.length} , Login streak:{" "}
+            {profile.streak}
           </Text>
           <View
             style={{ height: 2, backgroundColor: "#555", marginBottom: 20 }}
@@ -201,7 +238,17 @@ const ProfileScreen = () => {
         </View>
       )}
       {!parental && (
-        <TouchableOpacity style={styles.dailyButton} onPress={handleDailyLogin}>
+        <TouchableOpacity
+          style={[
+            styles.dailyButton,
+            {
+              backgroundColor: dailyAvailable
+                ? "rgba(164, 220, 116, 0.88)"
+                : "rgba(179, 179, 179, 0.88)",
+            },
+          ]}
+          onPress={handleDailyLogin}
+        >
           <Text style={styles.boldText}>Daily Login!</Text>
         </TouchableOpacity>
       )}

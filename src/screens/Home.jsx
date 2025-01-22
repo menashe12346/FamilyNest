@@ -139,7 +139,7 @@ const Home = ({ navigation }) => {
       resizeMode="cover"
       imageStyle={{ opacity: 0.2 }} // Adjust opacity here
     >
-      <View style={{ marginTop: "5%", width: "90%", height: "10%" }}>
+      <View style={{ marginTop: "5%"}}>
         <ProfileBar profile={profile} points={profile.points} />
       </View>
       {showModal && parental && (

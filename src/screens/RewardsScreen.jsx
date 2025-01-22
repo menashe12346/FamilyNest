@@ -279,7 +279,7 @@ const RewardsScreen = () => {
         loop={true}
         speed={0.35}
       />
-      <View style={{ marginTop: "5%", width: "90%", height: "10%" }}>
+      <View style={{ marginTop: "5%",}}>
         <ProfileBar profile={profile} points={profile.points} />
       </View>
       <View style={{ height: 15 }} />
