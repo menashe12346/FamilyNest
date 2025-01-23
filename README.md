@@ -29,6 +29,9 @@ submitting and presenting my app.
 [![Watch this YouTube Short](https://img.youtube.com/vi/tGPikTpkeCI/maxresdefault.jpg)](https://youtube.com/shorts/tGPikTpkeCI?feature=share)
 
 
+### Rewards and targets creation and progress
+
+[![Watch this YouTube Short](https://img.youtube.com/vi/L8VVYT09GLU/maxresdefault.jpg)](https://youtube.com/shorts/L8VVYT09GLU?feature=share)
 
 
 
