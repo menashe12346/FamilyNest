@@ -1,16 +1,30 @@
 # FamilyNest
 
 **FamilyNest** is a React Native application designed to help families stay organized, share tasks, and strengthen connections through efficient communication and task management.
+This is my first attempt at using React Native with JavaScript, in the context of the course "Software-Engineering" ( Ariel-University) , the code is not perfect and some mistakes would have cost important time before 
+submitting and presenting my app. 
 
 ---
 
 ## Features
 
 - **Task Management:** Assign and manage family tasks seamlessly.
+- **Reward Store:** Children obtain points that can be used for buying rewards.
+- **Targets:** Parents can set a target N tasks to be completed before the deadline date.
+- **Profile:** Profiles contain an "ID Card" with the details of the profile, achievements, and a daily login feature.
+- **Chat:** Tasks related chat, each task contains a chat for messaging.
 - **User-Friendly Interface:** Intuitive design for all family members.
 - **Cross-Platform:** Works on both iOS and Android devices.
 
 ---
+
+##
+
+### Welcome - Sign-Up - Log-in - Create profile
+
+[Watch this YouTube Short](https://youtube.com/shorts/QOIMYp3PVZU?feature=share)
+
+
 
 ## Installation
 
