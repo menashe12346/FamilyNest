@@ -22,7 +22,8 @@ submitting and presenting my app.
 
 ### Welcome - Sign-Up - Log-in - Create profile
 
-[Watch this YouTube Short](https://youtube.com/shorts/QOIMYp3PVZU?feature=share)
+[![Watch this YouTube Short](https://img.youtube.com/vi/QOIMYp3PVZU/maxresdefault.jpg)](https://youtube.com/shorts/QOIMYp3PVZU?feature=share)
+
 
 
 
