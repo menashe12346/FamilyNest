@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "FamilyNest",
+    "scheme": "com.familynest.app",
     "slug": "FamilyNest",
     "version": "1.0.0",
     "orientation": "portrait",

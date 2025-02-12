@@ -25,7 +25,6 @@ import LottieView from "lottie-react-native";
 import Toast from 'react-native-toast-message';
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
-import { AntDesign } from "@expo/vector-icons"; // Import Google icon
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -47,15 +46,6 @@ const LoginScreen = () => {
       ],
     };
   });
-
-  const GoogleSignInButton = ({ onPress }) => {
-    return (
-      <TouchableOpacity onPress={onPress} style={styles.googleButton}>
-        <AntDesign name="google" size={24} color="white" style={styles.googleIcon} />
-        <Text style={styles.googleButtonText}>Sign in with Google</Text>
-      </TouchableOpacity>
-    );
-  };
 
   WebBrowser.maybeCompleteAuthSession();
 
@@ -217,9 +207,6 @@ const LoginScreen = () => {
           onChangeText={(text) => setPassword(text)}
           inputMode="text"
         />
-        <View style={styles.GoogleContainer}>
-          <GoogleSignInButton onPress={signInWithGoogle}/>
-        </View>
         <View style={styles.logInContainer}>
           <Text style={styles.logInText}>Log in</Text>
           <TouchableOpacity onPress={signIn}>
@@ -229,6 +216,12 @@ const LoginScreen = () => {
               iconColor="white"
               iconSize={24}
             />
+          </TouchableOpacity>
+        </View>
+
+        <View>
+          <TouchableOpacity onPress={signInWithGoogle} style={styles.googleButton}>
+            <Text style={styles.googleButtonText}>Sign in with Google</Text>
           </TouchableOpacity>
         </View>
 
@@ -324,36 +317,11 @@ const styles = StyleSheet.create({
     height: 350,
     width: 350,
   },
-  googleButton: {
-    flexDirection: "row", // Align icon & text
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#DB4437", // Google's red color
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    width: "80%", // Adjust width dynamically
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 3, // Android shadow
-    alignSelf: "center",
-  },
-  googleIcon: {
-    marginRight: 10, // Space between icon & text
-  },
-  googleButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  GoogleContainer: {
-    flexDirection: "row",
-    marginHorizontal: "17%",
-    width: "90%",
-    justifyContent: "flex-start",
-  },
 });
 
 export default LoginScreen;
+
+
+        <View style={styles.GoogleContainer}>
+          <GoogleSignInButton onPress={signInWithGoogle} />
+        </View>
