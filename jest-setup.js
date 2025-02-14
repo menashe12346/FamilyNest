@@ -1,4 +1,5 @@
 // jest-setup.js
+jest.mock('react-native-bouncy-checkbox', () => 'BouncyCheckbox');
 
 // Mock for expo-modules-core
 jest.mock('expo-modules-core', () => {

@@ -4,9 +4,10 @@ module.exports = {
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
-  transformIgnorePatterns: [
-    'node_modules/(?!(react-native|@react-native|react-native-reanimated|@expo/vector-icons|expo-font|expo-linear-gradient|expo-modules-core)/)',
-  ],
-  setupFiles: ['<rootDir>/jest-setup.js'],
-  setupFilesAfterEnv: ['@testing-library/jest-native/extend-expect'],
-};
+    transformIgnorePatterns: [
+      'node_modules/(?!(react-native|@react-native|react-native-reanimated|@expo/vector-icons|expo-font|expo-linear-gradient|expo-modules-core|react-native-bouncy-checkbox)/)',
+    ],
+    setupFiles: ['<rootDir>/jest-setup.js'],
+    setupFilesAfterEnv: ['@testing-library/jest-native/extend-expect'],
+  };
+  
