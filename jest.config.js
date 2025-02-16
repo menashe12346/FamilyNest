@@ -1,12 +1,13 @@
 module.exports = {
-    preset: 'react-native', // Ensure you're using the React Native preset
-    testEnvironment: 'jest-environment-jsdom', // For jsdom environment
-    transform: {
-      '^.+\\.[t|j]sx?$': 'babel-jest', // Handles .jsx files
-    },
+  preset: 'react-native',
+  testEnvironment: 'jest-environment-jsdom',
+  transform: {
+    '^.+\\.[tj]sx?$': 'babel-jest',
+  },
     transformIgnorePatterns: [
-      'node_modules/(?!(react-native|@react-native|react-native-reanimated)/)', // Allow transforming dependencies
+      'node_modules/(?!(react-native|@react-native|react-native-reanimated|@expo/vector-icons|expo-font|expo-linear-gradient|expo-modules-core|react-native-bouncy-checkbox)/)',
     ],
-    setupFilesAfterEnv: ['@testing-library/jest-native/extend-expect'], // Optional, if you're using jest-native matchers
+    setupFiles: ['<rootDir>/jest-setup.js'],
+    setupFilesAfterEnv: ['@testing-library/jest-native/extend-expect'],
   };
   
