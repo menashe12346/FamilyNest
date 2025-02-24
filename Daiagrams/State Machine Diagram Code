@@ -1,28 +1,52 @@
 @startuml
-[*] --> Created : Task Created
-Created --> Assigned : Assigned to User
-Assigned --> InProgress : User Started Working
-InProgress --> Completed : User Marked as Complete
-InProgress --> Expired : Due Date Passed Without Completion (No Points Lost)
-InProgress --> Canceled : Task Canceled by Parent/Admin
 
-Completed --> PointsAwarded : User Receives Points
-PointsAwarded --> RewardsUpdated : Rewards Updated for User
-RewardsUpdated --> [*] : Task Fully Processed
+[*] --> TaskAssigned : Task is created and assigned
 
-Expired --> NoChange : Task Expired, No Points Deducted
-NoChange --> [*] : Task Closed Without Penalty
+' Child starts working on the task
+TaskAssigned --> TaskInProgress : Child starts task
 
-Canceled --> [*] : Task No Longer Available
+' Child completes the task, moving to waiting for approval
+TaskInProgress --> WaitingForApproval : completeTask()
 
-' Firestore Integration
-Created : "Stored in Firestore\nFields: id, title, description, assignedTo, dueDate, status='Created'"
-Assigned : "Status = 'Assigned'\nUser notified via Firebase update"
-InProgress : "Status = 'InProgress'\nUser is actively working on it"
-Completed : "Status = 'Completed'\nPoints allocated based on difficulty"
-Expired : "Status = 'Expired'\nUser didn't finish in time, No penalty applied"
-Canceled : "Status = 'Canceled'\nParent/Admin canceled the task"
-PointsAwarded : "Firestore: user.points += task.points"
-RewardsUpdated : "Firestore: user.rewards updated with new points"
+' Task is waiting for parent approval
+WaitingForApproval --> TaskApproved : approveTask()
+WaitingForApproval --> TaskRejected : rejectTask()
+
+' If the parent rejects the task, it goes back to "TaskInProgress"
+TaskRejected --> TaskInProgress : reworkTask()
+
+' If the child fails to complete the task before deadline
+TaskInProgress --> TaskExpired : timeLimitReached()
+
+' If the parent approves the task, update child's score
+state "Task Approved" as TaskApproved {
+}
+
+TaskApproved --> UpdateScore : updateChildScore()
+
+' After updating the score, the task is marked as completed
+state "Update Score" as UpdateScore {
+}
+
+UpdateScore --> TaskCompleted : finalizeTask()
+
+' Option to extend time
+TaskExpired --> TaskInProgress : extendTime()
+
+' Task can also be deleted at any stage
+TaskAssigned --> TaskDeleted : deleteTask()
+TaskInProgress --> TaskDeleted : deleteTask()
+WaitingForApproval --> TaskDeleted : deleteTask()
+TaskExpired --> TaskDeleted : deleteTask()
+
+' Final states
+state "Task Completed" as TaskCompleted
+TaskCompleted --> [*]
+
+state "Task Expired" as TaskExpired
+TaskExpired --> [*]
+
+state "Task Deleted" as TaskDeleted
+TaskDeleted --> [*]
 
 @enduml
