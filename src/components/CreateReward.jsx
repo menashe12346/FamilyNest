@@ -50,6 +50,7 @@ const CreateReward = ({ show, setShowModal, reward, setReward }) => {
       } catch (error) {
         console.error("Error updating reward:", error);
       }
+      
       setAmount(0);
       setPrice();
       setSelectedReward({
