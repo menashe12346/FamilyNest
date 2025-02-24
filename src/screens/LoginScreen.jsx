@@ -217,9 +217,6 @@ const LoginScreen = () => {
           onChangeText={(text) => setPassword(text)}
           inputMode="text"
         />
-        <View style={styles.GoogleContainer}>
-          <GoogleSignInButton onPress={signInWithGoogle}/>
-        </View>
         <View style={styles.logInContainer}>
           <Text style={styles.logInText}>Log in</Text>
           <TouchableOpacity onPress={signIn} testID="loginButton">
@@ -230,6 +227,7 @@ const LoginScreen = () => {
               iconSize={24}
             />
           </TouchableOpacity>
+          <GoogleSignInButton onPress={signInWithGoogle}/>
         </View>
 
         <TouchableOpacity style={{alignSelf:'center',marginTop:50}} onPress={handleCreateAccount}>
@@ -292,7 +290,6 @@ const styles = StyleSheet.create({
   logInContainer: {
     flexDirection: "row",
     marginTop: "1%",
-    marginHorizontal: "50%",
     width: "90%",
     justifyContent: "flex-start",
   },
@@ -307,7 +304,7 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: calculateFontSize(16),
     fontFamily: "Fredoka-Bold",
-    marginTop: "1%",
+    marginTop: "0.05%",
   },
   blobContainer: {
     height: "50%",
@@ -325,6 +322,7 @@ const styles = StyleSheet.create({
     width: 350,
   },
   googleButton: {
+    marginHorizontal: "-20%",
     flexDirection: "row", // Align icon & text
     alignItems: "center",
     justifyContent: "center",
@@ -339,6 +337,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3, // Android shadow
     alignSelf: "center",
+    
   },
   googleIcon: {
     marginRight: 10, // Space between icon & text
