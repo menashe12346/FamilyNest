@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { Provider } from "react-redux";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AppNavigator from "./navigators/AppNavigator";
@@ -7,6 +7,8 @@ import * as SplashScreen from "expo-splash-screen"; // Optional for handling spl
 import { useFonts } from "expo-font";
 import { useDispatch, useSelector } from 'react-redux'; // Import hooks
 import Toast from "react-native-toast-message";
+import { requestUserPermission, getExpoPushToken, setupForegroundNotificationListener } from "./firebase";
+import * as Notifications from 'expo-notifications';
 
 export default function App() {
   // Load fonts
@@ -46,6 +48,26 @@ export default function App() {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
+
+  useEffect(() => {
+    requestUserPermission(); // Request notification permissions
+    getExpoPushToken(); // Get Expo push token
+    const unsubscribe = setupForegroundNotificationListener(); // Listen for foreground notifications
+
+    return () => unsubscribe(); // Cleanup listener
+  }, []);
+
+  useEffect(() => {
+    // Listen for incoming notifications in the foreground
+    const subscription = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        console.log("📩 Foreground notification (same device):", notification);
+        // Optionally show a toast or alert for the child
+      }
+    );
+
+    return () => subscription.remove();
+  }, []);
 
   // Show nothing (or a loading indicator) while fonts are loading
   if (!fontsLoaded) {

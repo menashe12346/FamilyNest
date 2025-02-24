@@ -25,6 +25,7 @@ import { CreateNewTask, getNewTaskID, taskTypes } from "../utils/TaskUtils";
 import ValuePicker from "./ValuePicker";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { getProfileById } from "../utils/ProfileUtils";
+import { handleTaskAssignedLocally, handleOneHourBeforeDeadlineLocally } from '../screens/TaskNotifications'; // or just inline the code
 
 const CreateTask = ({ showModal, setShowModal, user, profile ,task,setNewTask }) => {
   profile = profile.profile;
@@ -71,7 +72,7 @@ const CreateTask = ({ showModal, setShowModal, user, profile ,task,setNewTask })
     return true;
   };
 
-  const handleAssign =()=>{
+  const handleAssign =async ()=>{
       const newId = getNewTaskID({tasks: user.tasks})
       const newTask = CreateNewTask({
         creatorID: profile.id,
@@ -87,6 +88,8 @@ const CreateTask = ({ showModal, setShowModal, user, profile ,task,setNewTask })
       });
       console.log('New Task Created:',newTask)
       setNewTask(newTask)
+      await handleTaskAssignedLocally(newTask, user);
+      await handleOneHourBeforeDeadlineLocally(newTask, user);
       setShowModal(false)
   }
 
