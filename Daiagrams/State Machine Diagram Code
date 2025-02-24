@@ -1,21 +1,28 @@
 @startuml
-state "Task Creation Process" as TaskCreation {
-  [*] --> Start
-  Start --> EnterDetails : User selects 'Create Task'
-  EnterDetails : Fill task title, description, start time, end time, type, reward, and min age
+[*] --> Created : Task Created
+Created --> Assigned : Assigned to User
+Assigned --> InProgress : User Started Working
+InProgress --> Completed : User Marked as Complete
+InProgress --> Expired : Due Date Passed Without Completion (No Points Lost)
+InProgress --> Canceled : Task Canceled by Parent/Admin
 
-  EnterDetails --> AssignTask : User assigns task to a profile
-  AssignTask : Select a child profile from the list
+Completed --> PointsAwarded : User Receives Points
+PointsAwarded --> RewardsUpdated : Rewards Updated for User
+RewardsUpdated --> [*] : Task Fully Processed
 
-  AssignTask --> Review : Review task details
-  Review : Confirm or edit task information
+Expired --> NoChange : Task Expired, No Points Deducted
+NoChange --> [*] : Task Closed Without Penalty
 
-  Review --> Save : User confirms task creation
-  Save --> Database : Task saved to database with expiry date
-  Database --> Completed : Confirmation sent to user
+Canceled --> [*] : Task No Longer Available
 
-  Completed --> [*]
-}
-
+' Firestore Integration
+Created : "Stored in Firestore\nFields: id, title, description, assignedTo, dueDate, status='Created'"
+Assigned : "Status = 'Assigned'\nUser notified via Firebase update"
+InProgress : "Status = 'InProgress'\nUser is actively working on it"
+Completed : "Status = 'Completed'\nPoints allocated based on difficulty"
+Expired : "Status = 'Expired'\nUser didn't finish in time, No penalty applied"
+Canceled : "Status = 'Canceled'\nParent/Admin canceled the task"
+PointsAwarded : "Firestore: user.points += task.points"
+RewardsUpdated : "Firestore: user.rewards updated with new points"
 
 @enduml
