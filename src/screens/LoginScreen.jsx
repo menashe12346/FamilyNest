@@ -230,7 +230,7 @@ const LoginScreen = () => {
           <GoogleSignInButton onPress={signInWithGoogle}/>
         </View>
 
-        <TouchableOpacity style={{alignSelf:'center',marginTop:50}} onPress={handleCreateAccount}>
+        <TouchableOpacity style={{alignSelf:'center',marginTop:40}} onPress={handleCreateAccount}>
           <Text style={styles.footerText}>
             Don't have an account?
             <Text style={{ textDecorationLine: "underline" }}>Create</Text>
