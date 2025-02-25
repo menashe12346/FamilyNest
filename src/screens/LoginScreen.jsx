@@ -218,7 +218,7 @@ const LoginScreen = () => {
           inputMode="text"
         />
         <View style={styles.logInContainer}>
-          <Text style={styles.logInText}>Log in</Text>
+          <Text style={styles.logInText}>                              Log in</Text>
           <TouchableOpacity onPress={signIn} testID="loginButton">
             <GradientButton
               colors={["#E99091", "#CD9D9E", "#B85455"]}
@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
     width: 350,
   },
   googleButton: {
-    marginHorizontal: "-20%",
+    marginHorizontal: "-76%",
     flexDirection: "row", // Align icon & text
     alignItems: "center",
     justifyContent: "center",
